@@ -7,7 +7,7 @@ import { KeyholeLogo } from "@/components/keyhole-logo";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { linksForEvidence } from "@/lib/case-file";
-import { pigeonCase } from "@/lib/seed";
+import { getCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   useCallback,
   useRef,
@@ -37,10 +38,12 @@ import {
 
 type LockerTab = "clues" | "people" | "places";
 
-const CLUES = pigeonCase.evidence;
-
 export default function EvidenceLockerPage() {
-  const { progress, inspectEvidence, togglePin } = useHeists();
+  const { id } = useParams<{ id: string }>();
+  const caseFile = getCase(id);
+  const { progressFor, inspectEvidence, togglePin } = useHeists();
+  const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
+  const CLUES = caseFile?.evidence ?? [];
   const pinnedIds = progress.pinnedEvidenceIds ?? [];
   const inspectedIds = progress.inspectedEvidenceIds ?? [];
   const [tab, setTab] = useState<LockerTab>("clues");
@@ -62,15 +65,16 @@ export default function EvidenceLockerPage() {
 
   const openAt = useCallback(
     (index: number) => {
+      if (!caseFile) return;
       const item = CLUES[index];
       if (!item) return;
-      inspectEvidence(item.id);
+      inspectEvidence(caseFile.id, item.id);
       // Opening a clue auto-adds it to the compare tray.
-      if (!pinnedIds.includes(item.id)) togglePin(item.id);
+      if (!pinnedIds.includes(item.id)) togglePin(caseFile.id, item.id);
       setZoom(1);
       setOpenIndex(index);
     },
-    [inspectEvidence, pinnedIds, togglePin],
+    [CLUES, caseFile, inspectEvidence, pinnedIds, togglePin],
   );
 
   function goPrev() {
@@ -100,10 +104,21 @@ export default function EvidenceLockerPage() {
     else goPrev();
   }
 
+  if (!caseFile) {
+    return (
+      <main className="play-day grid min-h-dvh place-items-center p-6 text-center">
+        <div>
+          <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
+          <Button asChild className="mt-4"><Link href="/">Return to Case Board</Link></Button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="play-day min-h-dvh px-4 pb-28 pt-4">
       <Link
-        href={`/case/${pigeonCase.id}`}
+        href={`/case/${caseFile.id}`}
         className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
       >
         <ChevronLeft className="size-4" /> Briefing
@@ -112,13 +127,13 @@ export default function EvidenceLockerPage() {
       <header className="mt-4 border-b border-hairline pb-4 text-center">
         <KeyholeLogo className="mx-auto size-8" />
         <p className="mt-1 font-display text-[11px] font-bold tracking-[0.22em] text-gold uppercase">
-          Street Heists · Case {String(pigeonCase.number).padStart(2, "0")}
+          Street Heists · Case {String(caseFile.number).padStart(2, "0")}
         </p>
         <h1 className="mt-1 font-serif text-4xl font-bold leading-none text-ink">
           Evidence Locker
         </h1>
         <p className="mt-1 font-serif text-lg font-semibold text-ink">
-          {pigeonCase.title}
+          {caseFile.title}
         </p>
         <p className="mt-2 text-sm leading-snug text-ink">
           Flip through every clue, then compare who / how / where they point to.
@@ -246,8 +261,8 @@ export default function EvidenceLockerPage() {
         </>
       ) : null}
 
-      {tab === "people" ? <PeopleRoster caseFile={pigeonCase} /> : null}
-      {tab === "places" ? <PlacesRoster caseFile={pigeonCase} /> : null}
+      {tab === "people" ? <PeopleRoster caseFile={caseFile} /> : null}
+      {tab === "places" ? <PlacesRoster caseFile={caseFile} /> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
         <Button
@@ -255,7 +270,7 @@ export default function EvidenceLockerPage() {
           size="lg"
           className="w-full rounded-lg font-display text-base font-bold tracking-[0.12em] uppercase"
         >
-          <Link href={`/case/${pigeonCase.id}/accuse`}>Accuse when ready</Link>
+          <Link href={`/case/${caseFile.id}/accuse`}>Accuse when ready</Link>
         </Button>
         <p className="mt-1 text-center text-[11px] text-muted">
           {inspectedCount} of {totalClues} clues opened · swipe inside a clue to keep moving
@@ -423,8 +438,8 @@ export default function EvidenceLockerPage() {
                 Linked people & place
               </p>
               <LinkChips
-                caseFile={pigeonCase}
-                links={linksForEvidence(pigeonCase, openEvidence)}
+                caseFile={caseFile}
+                links={linksForEvidence(caseFile, openEvidence)}
               />
             </div>
 
@@ -453,7 +468,7 @@ export default function EvidenceLockerPage() {
               <Button
                 variant="bronze"
                 className="rounded-lg"
-                onClick={() => togglePin(openEvidence.id)}
+                onClick={() => togglePin(caseFile.id, openEvidence.id)}
               >
                 <Pin className="size-4" />
                 {pinnedIds.includes(openEvidence.id) ? "On tray" : "Add to tray"}
@@ -489,14 +504,14 @@ export default function EvidenceLockerPage() {
             Shared people and places across your opened clues light up here — use
             that overlap to lock Who / How / Where.
           </p>
-          <CompareBoard caseFile={pigeonCase} items={comparisonItems} />
+          <CompareBoard caseFile={caseFile} items={comparisonItems} />
           <p className="mt-4 text-sm font-semibold text-ink">
             {comparisonItems.length > 1
               ? "When the shared links name a clear theory, head to Accuse."
               : "Open at least two clues to compare links."}
           </p>
           <Button asChild className="mt-3 w-full rounded-lg">
-            <Link href={`/case/${pigeonCase.id}/accuse`}>Go to Accuse</Link>
+            <Link href={`/case/${caseFile.id}/accuse`}>Go to Accuse</Link>
           </Button>
         </DialogContent>
       </Dialog>
