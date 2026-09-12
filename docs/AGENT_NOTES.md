@@ -10,7 +10,7 @@
 
 - Couch crime-puzzle: Case Board → Briefing → Evidence Locker → Accuse → Verdict.
 - No player camera, uploads, walking, or GPS.
-- Play Day cream on play screens; Midnight Crew only on solved share cards.
+- Play Day B2 cool paper on play screens (`#EEF2F6`); Midnight Crew only on solved share cards.
 - Seed case: The Pigeon Job (`src/lib/seed.ts`).
 
 ## Quality gate
