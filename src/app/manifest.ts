@@ -4,12 +4,20 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Street Heists",
     short_name: "Heists",
-    description: "Create and run fictional heists on real maps. Pure make-believe. Zero real crime.",
+    description:
+      "A short comedy mystery with provided clues and one final accusation.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0B0B0C",
-    theme_color: "#0B0B0C",
+    background_color: "#F7F1E6",
+    theme_color: "#F7F1E6",
     orientation: "portrait",
-    icons: [{ src: "/keyhole.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
+    icons: [
+      {
+        src: "/keyhole.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+        purpose: "any",
+      },
+    ],
   };
 }

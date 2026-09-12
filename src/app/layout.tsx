@@ -4,20 +4,42 @@ import { AppShell } from "@/components/app-shell";
 import { HeistProvider } from "@/lib/store";
 import "./globals.css";
 
-const sans = DM_Sans({ subsets: ["latin"], variable: "--font-dm" });
-const display = Barlow_Condensed({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-barlow" });
-const serif = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600", "700"], style: ["normal", "italic"], variable: "--font-cormorant" });
+const sans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm",
+});
+
+const display = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-barlow",
+});
+
+const serif = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+});
 
 export const metadata: Metadata = {
   title: "Street Heists",
-  description: "Create and run fictional heists on real maps. Photo proofs, speed plus style, glossy crime cards. Pure make-believe.",
+  description:
+    "A short comedy-heist mystery. Inspect provided clues, make one accusation, and crack the case.",
   applicationName: "Street Heists",
-  appleWebApp: { capable: true, title: "Street Heists", statusBarStyle: "black-translucent" },
-  icons: { icon: "/keyhole.svg", apple: "/keyhole.svg" },
+  appleWebApp: {
+    capable: true,
+    title: "Street Heists",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: "/keyhole.svg",
+    apple: "/keyhole.svg",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B0B0C",
+  themeColor: "#F7F1E6",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -26,9 +48,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${serif.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${sans.variable} ${display.variable} ${serif.variable} h-full antialiased`}
+    >
       <body className="min-h-full">
-        <HeistProvider><AppShell>{children}</AppShell></HeistProvider>
+        <HeistProvider>
+          <AppShell>{children}</AppShell>
+        </HeistProvider>
       </body>
     </html>
   );
