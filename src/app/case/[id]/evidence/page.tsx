@@ -107,11 +107,11 @@ export default function EvidenceLockerPage() {
                   className={cn(
                     "relative overflow-hidden rounded-xl border bg-card",
                     selectedEvidence.id === item.id ? "border-gold ring-1 ring-gold" : "border-hairline",
-                    inspected && "bg-[#FFF9EC]",
+                    inspected && "bg-[#E8EEF8]",
                   )}
                 >
                   {inspected ? (
-                    <span className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-md bg-gold px-1.5 py-0.5 font-display text-[9px] font-bold tracking-[0.12em] text-ink uppercase shadow-sm">
+                    <span className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-md bg-gold px-1.5 py-0.5 font-display text-[9px] font-bold tracking-[0.12em] text-white uppercase shadow-sm">
                       <Check className="size-3" /> Seen
                     </span>
                   ) : null}
@@ -134,7 +134,7 @@ export default function EvidenceLockerPage() {
                     </div>
                   </button>
                   {isPinned ? (
-                    <p className="flex items-center justify-center gap-1 border-t border-hairline bg-gold py-2 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase">
+                    <p className="flex items-center justify-center gap-1 border-t border-hairline bg-gold py-2 font-display text-[10px] font-bold tracking-[0.12em] text-white uppercase">
                       <Pin className="size-3" /> Note pinned
                     </p>
                   ) : null}
@@ -168,7 +168,7 @@ export default function EvidenceLockerPage() {
                   [selectedEvidence.id]: event.target.value,
                 }))
               }
-              className="mt-1 w-full resize-none rounded-lg border border-hairline bg-[#F7F1E6] p-3 text-sm leading-snug text-ink outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              className="mt-1 w-full resize-none rounded-lg border border-hairline bg-[#E8EEF8] p-3 text-sm leading-snug text-ink outline-none focus:border-gold focus:ring-1 focus:ring-gold"
             />
             <Button
               variant={pinnedIds.includes(selectedEvidence.id) ? "gold" : "bronze"}
@@ -192,7 +192,7 @@ export default function EvidenceLockerPage() {
             </div>
             {pinned.length ? (
               <div className="mt-3 flex flex-wrap gap-2">
-                {pinned.map((item) => <span key={item.id} className="rounded-full bg-[#F7F1E6] px-2 py-1 text-[11px] text-ink">{item.title}</span>)}
+                {pinned.map((item) => <span key={item.id} className="rounded-full bg-[#E8EEF8] px-2 py-1 text-[11px] text-ink">{item.title}</span>)}
               </div>
             ) : null}
           </section>
@@ -202,7 +202,7 @@ export default function EvidenceLockerPage() {
       {tab === "people" ? <PeopleRoster caseFile={pigeonCase} /> : null}
       {tab === "places" ? <PlacesRoster caseFile={pigeonCase} /> : null}
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#F7F1E6]/95 p-4 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
         <Button asChild size="lg" className="w-full rounded-lg font-display text-base font-bold tracking-[0.12em] uppercase">
           <Link href={`/case/${pigeonCase.id}/accuse`}>Accuse when ready</Link>
         </Button>
@@ -216,7 +216,7 @@ export default function EvidenceLockerPage() {
               Progress · {inspectedCount}/{totalClues} clues inspected
             </p>
             {pinned.length ? (
-              <div className="mb-3 rounded-lg border border-hairline bg-[#F7F1E6] p-2">
+              <div className="mb-3 rounded-lg border border-hairline bg-[#E8EEF8] p-2">
                 <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
                   Pinned while you look · {pinned.length}
                 </p>
@@ -226,7 +226,7 @@ export default function EvidenceLockerPage() {
                       key={item.id}
                       className={cn(
                         "rounded-full px-2 py-0.5 text-[11px]",
-                        item.id === openEvidence.id ? "bg-gold font-semibold text-ink" : "bg-card text-ink",
+                        item.id === openEvidence.id ? "bg-gold font-semibold text-white" : "bg-card text-ink",
                       )}
                     >
                       {item.title}
@@ -235,7 +235,7 @@ export default function EvidenceLockerPage() {
                 </div>
               </div>
             ) : null}
-            <div className="relative h-[min(42dvh,20rem)] touch-pinch-zoom overflow-hidden rounded-lg bg-[#24282d]">
+            <div className="relative h-[min(42dvh,20rem)] touch-pinch-zoom overflow-hidden rounded-lg bg-[#1B2430]">
               <div
                 className="h-full w-full origin-center transition-transform duration-200"
                 style={{ transform: `scale(${zoom})` }}
@@ -263,13 +263,32 @@ export default function EvidenceLockerPage() {
               </div>
             </dl>
             <p className="mt-2 text-sm leading-relaxed text-ink">{openEvidence.description}</p>
+            {(openEvidence.howHint || openEvidence.whereHint) ? (
+              <div className="mt-3 grid gap-2 rounded-lg border-2 border-gold bg-[#DCE6FF]/55 p-3">
+                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                  Case-file links · How / Where
+                </p>
+                {openEvidence.howHint ? (
+                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
+                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">How this points</p>
+                    <p className="mt-0.5 text-sm font-semibold text-ink">{openEvidence.howHint}</p>
+                  </div>
+                ) : null}
+                {openEvidence.whereHint ? (
+                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
+                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">Where this points</p>
+                    <p className="mt-0.5 text-sm font-semibold text-ink">{openEvidence.whereHint}</p>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <div className="mt-3">
               <p className="mb-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
                 Linked people & place
               </p>
               <LinkChips caseFile={pigeonCase} links={linksForEvidence(pigeonCase, openEvidence)} />
             </div>
-            <div className="mt-4 border-l-4 border-gold bg-[#F7F1E6] p-3">
+            <div className="mt-4 border-l-4 border-gold bg-[#E8EEF8] p-3">
               <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">Your deduction note</p>
               <p className="mt-1 text-sm font-semibold text-ink">{notes[openEvidence.id]}</p>
             </div>
@@ -326,7 +345,7 @@ function TabButton({
       onClick={onClick}
       className={cn(
         "inline-flex items-center justify-center gap-1 rounded-lg px-2 py-2.5 font-display text-[11px] font-bold tracking-[0.12em] uppercase transition-colors",
-        active ? "bg-gold text-ink" : "text-muted hover:text-ink",
+        active ? "bg-gold text-white" : "text-muted hover:text-ink",
       )}
     >
       {icon}
