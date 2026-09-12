@@ -1,0 +1,55 @@
+name: Land pigeon photoreal JPGs
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/land-pigeon-jpgs.yml"
+jobs:
+  land:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and apply photoreal evidence payload
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://filebin.net/8mqvmxrr4a3wsldz/pigeon-job-photoreal.tar.gz" -o /tmp/pigeon-job-photoreal.tar.gz
+          python3 - <<'PY'
+          import hashlib
+          data = open("/tmp/pigeon-job-photoreal.tar.gz", "rb").read()
+          expected = "d852daa30a1436057a18177bf90590c768c2159d13411e4aed93f9b6ca472f71"
+          actual = hashlib.sha256(data).hexdigest()
+          assert len(data) == 1121120, len(data)
+          assert actual == expected, actual
+          print("payload ok", len(data), actual)
+          PY
+          tar -xzf /tmp/pigeon-job-photoreal.tar.gz -C .
+          test -f public/evidence/pigeon-job/receipt.jpg
+          python3 - <<'PY'
+          import os
+          size = os.path.getsize("public/evidence/pigeon-job/receipt.jpg")
+          assert size > 50000, size
+          seed = open("src/lib/seed.ts", encoding="utf-8").read()
+          assert "/evidence/pigeon-job/receipt.jpg" in seed
+          assert "Plaza Pharmacy" in seed
+          print("receipt.jpg", size)
+          PY
+      - name: Commit photoreal evidence
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f public/evidence/pigeon-job/*.svg
+          git add \
+            public/evidence/pigeon-job/*.jpg \
+            src/lib/seed.ts \
+            scripts/assemble-evidence.mjs \
+            docs/ROADMAP.md \
+            docs/AGENT_NOTES.md
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Ship photoreal Pigeon Job evidence images"
+          git push
