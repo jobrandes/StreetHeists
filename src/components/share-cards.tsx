@@ -1,12 +1,113 @@
 "use client";
+
 import { toPng } from "html-to-image";
 import { Download, Share2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { KeyholeLogo, WaxSeal } from "@/components/keyhole-logo";
-import { pickHeroProof } from "@/lib/scoring";
-import type { CompletedRun, Heist } from "@/lib/types";
-import { formatElapsed, wantedLabel } from "@/lib/utils";
+import { EvidenceArt } from "@/components/evidence-art";
+import { KeyholeLogo } from "@/components/keyhole-logo";
 import { Button } from "@/components/ui/button";
-export function ShareCardA({ run, heist }: { run: CompletedRun; heist?: Heist }) { const hero = pickHeroProof(run.proofs); return <div className="relative h-[540px] w-[360px] overflow-hidden bg-[#0B0B0C] text-[#F2F0EA]"><div className="absolute inset-0">{hero ? <img src={hero.dataUrl} alt="" className="h-full w-full object-cover opacity-55"/> : null}<div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/20"/></div><div className="relative flex h-full flex-col justify-between p-6"><div className="flex items-center gap-2"><KeyholeLogo className="size-7"/><span className="font-display tracking-[0.28em] uppercase">Street Heists</span></div><div><p className="font-display text-xs tracking-[0.22em] text-[#C9A227] uppercase">A Midnight Crew picture</p><h2 className="font-serif text-5xl leading-[0.9] italic">{run.heistTitle}</h2><p className="mt-3 text-sm">Crew {run.crewAlias}{heist ? ` · ${heist.neighborhood}` : ""}</p><p>{formatElapsed(run.elapsedMs)} · Style {run.styleAvg.toFixed(1)}</p></div><div className="flex items-end justify-between"><p className="text-[11px] text-[#C9A227] uppercase">Pure make-believe. Zero real crime.</p><WaxSeal label="Seal"/></div></div></div>; }
-export function ShareCardC({ run }: { run: CompletedRun }) { return <div className="h-[240px] w-[480px] bg-[#0B0B0C] p-4 text-[#F2F0EA]"><div className="flex justify-between"><span className="font-display tracking-widest uppercase">Street Heists</span><span className="text-[#C9A227]">Most Wanted {wantedLabel(run.wantedRank)}</span></div><div className="my-3 flex h-[132px] gap-2">{run.proofs.map(p => <div key={p.beatId} className="flex-1 overflow-hidden border-2 border-[#C9A227]"><img src={p.dataUrl} alt="" className="h-full w-full object-cover"/></div>)}</div><div className="flex justify-between"><span className="font-serif text-xl italic">{run.heistTitle}</span><span>{run.crewAlias} · {formatElapsed(run.elapsedMs)}</span></div></div>; }
-export function ShareExports({ run, heist }: { run: CompletedRun; heist?: Heist }) { const a = useRef<HTMLDivElement>(null); const c = useRef<HTMLDivElement>(null); const [busy, setBusy] = useState<string | null>(null); async function save(which: "A" | "C") { const node = which === "A" ? a.current : c.current; if (!node) return; setBusy(which); const url = await toPng(node, { pixelRatio: 2 }); const link = document.createElement("a"); link.href = url; link.download = `street-heists-card-${which.toLowerCase()}.png`; link.click(); setBusy(null); } return <div className="space-y-5"><div className="fixed -left-[1400px]"><div ref={a}><ShareCardA run={run} heist={heist}/></div><div ref={c}><ShareCardC run={run}/></div></div><p className="font-display text-gold uppercase">Card A · Movie poster</p><div className="h-[464px] overflow-hidden"><div className="origin-top-left scale-[0.86]"><ShareCardA run={run} heist={heist}/></div></div><Button className="w-full" onClick={() => save("A")}><Share2 className="size-4"/>{busy === "A" ? "Printing…" : "Export card A"}</Button><p className="font-display text-gold uppercase">Card C · Proof strip</p><div className="h-[175px] overflow-hidden"><div className="origin-top-left scale-[0.72]"><ShareCardC run={run}/></div></div><Button variant="bronze" className="w-full" onClick={() => save("C")}><Download className="size-4"/>{busy === "C" ? "Printing…" : "Export card C"}</Button></div>; }
+import { pigeonCase } from "@/lib/seed";
+import type { Verdict } from "@/lib/types";
+import { formatElapsed } from "@/lib/utils";
+
+export function ShareCardA({ verdict, alias }: { verdict: Verdict; alias: string }) {
+  const solution = {
+    who: pigeonCase.suspects.find((item) => item.id === pigeonCase.solution.who)?.name,
+    how: pigeonCase.howChoices.find((item) => item.id === pigeonCase.solution.how)?.label,
+    where: pigeonCase.whereChoices.find((item) => item.id === pigeonCase.solution.where)?.label,
+  };
+
+  return (
+    <div className="relative h-[540px] w-[360px] overflow-hidden border border-[#C9A227]/60 bg-[#0B0B0C] text-[#F2F0EA]">
+      <EvidenceArt evidence={pigeonCase.evidence[3]} className="absolute inset-0 h-full w-full opacity-55" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-[#0B0B0C]/65 to-[#161618]/30" />
+      <div className="relative flex h-full flex-col justify-between p-6">
+        <div className="flex items-center justify-between border-b border-[#C9A227]/45 pb-3">
+          <div className="flex items-center gap-2">
+            <KeyholeLogo className="size-7" />
+            <span className="font-display text-sm tracking-[0.2em] uppercase">Street Heists</span>
+          </div>
+          <span className="font-display text-[10px] tracking-[0.16em] text-[#C9A227] uppercase">Midnight Crew</span>
+        </div>
+        <div>
+          <p className="font-display text-lg font-bold tracking-[0.2em] text-[#C9A227] uppercase">Case closed</p>
+          <h2 className="mt-2 font-serif text-6xl font-bold leading-[0.8]">{pigeonCase.title}</h2>
+          <dl className="mt-5 space-y-1.5 border-l-2 border-[#C9A227] pl-3 text-xs">
+            <div><dt className="inline text-[#C9A227]">Who: </dt><dd className="inline">{solution.who}</dd></div>
+            <div><dt className="inline text-[#C9A227]">How: </dt><dd className="inline">{solution.how}</dd></div>
+            <div><dt className="inline text-[#C9A227]">Where: </dt><dd className="inline">{solution.where}</dd></div>
+          </dl>
+        </div>
+        <div className="flex items-end justify-between border-t border-[#C9A227]/45 pt-3 text-xs">
+          <p>Investigator {alias}</p>
+          <p className="text-[#C9A227]">{formatElapsed(verdict.elapsedMs)} · Case 07</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ShareCardC({ verdict, alias }: { verdict: Verdict; alias: string }) {
+  const strip = pigeonCase.evidence.slice(0, 4);
+  return (
+    <div className="h-[240px] w-[480px] overflow-hidden border border-[#C9A227]/60 bg-[#0B0B0C] p-4 text-[#F2F0EA]">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2"><KeyholeLogo className="size-6" /><span className="font-display text-xs tracking-[0.22em] uppercase">Street Heists</span></div>
+        <p className="font-display text-lg tracking-[0.14em] text-[#C9A227] uppercase">Case closed · 07</p>
+      </div>
+      <div className="mt-3 flex h-[132px] gap-2">
+        {strip.map((item) => <EvidenceArt key={item.id} evidence={item} className="flex-1 border-2 border-[#C9A227] bg-[#161618]" />)}
+      </div>
+      <div className="mt-3 flex items-center justify-between">
+        <p className="font-serif text-xl font-bold">{pigeonCase.title}</p>
+        <p className="text-xs text-[#F2F0EA]">{alias} · {formatElapsed(verdict.elapsedMs)} · SOLVED</p>
+      </div>
+    </div>
+  );
+}
+
+export function ShareExports({ verdict, alias }: { verdict: Verdict; alias: string }) {
+  const cardA = useRef<HTMLDivElement>(null);
+  const cardC = useRef<HTMLDivElement>(null);
+  const [busy, setBusy] = useState<"A" | "C" | null>(null);
+
+  async function exportCard(which: "A" | "C") {
+    const node = which === "A" ? cardA.current : cardC.current;
+    if (!node) return;
+    setBusy(which);
+    try {
+      const dataUrl = await toPng(node, { pixelRatio: 2, cacheBust: true, backgroundColor: "#0B0B0C" });
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `street-heists-pigeon-job-card-${which.toLowerCase()}.png`, { type: "image/png" });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: `${pigeonCase.title} · Card ${which}` });
+      } else {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = file.name;
+        link.click();
+      }
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <div className="space-y-7">
+      <div className="pointer-events-none fixed -left-[1400px] top-0 space-y-8">
+        <div ref={cardA}><ShareCardA verdict={verdict} alias={alias} /></div>
+        <div ref={cardC}><ShareCardC verdict={verdict} alias={alias} /></div>
+      </div>
+      <section>
+        <p className="mb-2 font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">Card A · Case poster</p>
+        <div className="h-[464px] overflow-hidden rounded-lg bg-[#0B0B0C]"><div className="origin-top-left scale-[0.86]"><ShareCardA verdict={verdict} alias={alias} /></div></div>
+        <Button className="mt-3 w-full" onClick={() => exportCard("A")} disabled={busy !== null}><Share2 className="size-4" />{busy === "A" ? "Printing…" : "Export card A"}</Button>
+      </section>
+      <section>
+        <p className="mb-2 font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">Card C · Provided-evidence strip</p>
+        <div className="h-[175px] overflow-hidden rounded-lg bg-[#0B0B0C]"><div className="origin-top-left scale-[0.72]"><ShareCardC verdict={verdict} alias={alias} /></div></div>
+        <Button variant="bronze" className="mt-3 w-full" onClick={() => exportCard("C")} disabled={busy !== null}><Download className="size-4" />{busy === "C" ? "Printing…" : "Export card C"}</Button>
+      </section>
+    </div>
+  );
+}

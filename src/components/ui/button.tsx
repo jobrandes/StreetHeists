@@ -8,20 +8,41 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        gold: "bg-gold text-ink hover:bg-[#d4b03a]",
-        bronze: "bg-transparent text-gold border border-bronze hover:bg-gold/10",
-        ghost: "bg-transparent text-cream/80 hover:bg-cream/5",
+        gold: "bg-gold font-semibold text-ink hover:bg-[#edd15d]",
+        bronze: "border border-gold bg-transparent text-cream hover:bg-gold/10",
+        ghost: "bg-transparent text-body hover:bg-white/5",
         fail: "bg-transparent text-fail border border-fail/50 hover:bg-fail/10",
         cream: "bg-cream text-ink hover:bg-white",
       },
-      size: { sm: "h-9 px-3", md: "h-11 px-4", lg: "h-14 px-6 text-base", xl: "h-16 px-8 text-lg tracking-wide", icon: "size-10" },
+      size: {
+        sm: "h-9 px-3",
+        md: "h-11 px-4",
+        lg: "h-14 px-6 text-base",
+        xl: "h-16 px-8 text-lg tracking-wide",
+        icon: "size-10",
+      },
     },
-    defaultVariants: { variant: "gold", size: "md" },
+    defaultVariants: {
+      variant: "gold",
+      size: "md",
+    },
   },
 );
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants> & { asChild?: boolean };
-export function Button({ className, variant, size, asChild, ...props }: ButtonProps) {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  };
+
+export function Button({
+  className,
+  variant,
+  size,
+  asChild,
+  ...props
+}: ButtonProps) {
   const Comp = asChild ? Slot : "button";
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+  return (
+    <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />
+  );
 }
