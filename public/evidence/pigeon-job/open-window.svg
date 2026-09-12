@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#243044"/><rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  <!-- awning -->
+  <path d="M40 70 H680 L640 140 H80 Z" fill="#C62828"/>
+  <path d="M120 140 V260" stroke="#C9A227" stroke-width="6"/>
+  <circle cx="120" cy="268" r="8" fill="#C9A227"/>
+  <!-- window -->
+  <rect x="200" y="160" width="340" height="220" fill="#DCE6FF" stroke="#F2F0EA" stroke-width="4"/>
+  <rect x="220" y="250" width="300" height="18" fill="#8B5A2B"/>
+  <!-- baguette -->
+  <ellipse cx="360" cy="240" rx="110" ry="28" fill="#E6C07B" stroke="#1B2430" stroke-width="2"/>
+  <text x="250" y="246" fill="#1B2430" font-family="Georgia, serif" font-size="18">CEREMONIAL BAGUETTE</text>
+  <text x="140" y="310" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="18">TELL: open sill + hanging awning cord</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/><text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="22" letter-spacing="2">12:06 · CAFÉ PALOMA · SERVICE WINDOW</text>
+</svg>
