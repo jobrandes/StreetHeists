@@ -2,9 +2,10 @@ import { cn } from "@/lib/utils";
 
 export function KeyholeLogo({
   className,
-  gold = true,
+  gold = false,
 }: {
   className?: string;
+  /** Midnight Crew gold — share cards only. Default is B2 signal blue. */
   gold?: boolean;
 }) {
   return (
@@ -15,7 +16,7 @@ export function KeyholeLogo({
     >
       <path
         d="M32 4a22 22 0 0 0-7.4 42.7L26 60h12l1.4-13.3A22 22 0 0 0 32 4Zm0 13a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z"
-        fill={gold ? "#C9A227" : "currentColor"}
+        fill={gold ? "#C9A227" : "#2F5BFF"}
         fillRule="evenodd"
       />
     </svg>
@@ -37,7 +38,7 @@ export function WaxSeal({
       )}
     >
       <div className="absolute inset-1 rounded-full border border-ink/20" />
-      <KeyholeLogo className="size-7" gold={false} />
+      <KeyholeLogo className="size-7" gold />
       <span className="absolute bottom-2 font-display text-[9px] tracking-[0.18em] uppercase">
         {label}
       </span>

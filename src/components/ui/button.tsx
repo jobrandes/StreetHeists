@@ -8,11 +8,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        gold: "bg-gold font-semibold text-ink hover:bg-[#edd15d]",
-        bronze: "border border-gold bg-transparent text-cream hover:bg-gold/10",
-        ghost: "bg-transparent text-body hover:bg-white/5",
-        fail: "bg-transparent text-fail border border-fail/50 hover:bg-fail/10",
-        cream: "bg-cream text-ink hover:bg-white",
+        gold: "bg-gold font-semibold text-white hover:bg-[#2549d6]",
+        bronze: "border border-hairline bg-white text-ink hover:bg-[#E8EEF8]",
+        ghost: "bg-transparent text-body hover:bg-black/5",
+        fail: "bg-fail font-semibold text-white hover:bg-[#a81f1f]",
+        cream: "bg-white text-ink border border-hairline hover:bg-[#E8EEF8]",
       },
       size: {
         sm: "h-9 px-3",
