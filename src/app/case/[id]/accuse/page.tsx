@@ -73,7 +73,7 @@ function ChoiceSection({ number, title, children }: { number: number; title: str
   return (
     <fieldset className="mt-6">
       <legend className="mb-3 flex items-center gap-2 font-display text-xl font-bold text-ink uppercase">
-        <span className="grid size-7 place-items-center rounded-full bg-gold text-sm">{number}</span>{title}
+        <span className="grid size-7 place-items-center rounded-full bg-gold text-sm text-white">{number}</span>{title}
       </legend>
       <div className="flex flex-wrap gap-2">{children}</div>
     </fieldset>
@@ -98,7 +98,7 @@ function Option({
       aria-pressed={selected}
       className={cn(
         "rounded-full border px-4 py-2.5 text-left text-sm font-semibold leading-snug transition-colors",
-        selected ? "border-gold bg-gold text-ink ring-2 ring-gold/25" : "border-hairline bg-card text-ink",
+        selected ? "border-gold bg-gold text-white ring-2 ring-gold/25" : "border-hairline bg-card text-ink",
       )}
     >
       <span className="block">{label}</span>

@@ -32,7 +32,7 @@ export function LinkChips({
           {person.name}
         </span>
       ))}
-      <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-hairline bg-[#F7F1E6] px-2 py-0.5 text-[11px] font-semibold text-ink">
+      <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-hairline bg-[#E8EEF8] px-2 py-0.5 text-[11px] font-semibold text-ink">
         <MapPin className="size-3 shrink-0 text-gold" />
         <span className="truncate">{links.place}</span>
       </span>
@@ -53,7 +53,7 @@ export function CompareBoard({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border-2 border-gold bg-[#FFF9EC] p-3">
+      <section className="rounded-xl border-2 border-gold bg-[#DCE6FF]/45 p-3">
         <div className="flex items-center gap-2">
           <GitCompareArrows className="size-4 text-gold" />
           <p className="font-display text-[10px] font-bold tracking-[0.16em] text-gold uppercase">
@@ -79,7 +79,7 @@ export function CompareBoard({
                       {link.label}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-[#F7F1E6] px-2 py-0.5 text-[11px] font-semibold text-ink">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-[#E8EEF8] px-2 py-0.5 text-[11px] font-semibold text-ink">
                       <MapPin className="size-3 text-gold" />
                       {link.label}
                     </span>
@@ -124,6 +124,22 @@ export function CompareBoard({
                 {item.location} · {item.timestamp}
               </p>
               <LinkChips caseFile={caseFile} links={links} className="mt-2" />
+              {(item.howHint || item.whereHint) ? (
+                <dl className="mt-2 grid gap-1.5 rounded-lg border border-hairline bg-[#E8EEF8] p-2 text-xs">
+                  {item.howHint ? (
+                    <div>
+                      <dt className="font-display text-[9px] font-bold tracking-[0.12em] text-muted uppercase">How</dt>
+                      <dd className="font-semibold text-ink">{item.howHint}</dd>
+                    </div>
+                  ) : null}
+                  {item.whereHint ? (
+                    <div>
+                      <dt className="font-display text-[9px] font-bold tracking-[0.12em] text-muted uppercase">Where</dt>
+                      <dd className="font-semibold text-ink">{item.whereHint}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              ) : null}
               <p className="mt-2 text-sm text-ink">{item.deduction}</p>
             </article>
           );
