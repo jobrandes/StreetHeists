@@ -401,6 +401,15 @@ export default function EvidenceLockerPage() {
               </div>
             </dl>
 
+            <div className="mt-3 rounded-lg border-2 border-[#1B2430] bg-[#F4F1EA] px-3 py-2.5">
+              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-ink uppercase">
+                In the frame · look for this
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-snug text-ink">
+                {openEvidence.visualTell}
+              </p>
+            </div>
+
             <p className="mt-2 text-sm leading-relaxed text-ink">
               {openEvidence.description}
             </p>
