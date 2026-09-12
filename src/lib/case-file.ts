@@ -26,10 +26,10 @@ export type CompareLink = {
 };
 
 const PERSON_CHIP_STYLES = [
-  "border-[#5C7A52] bg-[#E8F0E3] text-[#1C1F26]",
-  "border-[#6B5B8C] bg-[#E8E4F2] text-[#1C1F26]",
-  "border-[#A6843A] bg-[#F2E4D8] text-[#1C1F26]",
-  "border-[#4A6B82] bg-[#DCE8F0] text-[#1C1F26]",
+  "border-[#2F5BFF] bg-[#DCE6FF] text-[#1B2430]",
+  "border-[#1B2430] bg-[#E8EEF8] text-[#1B2430]",
+  "border-[#C62828] bg-[#F8D7D7] text-[#1B2430]",
+  "border-[#5B6675] bg-[#Eef2f6] text-[#1B2430]",
 ] as const;
 
 /** Unique evidence locations with the clues that cite them. */

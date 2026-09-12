@@ -62,3 +62,22 @@ describe("evidence links", () => {
     expect(marcel?.linkedClues.length).toBeGreaterThan(0);
   });
 });
+
+describe("evidence how/where hints", () => {
+  it("attaches howHint and whereHint on every clue", () => {
+    for (const item of pigeonCase.evidence) {
+      expect(item.howHint?.length).toBeGreaterThan(0);
+      expect(item.whereHint?.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("points feather how toward the awning cord", () => {
+    const feather = pigeonCase.evidence.find((e) => e.id === "blue-feather");
+    expect(feather?.howHint?.toLowerCase()).toMatch(/cord|awning/);
+  });
+
+  it("points nest where toward the statue", () => {
+    const nest = pigeonCase.evidence.find((e) => e.id === "statue-nest");
+    expect(nest?.whereHint?.toLowerCase()).toMatch(/statue|nest|fountain/);
+  });
+});
