@@ -8,7 +8,10 @@
     "start": "next start -p 43177 -H 0.0.0.0",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "assemble:evidence": "node scripts/assemble-evidence.mjs",
+    "prebuild": "node scripts/assemble-evidence.mjs",
+    "predev": "node scripts/assemble-evidence.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
