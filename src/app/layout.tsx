@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F7F1E6",
+  themeColor: "#EEF2F6",
   width: "device-width",
   initialScale: 1,
   // Allow pinch-zoom for accessibility; do not lock maximumScale.

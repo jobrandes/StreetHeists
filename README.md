@@ -26,7 +26,7 @@ npm test
 npm run build
 ```
 
-CI runs those checks on every push/PR. Desktop uses an intentional phone-stage frame over a dark plaza wash; phones stay full-bleed cream. Pinch-zoom is allowed.
+CI runs those checks on every push/PR. Desktop uses an intentional phone-stage frame over a cool paper wash; phones stay full-bleed B2 paper (`#EEF2F6`). Pinch-zoom is allowed.
 
 ## Phone preview (Netlify)
 

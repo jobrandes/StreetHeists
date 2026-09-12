@@ -48,7 +48,7 @@ export default function CaseBoardPage() {
 
       <FirstRunCoach />
 
-      <div className="relative z-10 mx-2 mb-[-0.65rem] mt-5 w-fit -rotate-1 border border-[#B9961F] bg-[#E2CA68] px-5 py-3 shadow-[4px_5px_0_rgba(28,31,38,0.18)]">
+      <div className="relative z-10 mx-2 mb-[-0.65rem] mt-5 w-fit -rotate-1 border border-[#2F5BFF] bg-[#DCE6FF] px-5 py-3 shadow-[4px_5px_0_rgba(27,36,48,0.14)]">
         <p className="font-display text-lg font-bold tracking-[0.14em] text-ink uppercase">
           Start here
         </p>
@@ -59,7 +59,7 @@ export default function CaseBoardPage() {
 
       <Link
         href={`/case/${pigeonCase.id}`}
-        className="block overflow-hidden rounded-2xl border border-hairline bg-card shadow-[0_18px_45px_rgba(28,31,38,0.14)]"
+        className="block overflow-hidden rounded-2xl border border-hairline bg-card shadow-[0_18px_45px_rgba(27,36,48,0.14)]"
       >
         <EvidenceArt evidence={pigeonCase.evidence[3]} className="h-40" />
         <div className="p-5">
@@ -70,7 +70,7 @@ export default function CaseBoardPage() {
             {pigeonCase.title}
           </h1>
           <p className="mt-3 text-[15px] leading-snug text-ink">{pigeonCase.subtitle}</p>
-          <div className="mt-5 flex h-16 items-center justify-center rounded-lg bg-gold text-ink shadow-[0_5px_0_#90751c]">
+          <div className="mt-5 flex h-16 items-center justify-center rounded-lg bg-gold text-white shadow-[0_5px_0_#2549d6]">
             <span className="font-display text-xl font-bold tracking-[0.13em] uppercase">
               Start this case
             </span>
