@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#E8EEF4"/><rect x="18" y="18" width="684" height="504" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">HARBOR DEPOT PUNCH CARD</text>
+  <text x="48" y="104" fill="#5B6675" font-family="ui-monospace, monospace" font-size="16">Badge: Rita Toll</text>
+  <rect x="120" y="140" width="480" height="240" fill="#1B2430"/>
+  <text x="160" y="200" fill="#C9A227" font-family="ui-monospace, monospace" font-size="22">IN   14:55</text>
+  <text x="160" y="250" fill="#C9A227" font-family="ui-monospace, monospace" font-size="22">OUT  15:20</text>
+  <text x="160" y="310" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="18">LOCATION: HARBOR METER DEPOT</text>
+  <text x="160" y="350" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="16">(12 min walk from meter #441)</text>
+  <text x="48" y="440" fill="#1B2430" font-family="ui-monospace, monospace" font-size="18">TELL: Rita on depot clock 14:55–15:20 — clears her</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/><text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="22" letter-spacing="2">DEPOT CLOCK · RITA TOLL</text>
+</svg>

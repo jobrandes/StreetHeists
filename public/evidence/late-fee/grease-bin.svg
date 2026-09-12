@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#2C2820"/><rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  <rect x="180" y="140" width="360" height="240" rx="12" fill="#3A342C" stroke="#C9A227" stroke-width="3"/>
+  <text x="300" y="180" fill="#F2F0EA" font-size="18" font-family="ui-monospace, monospace">GREASE BIN</text>
+  <rect x="260" y="210" width="120" height="100" rx="8" fill="#1B2430" stroke="#F2F0EA" stroke-width="2"/>
+  <text x="285" y="265" fill="#F2F0EA" font-size="14" font-family="ui-monospace, monospace">POUCH</text>
+  <!-- fibers -->
+  <path d="M360 230 Q400 250 390 290" fill="none" stroke="#2F5BFF" stroke-width="4"/>
+  <path d="M370 240 Q410 260 405 300" fill="none" stroke="#2F5BFF" stroke-width="3"/>
+  <text x="400" y="270" fill="#2F5BFF" font-size="14" font-family="ui-monospace, monospace">BLUE FIBERS</text>
+  <text x="80" y="430" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="18">TELL: pouch stashed here + accordion fibers</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/><text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="22" letter-spacing="2">15:12 · ALLEY CAM · GREASE BIN</text>
+</svg>
