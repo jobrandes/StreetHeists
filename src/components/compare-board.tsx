@@ -96,8 +96,8 @@ export function CompareBoard({
           </ul>
         ) : (
           <p className="mt-2 text-sm leading-snug text-ink">
-            No shared person or place yet. Pin clues that mention the same name
-            or location to see the overlap light up.
+            No shared person or place yet. Open more clues — overlap lights up
+            when the same name or location appears on more than one.
           </p>
         )}
         {onlyOnce.length > 0 && items.length > 1 ? (
