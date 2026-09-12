@@ -24,7 +24,7 @@ export function ShareCardA({ verdict, alias }: { verdict: Verdict; alias: string
       <div className="relative flex h-full flex-col justify-between p-6">
         <div className="flex items-center justify-between border-b border-[#C9A227]/45 pb-3">
           <div className="flex items-center gap-2">
-            <KeyholeLogo className="size-7" />
+            <KeyholeLogo className="size-7" gold />
             <span className="font-display text-sm tracking-[0.2em] uppercase">Street Heists</span>
           </div>
           <span className="font-display text-[10px] tracking-[0.16em] text-[#C9A227] uppercase">Midnight Crew</span>
@@ -52,7 +52,7 @@ export function ShareCardC({ verdict, alias }: { verdict: Verdict; alias: string
   return (
     <div className="h-[240px] w-[480px] overflow-hidden border border-[#C9A227]/60 bg-[#0B0B0C] p-4 text-[#F2F0EA]">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2"><KeyholeLogo className="size-6" /><span className="font-display text-xs tracking-[0.22em] uppercase">Street Heists</span></div>
+        <div className="flex items-center gap-2"><KeyholeLogo className="size-6" gold /><span className="font-display text-xs tracking-[0.22em] uppercase">Street Heists</span></div>
         <p className="font-display text-lg tracking-[0.14em] text-[#C9A227] uppercase">Case closed · 07</p>
       </div>
       <div className="mt-3 flex h-[132px] gap-2">
