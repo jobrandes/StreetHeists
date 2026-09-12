@@ -26,7 +26,13 @@ CI runs the same checks on every push/PR (`.github/workflows/ci.yml`).
 
 ## Stack
 
-Next.js 16.3.x + React 19.2.x are intentional stable releases (not canaries).
+- `next@16.3.5` is npm `latest` (stable, not canary).
+- `react@19.2.8` / `react-dom@19.2.8` are stable 19.2.x releases (not canary/RC).
+- Product roadmap: [`docs/ROADMAP.md`](./ROADMAP.md).
+
+## Evidence assets
+
+Required files in `public/evidence/ev-*.svg` must be real art. `prebuild` validates them and **fails** if any are missing, tiny, or placeholders. Do not ship with silent skips.
 
 ## Speed rule
 

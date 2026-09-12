@@ -11,11 +11,13 @@ The seed mystery, **The Pigeon Job**, is a complete 5–10 minute case with six 
 Requirements: Node.js 20+ and npm.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Open [http://127.0.0.1:43177](http://127.0.0.1:43177).
+
+Product roadmap: [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 
 Quality checks:
 

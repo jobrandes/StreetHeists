@@ -14,14 +14,8 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      # Prefer npm ci when a full package-lock.json is present; fall back to install
-      # so agents can sync source via MCP when the lockfile exceeds push payload limits.
-      - run: |
-          if [ -f package-lock.json ] && grep -q '"node_modules/' package-lock.json; then
-            npm ci
-          else
-            npm install
-          fi
+      # Full package-lock.json is required. No npm install fallback.
+      - run: npm ci
       - run: npx tsc --noEmit
       - run: npm run lint
       - run: npm run build
