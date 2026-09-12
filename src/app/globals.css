@@ -1,27 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* Play Day is the default play surface */
-  --color-ink: #1C1F26;
-  --color-card: #FFFDF8;
-  --color-elevated: #FFFDF8;
-  --color-gold: #C9A227;
-  --color-bronze: #5C6570;
-  --color-fail: #C43C3C;
-  --color-cream: #1C1F26;
-  --color-body: #1C1F26;
-  --color-muted: #5C6570;
-  --color-hairline: #D9D2C5;
+  /* B2 Cool Paper · blue & red */
+  --color-ink: #1B2430;
+  --color-card: #FFFFFF;
+  --color-elevated: #FFFFFF;
+  --color-gold: #2F5BFF; /* signal blue used as primary accent token */
+  --color-bronze: #5B6675;
+  --color-fail: #C62828;
+  --color-cream: #1B2430;
+  --color-body: #1B2430;
+  --color-muted: #5B6675;
+  --color-hairline: #D5DCE6;
   --font-sans: var(--font-dm);
   --font-serif: var(--font-cormorant);
   --font-display: var(--font-barlow);
 }
 
-/* Default to Play Day cream. Midnight is applied only on share / solved verdict. */
 html,
 body {
-  background: #F7F1E6;
-  color: #1C1F26;
+  background: #EEF2F6;
+  color: #1B2430;
   min-height: 100%;
 }
 
@@ -38,32 +37,48 @@ body {
 }
 
 .grain {
-  background-image: radial-gradient(rgba(250, 247, 240, 0.025) 0.6px, transparent 0.6px);
+  background-image: radial-gradient(rgba(27, 36, 48, 0.035) 0.6px, transparent 0.6px);
   background-size: 3px 3px;
-  mix-blend-mode: overlay;
+  mix-blend-mode: multiply;
 }
 
 ::selection {
-  background: #C9A227;
-  color: #1C1F26;
+  background: #2F5BFF;
+  color: #FFFFFF;
 }
 
 .play-day {
-  --color-ink: #1C1F26;
-  --color-card: #FFFDF8;
-  --color-elevated: #FFFDF8;
-  --color-gold: #C9A227;
-  --color-bronze: #5C6570;
-  --color-fail: #C43C3C;
-  --color-cream: #1C1F26;
-  --color-body: #1C1F26;
-  --color-muted: #5C6570;
-  --color-hairline: #D9D2C5;
-  background: #F7F1E6;
-  color: #1C1F26;
+  --color-ink: #1B2430;
+  --color-card: #FFFFFF;
+  --color-elevated: #FFFFFF;
+  --color-gold: #2F5BFF;
+  --color-bronze: #5B6675;
+  --color-fail: #C62828;
+  --color-cream: #1B2430;
+  --color-body: #1B2430;
+  --color-muted: #5B6675;
+  --color-hairline: #D5DCE6;
+  background: #EEF2F6;
+  color: #1B2430;
 }
 
 .play-day ::selection {
-  background: #C9A227;
-  color: #1C1F26;
+  background: #2F5BFF;
+  color: #FFFFFF;
+}
+
+/* Midnight remains for share-card export only */
+.midnight-share {
+  --color-ink: #F2F0EA;
+  --color-card: #161618;
+  --color-elevated: #1c1c1e;
+  --color-gold: #C9A227;
+  --color-bronze: #8A6E2F;
+  --color-fail: #C43C3C;
+  --color-cream: #F2F0EA;
+  --color-body: #F2F0EA;
+  --color-muted: #B7B1A4;
+  --color-hairline: #5f522c;
+  background: #0B0B0C;
+  color: #F2F0EA;
 }

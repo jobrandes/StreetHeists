@@ -13,6 +13,10 @@ export type Evidence = {
   visual: "window" | "crumbs" | "feather" | "fountain" | "receipt" | "witness";
   /** Explicit people named or implicated by this clue (drives compare links). */
   linkedSuspectIds?: string[];
+  /** Plain-language how this clue suggests the theft happened. */
+  howHint?: string;
+  /** Plain-language place this clue points to. */
+  whereHint?: string;
 };
 
 export type Suspect = {
