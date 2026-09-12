@@ -1,0 +1,38 @@
+name: Land package-lock
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/land-package-lock.yml"
+jobs:
+  land:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch full package-lock.json
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://filebin.net/g7om1qy2h19cadvp/package-lock.json" -o package-lock.json
+          python3 - <<'PY2'
+          import hashlib
+          data = open("package-lock.json", "rb").read()
+          expected = "cf24b3c8ee1e514ecfbb4350bf8ea44a2ffc32556b0dcd539a0b6f6b1b7f3960"
+          actual = hashlib.sha256(data).hexdigest()
+          assert len(data) == 302392, len(data)
+          assert actual == expected, actual
+          print("lockfile ok", len(data), actual)
+          PY2
+      - name: Commit lockfile
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Land full package-lock.json for npm ci"
+          git push
