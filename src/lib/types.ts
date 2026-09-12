@@ -10,7 +10,12 @@ export type Evidence = {
   kicker: string;
   description: string;
   deduction: string;
-  visual: "window" | "crumbs" | "feather" | "fountain" | "receipt" | "witness";
+  /** Unique case-file image for this clue (never reuse across cases). */
+  imageSrc: string;
+  /** HUD stamp on the image, e.g. "12:06 · SERVICE WINDOW". */
+  imageStamp: string;
+  /** Visible tell in the frame the player should notice. */
+  visualTell: string;
   /** Explicit people named or implicated by this clue (drives compare links). */
   linkedSuspectIds?: string[];
   /** Plain-language how this clue suggests the theft happened. */
