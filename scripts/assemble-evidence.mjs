@@ -3,7 +3,7 @@ import path from "node:path";
 
 /**
  * Evidence art is per-clue and must match what the player is supposed to notice.
- * This script validates every imageSrc referenced in src/lib/seed.ts.
+ * Validates every imageSrc in src/lib/seed.ts (svg/png/jpg).
  */
 
 const seedPath = path.resolve("src/lib/seed.ts");
@@ -20,6 +20,22 @@ if (imageSrcs.length === 0) {
 
 const failures = [];
 const seen = new Set();
+
+function kindOf(filePath, bytes) {
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return "jpeg";
+  if (
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
+    return "png";
+  }
+  const head = bytes.slice(0, 64).toString("utf8").trim();
+  if (head.includes("<svg") || head.includes("<?xml")) return "svg";
+  if (/^placeholder$/i.test(head) || head === "PLACEHOLDER") return "placeholder";
+  return "unknown";
+}
 
 for (const src of imageSrcs) {
   if (seen.has(src)) {
@@ -47,19 +63,20 @@ for (const src of imageSrcs) {
     continue;
   }
 
-  const head = fs.readFileSync(filePath, "utf8").slice(0, 64).trim();
-  if (/^placeholder$/i.test(head) || head === "PLACEHOLDER") {
+  const bytes = fs.readFileSync(filePath);
+  const kind = kindOf(filePath, bytes);
+  if (kind === "placeholder") {
     failures.push(`${src}: placeholder stub`);
     console.error("FAIL", src, "placeholder stub");
     continue;
   }
-  if (!head.includes("<svg") && !head.includes("<?xml")) {
-    failures.push(`${src}: not an svg`);
-    console.error("FAIL", src, "not an svg");
+  if (kind === "unknown") {
+    failures.push(`${src}: unrecognized image type`);
+    console.error("FAIL", src, "unrecognized image type");
     continue;
   }
 
-  console.log("ok", src, `${size}b`);
+  console.log("ok", src, `${size}b`, kind);
 }
 
 if (failures.length) {

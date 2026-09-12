@@ -35,6 +35,7 @@ CI runs the same checks on every push/PR (`.github/workflows/ci.yml`).
 - Each clue has unique `imageSrc` / `imageStamp` / `visualTell` in `src/lib/seed.ts`.
 - Art lives under `public/evidence/<case-id>/…` — **never reuse** a file across cases.
 - Images are functional case-file evidence: the solving tell must be visible in-frame and restated in text.
+- **Zoom-proof:** any readable text/number on art must match the case file exactly (English unless a clue is deliberately foreign). Proofread before shipping.
 - `prebuild` (`scripts/assemble-evidence.mjs`) validates every `imageSrc` and **fails** if missing, tiny, placeholder, or reused.
 
 ## Speed rule
@@ -48,3 +49,4 @@ After every GitHub sync that should ship, **immediately check**:
 2. Netlify deploy / live asset sizes (e.g. evidence SVGs not 11-byte placeholders)
 
 Do not wait for Jo to notice a red build.
+

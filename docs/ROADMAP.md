@@ -59,6 +59,8 @@ Street Heists is a **detective desk**: players read notes **and** look at case-f
 - Every clue gets **its own** image — never reuse art across cases or across unrelated clues.
 - If a detail matters to the solution, it must be **visible in the image** and restated in the text (`visualTell` + description).
 - Images are not decoration. They are evidence you inspect.
+- **Zoom-proof accuracy:** every readable detail on an image (times, names, totals, labels, signs) must be authored against the case file and 100% correct. No AI-invented junk that contradicts the mystery.
+- **Language:** the app is English. Evidence text on images is English unless a clue is deliberately foreign for a joke.
 
 ## Current focus
 

@@ -47,7 +47,7 @@ export const pigeonCase: CaseFile = {
       description:
         "One minute before the loss, the baguette sits inside an open service window. A striped awning cord hangs beside the sill within reach from the plaza.",
       deduction: "Someone could take the baguette from outside without entering the café.",
-      imageSrc: "/evidence/pigeon-job/open-window.svg",
+      imageSrc: "/evidence/pigeon-job/open-window.jpg",
       imageStamp: "12:06 · CAFÉ PALOMA · SERVICE WINDOW",
       visualTell: "Open sill with the baguette + hanging awning cord within reach.",
       linkedSuspectIds: ["celine"],
@@ -65,7 +65,7 @@ export const pigeonCase: CaseFile = {
       description:
         "A trail of crumbs runs from the café sill across the stones and stops under the north fountain statue.",
       deduction: "The baguette was moved from the café toward the fountain.",
-      imageSrc: "/evidence/pigeon-job/crumb-trail.svg",
+      imageSrc: "/evidence/pigeon-job/crumb-trail.jpg",
       imageStamp: "12:08 · PLAZA CAM · CRUMB TRAIL",
       visualTell: "Crumb line runs from the café toward the fountain.",
       howHint: "Carried across the plaza",
@@ -82,7 +82,7 @@ export const pigeonCase: CaseFile = {
       description:
         "A blue-grey contour feather and a loop of red awning thread were recovered together on the sill.",
       deduction: "A bird used the awning cord at the open window.",
-      imageSrc: "/evidence/pigeon-job/blue-feather.svg",
+      imageSrc: "/evidence/pigeon-job/blue-feather.jpg",
       imageStamp: "12:09 · MUNICIPAL LAB · ITEM 03",
       visualTell: "Blue-grey feather recovered with a loop of red awning thread.",
       linkedSuspectIds: ["marcel"],
@@ -100,7 +100,7 @@ export const pigeonCase: CaseFile = {
       description:
         "A baguette heel sits in a nest behind the statue’s bronze laurel. A pigeon with a red leg band is in frame.",
       deduction: "The missing loaf is in that nest.",
-      imageSrc: "/evidence/pigeon-job/statue-nest.svg",
+      imageSrc: "/evidence/pigeon-job/statue-nest.jpg",
       imageStamp: "12:11 · TELEPHOTO · FOUNTAIN NEST",
       visualTell: "Baguette heel in the nest beside a pigeon with a red leg band.",
       linkedSuspectIds: ["marcel"],
@@ -113,13 +113,13 @@ export const pigeonCase: CaseFile = {
       kind: "document",
       caption: "Evidence #5 — Timed pharmacy receipt",
       timestamp: "12:04–12:12",
-      location: "Pharmacie du Plaza",
+      location: "Plaza Pharmacy",
       kicker: "Pharmacy till · 12:04–12:12",
       description:
         "A receipt places Inspector Brie buying thermometers across the plaza for the full window around 12:07.",
       deduction: "Brie was not at the café sill when the baguette vanished.",
-      imageSrc: "/evidence/pigeon-job/receipt.svg",
-      imageStamp: "12:04–12:12 · PHARMACIE DU PLAZA",
+      imageSrc: "/evidence/pigeon-job/receipt.jpg",
+      imageStamp: "12:04–12:12 · PLAZA PHARMACY",
       visualTell: "Inspector Brie stamped on-site at the pharmacy for the whole theft window.",
       linkedSuspectIds: ["inspector-brie"],
       howHint: "Alibi by timestamp",
@@ -136,7 +136,7 @@ export const pigeonCase: CaseFile = {
       description:
         "Nico demonstrates a tug on a hanging cord, a lift from the sill, then a flight line toward the fountain.",
       deduction: "The theft used the awning cord, then went fountainward.",
-      imageSrc: "/evidence/pigeon-job/witness.svg",
+      imageSrc: "/evidence/pigeon-job/witness.jpg",
       imageStamp: "12:14 · INTERVIEW BENCH · NICO",
       visualTell: "Gesture sequence: tug cord → lift loaf → fly line toward fountain.",
       linkedSuspectIds: ["nico", "marcel"],
