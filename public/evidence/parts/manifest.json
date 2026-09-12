@@ -1,36 +1,26 @@
 {
   "ev-crumbs.svg": [
     "ev-crumbs.part0.txt",
-    "ev-crumbs.part1.txt",
-    "ev-crumbs.part2.txt",
-    "ev-crumbs.part3.txt"
+    "ev-crumbs.part1.txt"
   ],
   "ev-feather.svg": [
     "ev-feather.part0.txt",
-    "ev-feather.part1.txt",
-    "ev-feather.part2.txt"
+    "ev-feather.part1.txt"
   ],
   "ev-fountain.svg": [
     "ev-fountain.part0.txt",
-    "ev-fountain.part1.txt",
-    "ev-fountain.part2.txt",
-    "ev-fountain.part3.txt",
-    "ev-fountain.part4.txt"
+    "ev-fountain.part1.txt"
   ],
   "ev-receipt.svg": [
     "ev-receipt.part0.txt",
-    "ev-receipt.part1.txt",
-    "ev-receipt.part2.txt"
+    "ev-receipt.part1.txt"
   ],
   "ev-window.svg": [
     "ev-window.part0.txt",
-    "ev-window.part1.txt",
-    "ev-window.part2.txt"
+    "ev-window.part1.txt"
   ],
   "ev-witness.svg": [
     "ev-witness.part0.txt",
-    "ev-witness.part1.txt",
-    "ev-witness.part2.txt",
-    "ev-witness.part3.txt"
+    "ev-witness.part1.txt"
   ]
 }
