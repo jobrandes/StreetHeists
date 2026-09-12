@@ -1,4 +1,5 @@
-"use client";
-import { FailAwardPill } from "@/components/fail-award-pill"; import { ShareExports } from "@/components/share-cards"; import { Button } from "@/components/ui/button"; import { useHeists } from "@/lib/store"; import { formatElapsed, wantedLabel } from "@/lib/utils"; import Link from "next/link";
-export default function Page(){const{lastCompleted,heists}=useHeists();if(!lastCompleted)return<main className="p-10 text-center">No finished job on the table.</main>;const heist=heists.find(h=>h.id===lastCompleted.heistId);return<main className="px-4 py-7"><p className="text-gold">JOB COMPLETE</p><h1 className="font-serif text-4xl italic">{lastCompleted.heistTitle}</h1><section className="mt-5 grid grid-cols-2 gap-3"><Stat label="Time" value={formatElapsed(lastCompleted.elapsedMs)}/><Stat label="Style" value={lastCompleted.styleAvg.toFixed(1)}/><Stat label="Most Wanted" value={wantedLabel(lastCompleted.wantedRank)}/><div className="rounded-2xl bg-card p-3">{lastCompleted.failAward?<FailAwardPill award={lastCompleted.failAward}/>:"Clean walk"}</div></section><div className="mt-6"><ShareExports run={lastCompleted} heist={heist}/></div><Button asChild variant="bronze" className="mt-6 w-full"><Link href="/">Back to Most Wanted</Link></Button></main>}
-function Stat({label,value}:{label:string;value:string}){return<div className="rounded-2xl bg-card p-3"><p className="text-bronze">{label}</p><p className="font-display text-3xl">{value}</p></div>}
+import { redirect } from "next/navigation";
+
+export default function LegacyCompletePage() {
+  redirect("/case/pigeon-job/verdict");
+}
