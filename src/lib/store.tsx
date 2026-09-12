@@ -11,7 +11,7 @@ import {
 import { pigeonCase, PLAYER_DEFAULT_ALIAS } from "./seed";
 import type { Accusation, CaseProgress, Verdict } from "./types";
 
-const STORAGE_KEY = "street-heists.couch-case.v1";
+const STORAGE_KEY = "street-heists.couch-case.v2";
 
 type Persisted = {
   alias: string;
@@ -30,6 +30,23 @@ const defaults: Persisted = {
   alias: PLAYER_DEFAULT_ALIAS,
   progress: defaultProgress,
 };
+
+function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
+  return {
+    startedAt: typeof raw?.startedAt === "number" ? raw.startedAt : null,
+    inspectedEvidenceIds: Array.isArray(raw?.inspectedEvidenceIds)
+      ? raw.inspectedEvidenceIds.filter((id): id is string => typeof id === "string")
+      : [],
+    pinnedEvidenceIds: Array.isArray(raw?.pinnedEvidenceIds)
+      ? raw.pinnedEvidenceIds.filter((id): id is string => typeof id === "string")
+      : [],
+    wrongAttempts:
+      typeof raw?.wrongAttempts === "number" && Number.isFinite(raw.wrongAttempts)
+        ? raw.wrongAttempts
+        : 0,
+    lastVerdict: raw?.lastVerdict ?? null,
+  };
+}
 
 type Store = Persisted & {
   ready: boolean;
@@ -51,7 +68,7 @@ function load(): Persisted {
     ) as Partial<Persisted> | null;
     return {
       alias: parsed?.alias || defaults.alias,
-      progress: { ...defaultProgress, ...parsed?.progress },
+      progress: normalizeProgress(parsed?.progress),
     };
   } catch {
     return defaults;
