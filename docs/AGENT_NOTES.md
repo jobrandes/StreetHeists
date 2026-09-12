@@ -32,7 +32,10 @@ CI runs the same checks on every push/PR (`.github/workflows/ci.yml`).
 
 ## Evidence assets
 
-Required files in `public/evidence/ev-*.svg` must be real art. `prebuild` validates them and **fails** if any are missing, tiny, or placeholders. Do not ship with silent skips.
+- Each clue has unique `imageSrc` / `imageStamp` / `visualTell` in `src/lib/seed.ts`.
+- Art lives under `public/evidence/<case-id>/…` — **never reuse** a file across cases.
+- Images are functional case-file evidence: the solving tell must be visible in-frame and restated in text.
+- `prebuild` (`scripts/assemble-evidence.mjs`) validates every `imageSrc` and **fails** if missing, tiny, placeholder, or reused.
 
 ## Speed rule
 

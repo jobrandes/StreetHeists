@@ -52,6 +52,14 @@ From single-case demo to a game you could actually sell.
 
 **Exit criteria:** Submitted to App Store review.
 
+## Evidence art rule (locked)
+
+Street Heists is a **detective desk**: players read notes **and** look at case-file images, then tie both together.
+
+- Every clue gets **its own** image — never reuse art across cases or across unrelated clues.
+- If a detail matters to the solution, it must be **visible in the image** and restated in the text (`visualTell` + description).
+- Images are not decoration. They are evidence you inspect.
+
 ## Current focus
 
-Phase 1 content: Case 07 (tutorial) + Case 08 *The Late Fee* (witness/timeline) are playable. Next: more mechanic variety toward 8–12 cases, then stranger playtests.
+Phase 1 content: Case 07 + Case 08 are playable with per-clue readable art. Next: more mechanic variety toward 8–12 cases, then stranger playtests.
