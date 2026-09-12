@@ -51,7 +51,7 @@ export function FirstRunCoach() {
         </p>
         <p className="flex gap-2">
           <FileSearch className="mt-0.5 size-4 shrink-0 text-gold" />
-          Inspect clues, open People & Places tabs, pin deductions, then accuse Who / How / Where.
+          Flip through clues (swipe or Next), compare shared people/places, then accuse Who / How / Where.
         </p>
       </div>
       <Button className="mt-3 w-full" onClick={dismiss}>
