@@ -54,4 +54,4 @@ From single-case demo to a game you could actually sell.
 
 ## Current focus
 
-Phase 1 hygiene first (lockfile/CI, evidence integrity, stable deps), then case-library content.
+Phase 1 content: Case 07 (tutorial) + Case 08 *The Late Fee* (witness/timeline) are playable. Next: more mechanic variety toward 8–12 cases, then stranger playtests.
