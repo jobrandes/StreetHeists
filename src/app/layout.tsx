@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   themeColor: "#F7F1E6",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // Allow pinch-zoom for accessibility; do not lock maximumScale.
   viewportFit: "cover",
 };
 

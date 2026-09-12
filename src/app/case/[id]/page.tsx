@@ -5,11 +5,10 @@ import { pigeonCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 export default function BriefingPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const { openCase } = useHeists();
 
   if (id !== pigeonCase.id) {
@@ -21,11 +20,6 @@ export default function BriefingPage() {
         </div>
       </main>
     );
-  }
-
-  function begin() {
-    openCase();
-    router.push(`/case/${pigeonCase.id}/evidence`);
   }
 
   const rows = [
@@ -74,8 +68,10 @@ export default function BriefingPage() {
         ))}
       </ol>
 
-      <Button size="xl" className="mt-4 w-full rounded-lg font-display text-lg font-bold tracking-[0.12em] uppercase" onClick={begin}>
-        OPEN EVIDENCE LOCKER
+      <Button asChild size="xl" className="mt-4 w-full rounded-lg font-display text-lg font-bold tracking-[0.12em] uppercase">
+        <Link href={`/case/${pigeonCase.id}/evidence`} onClick={() => openCase()}>
+          OPEN EVIDENCE LOCKER
+        </Link>
       </Button>
     </main>
   );
