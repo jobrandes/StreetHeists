@@ -2,23 +2,41 @@
 
 import { ShareExports } from "@/components/share-cards";
 import { Button } from "@/components/ui/button";
-import { pigeonCase } from "@/lib/seed";
+import { getCase } from "@/lib/seed";
+import { useParams } from "next/navigation";
 import { useHeists } from "@/lib/store";
 import { formatElapsed } from "@/lib/utils";
 import { Check, Trophy, X, XCircle } from "lucide-react";
 import Link from "next/link";
 
-function accusationLabels(accusation: { who: string; how: string; where: string }) {
+function accusationLabels(
+  caseFile: NonNullable<ReturnType<typeof getCase>>,
+  accusation: { who: string; how: string; where: string },
+) {
   return {
-    who: pigeonCase.suspects.find((item) => item.id === accusation.who)?.name ?? "Unknown",
-    how: pigeonCase.howChoices.find((item) => item.id === accusation.how)?.label ?? "Unknown",
-    where: pigeonCase.whereChoices.find((item) => item.id === accusation.where)?.label ?? "Unknown",
+    who: caseFile.suspects.find((item) => item.id === accusation.who)?.name ?? "Unknown",
+    how: caseFile.howChoices.find((item) => item.id === accusation.how)?.label ?? "Unknown",
+    where: caseFile.whereChoices.find((item) => item.id === accusation.where)?.label ?? "Unknown",
   };
 }
 
 export default function VerdictPage() {
-  const { progress, alias } = useHeists();
+  const { id } = useParams<{ id: string }>();
+  const caseFile = getCase(id);
+  const { progressFor, alias } = useHeists();
+  const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const verdict = progress.lastVerdict;
+
+  if (!caseFile) {
+    return (
+      <main className="play-day grid min-h-dvh place-items-center p-6 text-center">
+        <div>
+          <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
+          <Button asChild className="mt-4"><Link href="/">Return to Case Board</Link></Button>
+        </div>
+      </main>
+    );
+  }
 
   if (!verdict) {
     return (
@@ -26,19 +44,19 @@ export default function VerdictPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">No accusation on file.</h1>
           <Button asChild className="mt-4">
-            <Link href={`/case/${pigeonCase.id}/evidence`}>Review evidence</Link>
+            <Link href={`/case/${caseFile.id}/evidence`}>Review evidence</Link>
           </Button>
         </div>
       </main>
     );
   }
 
-  const chosen = accusationLabels(verdict.accusation);
-  const revealed = accusationLabels(pigeonCase.solution);
+  const chosen = accusationLabels(caseFile, verdict.accusation);
+  const revealed = accusationLabels(caseFile, caseFile.solution);
   const axis = {
-    who: verdict.accusation.who === pigeonCase.solution.who,
-    how: verdict.accusation.how === pigeonCase.solution.how,
-    where: verdict.accusation.where === pigeonCase.solution.where,
+    who: verdict.accusation.who === caseFile.solution.who,
+    how: verdict.accusation.how === caseFile.solution.how,
+    where: verdict.accusation.where === caseFile.solution.where,
   };
 
   return (
@@ -130,7 +148,7 @@ export default function VerdictPage() {
               Why it fits
             </h2>
             <ol className="mt-2 space-y-2">
-              {pigeonCase.explanation.map((item, index) => (
+              {caseFile.explanation.map((item, index) => (
                 <li key={item} className="flex gap-2 text-sm text-ink">
                   <span className="font-bold text-gold">{index + 1}.</span>
                   {item}
@@ -139,7 +157,7 @@ export default function VerdictPage() {
             </ol>
           </section>
           <div className="mt-8">
-            <ShareExports verdict={verdict} alias={alias} />
+            <ShareExports caseFile={caseFile} verdict={verdict} alias={alias} />
           </div>
           <Button asChild variant="bronze" className="mt-7 w-full">
             <Link href="/">Back to Case Board</Link>
@@ -161,10 +179,10 @@ export default function VerdictPage() {
             size="lg"
             className="mt-5 w-full rounded-lg font-display font-bold tracking-[0.12em] uppercase"
           >
-            <Link href={`/case/${pigeonCase.id}/accuse`}>Retry accusation</Link>
+            <Link href={`/case/${caseFile.id}/accuse`}>Retry accusation</Link>
           </Button>
           <Button asChild variant="bronze" className="mt-3 w-full">
-            <Link href={`/case/${pigeonCase.id}/evidence`}>Review evidence</Link>
+            <Link href={`/case/${caseFile.id}/evidence`}>Review evidence</Link>
           </Button>
           <p className="mt-3 text-center text-xs text-muted">
             All opened and pinned evidence is preserved.

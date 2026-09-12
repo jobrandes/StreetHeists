@@ -6,15 +6,16 @@ import { KeyholeLogo } from "@/components/keyhole-logo";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { moreCases, pigeonCase } from "@/lib/seed";
+import { moreCases, playableCases, pigeonCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function CaseBoardPage() {
-  const { alias, setAlias, progress, resetCase } = useHeists();
+  const { alias, setAlias, progressFor, resetCase } = useHeists();
   const [nextAlias, setNextAlias] = useState(alias);
-  const resume = Boolean(progress.startedAt);
+  const featuredProgress = progressFor(pigeonCase.id);
+  const resume = Boolean(featuredProgress.startedAt);
 
   return (
     <main className="play-day flex min-h-dvh flex-col px-4 pb-8 pt-5">
@@ -53,7 +54,7 @@ export default function CaseBoardPage() {
           Start here
         </p>
         <p className="text-xs font-medium text-ink">
-          Case {String(pigeonCase.number).padStart(2, "0")} · 5–10 minute couch mystery
+          Case {String(pigeonCase.number).padStart(2, "0")} · tutorial · 5–10 min
         </p>
       </div>
 
@@ -72,20 +73,51 @@ export default function CaseBoardPage() {
           <p className="mt-3 text-[15px] leading-snug text-ink">{pigeonCase.subtitle}</p>
           <div className="mt-5 flex h-16 items-center justify-center rounded-lg bg-gold text-white shadow-[0_5px_0_#2549d6]">
             <span className="font-display text-xl font-bold tracking-[0.13em] uppercase">
-              Start this case
+              {resume ? "Resume this case" : "Start this case"}
             </span>
           </div>
-          {resume ? (
-            <p className="mt-3 text-center text-xs font-medium text-muted">
-              Your opened evidence and pinned deductions are waiting.
-            </p>
-          ) : null}
         </div>
       </Link>
 
       <section className="mt-7">
         <h2 className="border-b border-hairline pb-2 font-display text-lg font-bold tracking-[0.18em] text-ink uppercase">
-          More Cases
+          Open cases
+        </h2>
+        <div className="divide-y divide-hairline rounded-b-xl border-x border-b border-hairline bg-card">
+          {playableCases.map((item) => {
+            const progress = progressFor(item.id);
+            const solved = Boolean(progress.lastVerdict?.correct);
+            return (
+              <Link
+                key={item.id}
+                href={`/case/${item.id}`}
+                className="block px-4 py-3 transition-colors hover:bg-[#E8EEF8]"
+              >
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="font-serif text-lg font-semibold text-ink">{item.title}</p>
+                  <p className="shrink-0 font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                    Case {String(item.number).padStart(2, "0")}
+                  </p>
+                </div>
+                <p className="text-xs text-muted">{item.subtitle}</p>
+                <p className="mt-1 text-[11px] font-medium text-ink">
+                  {solved
+                    ? "Solved"
+                    : progress.startedAt
+                      ? "In progress"
+                      : item.id === pigeonCase.id
+                        ? "Tutorial · physical evidence"
+                        : "Witness clocks · false lead"}
+                </p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mt-7">
+        <h2 className="border-b border-hairline pb-2 font-display text-lg font-bold tracking-[0.18em] text-ink uppercase">
+          Coming soon
         </h2>
         <div className="divide-y divide-hairline rounded-b-xl border-x border-b border-hairline bg-card">
           {moreCases.map((item) => (
@@ -97,13 +129,13 @@ export default function CaseBoardPage() {
         </div>
       </section>
 
-      {progress.startedAt ? (
+      {featuredProgress.startedAt ? (
         <button
           type="button"
-          onClick={resetCase}
+          onClick={() => resetCase(pigeonCase.id)}
           className="mt-7 text-xs text-muted underline underline-offset-2"
         >
-          Reset case progress
+          Reset tutorial case progress
         </button>
       ) : null}
     </main>

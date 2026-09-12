@@ -8,14 +8,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { pigeonCase, PLAYER_DEFAULT_ALIAS } from "./seed";
+import { getCase, PLAYER_DEFAULT_ALIAS, pigeonCase } from "./seed";
 import type { Accusation, CaseProgress, Verdict } from "./types";
 
-const STORAGE_KEY = "street-heists.couch-case.v2";
+const STORAGE_KEY = "street-heists.couch-case.v3";
+const LEGACY_KEY = "street-heists.couch-case.v2";
 
 type Persisted = {
   alias: string;
-  progress: CaseProgress;
+  progressByCase: Record<string, CaseProgress>;
 };
 
 const defaultProgress: CaseProgress = {
@@ -28,7 +29,7 @@ const defaultProgress: CaseProgress = {
 
 const defaults: Persisted = {
   alias: PLAYER_DEFAULT_ALIAS,
-  progress: defaultProgress,
+  progressByCase: {},
 };
 
 function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
@@ -48,14 +49,23 @@ function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
   };
 }
 
-type Store = Persisted & {
+function progressFor(
+  map: Record<string, CaseProgress>,
+  caseId: string,
+): CaseProgress {
+  return normalizeProgress(map[caseId] ?? defaultProgress);
+}
+
+type Store = {
   ready: boolean;
+  alias: string;
   setAlias: (alias: string) => void;
-  openCase: () => void;
-  inspectEvidence: (id: string) => void;
-  togglePin: (id: string) => void;
-  submitAccusation: (accusation: Accusation) => Verdict;
-  resetCase: () => void;
+  progressFor: (caseId: string) => CaseProgress;
+  openCase: (caseId: string) => void;
+  inspectEvidence: (caseId: string, evidenceId: string) => void;
+  togglePin: (caseId: string, evidenceId: string) => void;
+  submitAccusation: (caseId: string, accusation: Accusation) => Verdict;
+  resetCase: (caseId: string) => void;
 };
 
 const StoreContext = createContext<Store | null>(null);
@@ -63,16 +73,53 @@ const StoreContext = createContext<Store | null>(null);
 function load(): Persisted {
   if (typeof window === "undefined") return defaults;
   try {
-    const parsed = JSON.parse(
-      window.localStorage.getItem(STORAGE_KEY) ?? "null",
-    ) as Partial<Persisted> | null;
-    return {
-      alias: parsed?.alias || defaults.alias,
-      progress: normalizeProgress(parsed?.progress),
-    };
+    const rawV3 = window.localStorage.getItem(STORAGE_KEY);
+    if (rawV3) {
+      const parsed = JSON.parse(rawV3) as Partial<Persisted> | null;
+      const map =
+        parsed?.progressByCase && typeof parsed.progressByCase === "object"
+          ? Object.fromEntries(
+              Object.entries(parsed.progressByCase).map(([id, value]) => [
+                id,
+                normalizeProgress(value),
+              ]),
+            )
+          : {};
+      return {
+        alias: parsed?.alias || defaults.alias,
+        progressByCase: map,
+      };
+    }
+
+    // Migrate single-case v2 progress onto the pigeon job.
+    const rawV2 = window.localStorage.getItem(LEGACY_KEY);
+    if (rawV2) {
+      const parsed = JSON.parse(rawV2) as {
+        alias?: string;
+        progress?: Partial<CaseProgress>;
+      } | null;
+      return {
+        alias: parsed?.alias || defaults.alias,
+        progressByCase: {
+          [pigeonCase.id]: normalizeProgress(parsed?.progress),
+        },
+      };
+    }
+    return defaults;
   } catch {
     return defaults;
   }
+}
+
+function patchCase(
+  map: Record<string, CaseProgress>,
+  caseId: string,
+  patch: (current: CaseProgress) => CaseProgress,
+): Record<string, CaseProgress> {
+  return {
+    ...map,
+    [caseId]: patch(progressFor(map, caseId)),
+  };
 }
 
 export function HeistProvider({ children }: { children: ReactNode }) {
@@ -91,75 +138,89 @@ export function HeistProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Store>(
     () => ({
-      ...state,
       ready,
+      alias: state.alias,
       setAlias(alias) {
         setState((current) => ({
           ...current,
           alias: alias.trim() || PLAYER_DEFAULT_ALIAS,
         }));
       },
-      openCase() {
+      progressFor(caseId) {
+        return progressFor(state.progressByCase, caseId);
+      },
+      openCase(caseId) {
         setState((current) => ({
           ...current,
-          progress: {
-            ...current.progress,
-            startedAt: current.progress.startedAt ?? Date.now(),
-          },
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            startedAt: progress.startedAt ?? Date.now(),
+          })),
         }));
       },
-      inspectEvidence(id) {
+      inspectEvidence(caseId, evidenceId) {
         setState((current) => ({
           ...current,
-          progress: {
-            ...current.progress,
-            startedAt: current.progress.startedAt ?? Date.now(),
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            startedAt: progress.startedAt ?? Date.now(),
             inspectedEvidenceIds: Array.from(
-              new Set([...current.progress.inspectedEvidenceIds, id]),
+              new Set([...progress.inspectedEvidenceIds, evidenceId]),
             ),
-          },
+          })),
         }));
       },
-      togglePin(id) {
-        setState((current) => {
-          const pinned = current.progress.pinnedEvidenceIds;
-          return {
-            ...current,
-            progress: {
-              ...current.progress,
-              pinnedEvidenceIds: pinned.includes(id)
-                ? pinned.filter((item) => item !== id)
-                : [...pinned, id],
-            },
-          };
-        });
+      togglePin(caseId, evidenceId) {
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => {
+            const pinned = progress.pinnedEvidenceIds;
+            return {
+              ...progress,
+              pinnedEvidenceIds: pinned.includes(evidenceId)
+                ? pinned.filter((item) => item !== evidenceId)
+                : [...pinned, evidenceId],
+            };
+          }),
+        }));
       },
-      submitAccusation(accusation) {
+      submitAccusation(caseId, accusation) {
+        const caseFile = getCase(caseId);
+        if (!caseFile) {
+          throw new Error(`Unknown case: ${caseId}`);
+        }
+        const currentProgress = progressFor(state.progressByCase, caseId);
         const correct =
-          accusation.who === pigeonCase.solution.who &&
-          accusation.how === pigeonCase.solution.how &&
-          accusation.where === pigeonCase.solution.where;
+          accusation.who === caseFile.solution.who &&
+          accusation.how === caseFile.solution.how &&
+          accusation.where === caseFile.solution.where;
         const submittedAt = Date.now();
-        const wrongAttempts = state.progress.wrongAttempts + (correct ? 0 : 1);
+        const wrongAttempts = currentProgress.wrongAttempts + (correct ? 0 : 1);
         const verdict: Verdict = {
           accusation,
           correct,
           submittedAt,
-          elapsedMs: submittedAt - (state.progress.startedAt ?? submittedAt),
+          elapsedMs: submittedAt - (currentProgress.startedAt ?? submittedAt),
           wrongAttempts,
         };
         setState((current) => ({
           ...current,
-          progress: {
-            ...current.progress,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
             wrongAttempts,
             lastVerdict: verdict,
-          },
+          })),
         }));
         return verdict;
       },
-      resetCase() {
-        setState((current) => ({ ...current, progress: defaultProgress }));
+      resetCase(caseId) {
+        setState((current) => ({
+          ...current,
+          progressByCase: {
+            ...current.progressByCase,
+            [caseId]: defaultProgress,
+          },
+        }));
       },
     }),
     [ready, state],
