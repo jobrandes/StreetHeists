@@ -1,29 +1,69 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-ink: #0B0B0C;
-  --color-card: #161618;
+@theme {
+  /* Play Day is the default play surface */
+  --color-ink: #1C1F26;
+  --color-card: #FFFDF8;
+  --color-elevated: #FFFDF8;
   --color-gold: #C9A227;
-  --color-bronze: #8A6E2F;
+  --color-bronze: #5C6570;
   --color-fail: #C43C3C;
-  --color-cream: #F2F0EA;
+  --color-cream: #1C1F26;
+  --color-body: #1C1F26;
+  --color-muted: #5C6570;
+  --color-hairline: #D9D2C5;
   --font-sans: var(--font-dm);
   --font-serif: var(--font-cormorant);
   --font-display: var(--font-barlow);
 }
 
-html, body {
-  background: #050505;
-  color: var(--color-cream);
+/* Default to Play Day cream. Midnight is applied only on share / solved verdict. */
+html,
+body {
+  background: #F7F1E6;
+  color: #1C1F26;
   min-height: 100%;
 }
 
-body { font-family: var(--font-sans), system-ui, sans-serif; }
-.font-display { font-family: var(--font-display), "Arial Narrow", sans-serif; }
-.font-serif { font-family: var(--font-serif), "Times New Roman", serif; }
+body {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), "Arial Narrow", sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), "Times New Roman", serif;
+}
+
 .grain {
-  background-image: radial-gradient(rgba(242, 240, 234, 0.035) 0.6px, transparent 0.6px);
+  background-image: radial-gradient(rgba(250, 247, 240, 0.025) 0.6px, transparent 0.6px);
   background-size: 3px 3px;
   mix-blend-mode: overlay;
 }
-::selection { background: #C9A227; color: #0B0B0C; }
+
+::selection {
+  background: #C9A227;
+  color: #1C1F26;
+}
+
+.play-day {
+  --color-ink: #1C1F26;
+  --color-card: #FFFDF8;
+  --color-elevated: #FFFDF8;
+  --color-gold: #C9A227;
+  --color-bronze: #5C6570;
+  --color-fail: #C43C3C;
+  --color-cream: #1C1F26;
+  --color-body: #1C1F26;
+  --color-muted: #5C6570;
+  --color-hairline: #D9D2C5;
+  background: #F7F1E6;
+  color: #1C1F26;
+}
+
+.play-day ::selection {
+  background: #C9A227;
+  color: #1C1F26;
+}

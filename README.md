@@ -1,33 +1,40 @@
 # Street Heists
 
-A clickable Midnight Crew prototype: create fictional heists on a mocked city map, walk the beats, submit photo proofs, score speed plus style, and export glossy crime cards.
+Street Heists is a short comedy-heist mystery for the phone. Open a case, inspect the clues supplied by the game, pin deductions, compare evidence, and make one Who / How / Where accusation.
 
-Pure make-believe. Zero real crime. Private local demo only — no payments, no production deploy, no real GPS anti-cheat.
+**Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote.
 
-## What you can do
-
-1. **Most Wanted** — browse Near me, Trending, and Comedy-fail awards. Featured seed job: **The Pigeon Job**.
-2. **Plan the Job** — title, mastermind alias, 3–5 map pins, proof type per beat, Preview or Publish.
-3. **Run** — outdoor UI with a live timer, current beat, primary proof CTA, expandable map strip, dismissible tip, and a Fail award path.
-4. **Job Complete + Share** — elapsed time, style average, optional Best Fail / Legendary Fail award, Most Wanted rank (style-weighted, time tie-break). Export **Card A** (movie poster) and **Card C** (proof strip).
-
-Proofs can come from the camera/file picker or a generated demo still so the loop works on a desktop.
+The seed mystery, **The Pigeon Job**, is a complete 5–10 minute case with six evidence items, four suspects, retry-aware verdicts, and two exportable Midnight Crew share cards.
 
 ## Run locally
+
+Requirements: Node.js 20+ and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:43177](http://127.0.0.1:43177). The app is a portrait-first PWA-style shell (max width 430px). Landscape is used only for share-card export.
+Open [http://127.0.0.1:43177](http://127.0.0.1:43177).
 
-State lives in `localStorage` (`street-heists.v0`). Use **Reset the table** on the home screen to restore seed jobs.
+Quality checks:
 
-## Stack
+```bash
+npx tsc --noEmit
+npm run lint
+npm run build
+```
 
-Next.js App Router, TypeScript, Tailwind, mocked local state. No auth, no backend, no live map provider.
+## Product flow
 
-## Design locks
+- `/` — Case Board
+- `/case/pigeon-job` — three-part Briefing
+- `/case/pigeon-job/evidence` — provided evidence locker, deductions, and compare tray
+- `/case/pigeon-job/accuse` — Who / How / Where accusation
+- `/case/pigeon-job/verdict` — wrong-answer retry or solved result and share cards
 
-Midnight Crew: keyhole mark, condensed display / serif titles / clean UI sans, `#0B0B0C` / `#161618` / `#C9A227` / `#8A6E2F` / `#C43C3C` / `#F2F0EA`. Difficulty is stars 1–5. Fail pills are awards, not status tags.
+Legacy `/heist/*`, `/run/*`, `/plan`, and `/complete` links redirect into the case flow.
+
+## Stack and state
+
+Next.js App Router, React, TypeScript, Tailwind CSS, and local browser storage. There is no authentication, backend, payment flow, or external service requirement. Case content and its correct solution are centralized in `src/lib/seed.ts`.
