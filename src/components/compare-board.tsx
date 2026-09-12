@@ -110,7 +110,10 @@ export function CompareBoard({
 
       <div className="space-y-3">
         {items.map((item) => {
-          const links = perClue[item.id];
+          const links = perClue[item.id] ?? {
+            people: [],
+            place: item.location,
+          };
           return (
             <article
               key={item.id}
