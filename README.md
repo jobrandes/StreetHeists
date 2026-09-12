@@ -28,6 +28,19 @@ npm run build
 
 CI runs those checks on every push/PR. Desktop uses an intentional phone-stage frame over a dark plaza wash; phones stay full-bleed cream. Pinch-zoom is allowed.
 
+## Phone preview (Netlify)
+
+Easiest way to open the app on your phone: deploy a preview from GitHub.
+
+1. Go to [app.netlify.com](https://app.netlify.com) and sign in (GitHub is fine).
+2. **Add new site → Import an existing project → GitHub**.
+3. Pick `jobrandes/StreetHeists`.
+4. Leave the defaults (build: `npm run build`, plugin handles Next.js) and deploy.
+
+Netlify will give you a URL like `https://something.netlify.app`. Open that on your phone — no same-Wi‑Fi dance.
+
+Every push to `main` can auto-rebuild. This is a private preview for testing, not a public launch.
+
 ## Product flow
 
 - `/` — Case Board
