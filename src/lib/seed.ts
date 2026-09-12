@@ -1,19 +1,182 @@
-import { swatchProof } from "./demo-proof";
-import { assignRanks } from "./scoring";
-import type { CompletedRun, Heist } from "./types";
+import type { CaseFile } from "./types";
+
 export const PLAYER_DEFAULT_ALIAS = "Soft Hands";
-const beat = (id: string, title: string, prompt: string, proofType: "photo" | "video" | "selfie", tip: string, placeName: string, x: number, y: number) => ({ id, title, prompt, proofType, tip, placeName, x, y });
-export const seedHeists: Heist[] = [
-  { id: "pigeon-job", title: "The Pigeon Job", alias: "Velvet Crumb", tagline: "Steal the plaza. Leave the crumbs. Tell no bird.", difficulty: 2, neighborhood: "Civic Plaza", art: "pigeon", featured: true, trending: true, nearMe: true, comedyFailAward: "Best Fail", wantedNumber: 7, createdAt: 1, published: true, beats: [
-    beat("pj-1", "The Council", "Photograph the pigeon parliament on the fountain rim. They must look like they agreed to this.", "photo", "Crouch. They respect commitment.", "Fountain rim", 52, 34),
-    beat("pj-2", "The Decoy", "Plant a pastry on the green bench. Photograph the crime scene before the first peck.", "photo", "Butter side up. This is non-negotiable.", "The green bench", 28, 58),
-    beat("pj-3", "The Strut", "Capture one pigeon walking like it has a meeting across town. Follow. Never lead.", "video", "Keep the camera low. Dignity is the whole gag.", "Plaza tiles", 68, 62),
-    beat("pj-4", "The Empty Throne", "Selfie with the empty bench after the flock lifts. Proof they left. Proof you didn't.", "selfie", "Soft smile. You are not a suspect.", "Same bench, after", 30, 78),
-  ]},
-  { id: "gelato-swap", title: "Midnight Gelato Swap", alias: "Cold Hands", tagline: "Two cups change coats. Nobody saw the pistachio leave.", difficulty: 3, neighborhood: "Harbor Row", art: "gelato", trending: true, nearMe: true, wantedNumber: 12, createdAt: 2, published: true, beats: [beat("gs-1", "Window Watch", "Photo the closed gelato case like it still owes you a favor.", "photo", "Reflections count as alibis.", "Harbor parlor", 40, 30), beat("gs-2", "The Switch", "Two cups, one frame. Labels must be wrong on purpose.", "photo", "Pistachio never sits on the left.", "Marble counter", 58, 48), beat("gs-3", "Walk-off", "Selfie from the alley with a clean spoon and a guilty grin.", "selfie", "Do not lick the evidence.", "Service alley", 72, 70)] },
-  { id: "whisper-stack", title: "The Whisper Stack", alias: "Quiet Ink", tagline: "Reshelve three lies. Leave the truth in the wrong aisle.", difficulty: 4, neighborhood: "Civic Library", art: "library", trending: true, nearMe: false, wantedNumber: 3, createdAt: 3, published: true, beats: [beat("ws-1", "Card Catalog", "Photo a drawer left a finger-width open. No faces.", "photo", "Whisper even when you are alone.", "West stacks", 24, 28), beat("ws-2", "Wrong Aisle", "A romance novel in Reference. Proof it belongs there now.", "photo", "Ask the book for consent.", "Reference 900s", 50, 46), beat("ws-3", "Silent Exit", "Video the revolving door catching late light.", "video", "If it squeaks, that is the score.", "Marble lobby", 76, 68)] },
-  { id: "fountain-caper", title: "Fountain Coin Caper", alias: "Skip Jack", tagline: "Borrow one wish. Return a better one.", difficulty: 1, neighborhood: "Memorial Circle", art: "fountain", trending: false, nearMe: true, comedyFailAward: "Legendary Fail", wantedNumber: 21, createdAt: 4, published: true, beats: [beat("fc-1", "Spot the Copper", "Photograph the brightest coin without touching the water.", "photo", "Knees dry. Pride optional.", "North basin", 48, 36), beat("fc-2", "The Better Wish", "Selfie dropping a bottle cap as if it were treasure.", "selfie", "Commit to the toss.", "South rim", 62, 64), beat("fc-3", "Dry Getaway", "Proof your socks survived. That is the whole job.", "photo", "If they didn't, log the fail.", "Steps", 30, 78)] },
+
+export const pigeonCase: CaseFile = {
+  id: "pigeon-job",
+  number: 7,
+  title: "The Pigeon Job",
+  subtitle: "One baguette. Four suspects. Zero dignity.",
+  premise:
+    "At 12:07, Café Paloma's ceremonial baguette vanished from the plaza counter. The service window was open. Everyone has an alibi. One suspect has wings.",
+  suspects: [
+    {
+      id: "marcel",
+      name: "Marcel",
+      role: "Pigeon · plaza regular",
+      personality: "Immaculate chest, criminal little feet, declines interviews.",
+    },
+    {
+      id: "celine",
+      name: "Céline Croissant",
+      role: "Pastry chef",
+      personality: "Protective of butter and loudly innocent before being asked.",
+    },
+    {
+      id: "inspector-brie",
+      name: "Inspector Brie",
+      role: "Health inspector",
+      personality: "Carries three thermometers and a personal grudge against crumbs.",
+    },
+    {
+      id: "nico",
+      name: "Nico Deux-Sucres",
+      role: "Street mime",
+      personality: "Saw everything. Will only describe it through an invisible box.",
+    },
+  ],
+  evidence: [
+    {
+      id: "open-window",
+      title: "Service Window Still",
+      kind: "still",
+      caption: "Evidence #1 — The open service window",
+      timestamp: "12:06",
+      location: "Café Paloma · plaza counter",
+      kicker: "Café security · 12:06",
+      description:
+        "The unattended baguette sits 18 cm inside an open service window. A striped awning cord hangs beside the sill.",
+      deduction: "The baguette could be reached from the plaza without entering the café.",
+      visual: "window",
+      linkedSuspectIds: ["celine"],
+    },
+    {
+      id: "crumb-trail",
+      title: "Crumb Trail Still",
+      kind: "still",
+      caption: "Evidence #2 — Crumbs by the fountain",
+      timestamp: "12:08",
+      location: "North fountain · plaza",
+      kicker: "Plaza camera · 12:08",
+      description:
+        "Large crumbs run from the café sill toward the fountain, stopping directly beneath the north statue.",
+      deduction: "The escape route ended at the fountain statue.",
+      visual: "crumbs",
+    },
+    {
+      id: "blue-feather",
+      title: "Trace Lab Slip",
+      kind: "document",
+      caption: "Evidence #3 — Feather and awning thread",
+      timestamp: "12:09",
+      location: "Café Paloma · service sill",
+      kicker: "Municipal crumb unit · Item 03",
+      description:
+        "One blue-grey contour feather and a loop of red awning thread were recovered together on the café sill.",
+      deduction: "A pigeon used the awning cord at the open window.",
+      visual: "feather",
+      linkedSuspectIds: ["marcel"],
+    },
+    {
+      id: "statue-nest",
+      title: "Fountain Telephoto Still",
+      kind: "still",
+      caption: "Evidence #4 — A loaf in the statue nest",
+      timestamp: "12:11",
+      location: "North fountain · bronze laurel",
+      kicker: "Provided surveillance · 12:11",
+      description:
+        "A baguette heel protrudes from a nest behind the fountain statue's bronze laurel. Marcel's red leg band is visible.",
+      deduction: "The missing loaf is in Marcel's statue nest.",
+      visual: "fountain",
+      linkedSuspectIds: ["marcel"],
+    },
+    {
+      id: "receipt",
+      title: "Inspector's Receipt",
+      kind: "document",
+      caption: "Evidence #5 — Inspector Brie's receipt",
+      timestamp: "12:04–12:12",
+      location: "Pharmacie du Plaza",
+      kicker: "Pharmacy till · 12:04–12:12",
+      description:
+        "A time-stamped receipt places Inspector Brie buying yet another thermometer across the plaza.",
+      deduction: "Brie could not have taken the baguette at 12:07.",
+      visual: "receipt",
+      linkedSuspectIds: ["inspector-brie"],
+    },
+    {
+      id: "witness",
+      title: "Mime's Witness Note",
+      kind: "note",
+      caption: "Evidence #6 — Nico's silent testimony",
+      timestamp: "12:14",
+      location: "Plaza interview bench",
+      kicker: "Interview transcript · mostly gestures",
+      description:
+        "Nico reports: 'small bow, hard flap, bread-shaped burden, fountainward.' He also mimes a bird tugging a cord.",
+      deduction: "The thief created a brief awning distraction, then flew toward the fountain.",
+      visual: "witness",
+      linkedSuspectIds: ["nico", "marcel"],
+    },
+  ],
+  howChoices: [
+    {
+      id: "window-cord",
+      label: "Open window + awning distraction",
+      detail: "Tug the cord, reach through the service window, depart during the fuss.",
+    },
+    {
+      id: "inside-job",
+      label: "Inside job in a pastry box",
+      detail: "Hide the loaf beneath yesterday's éclairs.",
+    },
+    {
+      id: "mime-tunnel",
+      label: "Invisible mime tunnel",
+      detail: "Technically impossible; visually persuasive.",
+    },
+    {
+      id: "inspection-bag",
+      label: "Health inspection bag",
+      detail: "Confiscate it under a fictional gluten ordinance.",
+    },
+  ],
+  whereChoices: [
+    {
+      id: "statue-nest",
+      label: "Fountain statue nest",
+      detail: "Behind the bronze laurel above the north basin.",
+    },
+    {
+      id: "pastry-freezer",
+      label: "Café pastry freezer",
+      detail: "Between the butter and Céline's emergency butter.",
+    },
+    {
+      id: "mime-box",
+      label: "Inside Nico's invisible box",
+      detail: "Secure, spacious, imaginary.",
+    },
+    {
+      id: "inspection-van",
+      label: "Inspector Brie's van",
+      detail: "Probably labeled EVIDENCE. Definitely refrigerated.",
+    },
+  ],
+  solution: {
+    who: "marcel",
+    how: "window-cord",
+    where: "statue-nest",
+  },
+  explanation: [
+    "The feather and red thread put Marcel at the open service window and tie him to the awning cord.",
+    "The provided plaza still follows the crumb trail straight to the north fountain statue.",
+    "The final still shows the baguette in the nest beside Marcel's unmistakable red leg band.",
+  ],
+};
+
+export const moreCases = [
+  { title: "The Velvet Teaspoon", label: "Coming soon · Case 12" },
+  { title: "Murder on the Dessert Trolley", label: "Coming soon · Case 18" },
 ];
-const proofs = ["pj-1", "pj-2", "pj-3", "pj-4"].map((beatId, i) => ({ beatId, dataUrl: swatchProof(["#2a2214", "#3a2418", "#241810", "#1a1612"][i], ["The Council", "The Decoy", "The Strut", "Empty Throne"][i]), style: i % 2 ? 4 : 5, isFail: i === 3 }));
-const seedBoard: CompletedRun[] = [{ id: "run-velvet", heistId: "pigeon-job", heistTitle: "The Pigeon Job", crewAlias: "Velvet Crumb", startedAt: 1, finishedAt: 1120001, elapsedMs: 1120000, proofs, styleAvg: 4.5, failAward: "Best Fail", wantedRank: 0 }];
-export const seedRuns = assignRanks(seedBoard);
