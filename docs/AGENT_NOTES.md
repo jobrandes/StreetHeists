@@ -27,3 +27,7 @@ CI runs the same checks on every push/PR (`.github/workflows/ci.yml`).
 ## Stack
 
 Next.js 16.3.x + React 19.2.x are intentional stable releases (not canaries).
+
+## Speed rule
+
+If GitHub MCP sync, image compression, or any single path spins past a few minutes without shipping, **stop and switch tactics** (smaller assets, direct file update, skip non-blocking polish). Do not wait for Jo to notice the stall.
