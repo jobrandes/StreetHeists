@@ -31,3 +31,11 @@ Next.js 16.3.x + React 19.2.x are intentional stable releases (not canaries).
 ## Speed rule
 
 If GitHub MCP sync, image compression, or any single path spins past a few minutes without shipping, **stop and switch tactics** (smaller assets, direct file update, skip non-blocking polish). Do not wait for Jo to notice the stall.
+
+## Always watch deploys
+
+After every GitHub sync that should ship, **immediately check**:
+1. GitHub Actions CI on `main` (must be green)
+2. Netlify deploy / live asset sizes (e.g. evidence SVGs not 11-byte placeholders)
+
+Do not wait for Jo to notice a red build.
