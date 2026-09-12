@@ -1,1 +1,1 @@
-PLACEHOLDER_LOAD_FROM_FILE
+@/tmp/gh-sync/for_mcp_content.txt
