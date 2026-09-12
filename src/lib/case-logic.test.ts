@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { compareLinks, linksForEvidence, suspectDossiers } from "./case-file";
-import { pigeonCase } from "./seed";
+import { lateFeeCase, pigeonCase, playableCases } from "./seed";
 
 describe("The Pigeon Job solution", () => {
   it("has a coherent who/how/where solution", () => {
@@ -79,5 +79,43 @@ describe("evidence how/where hints", () => {
   it("points nest where toward the statue", () => {
     const nest = pigeonCase.evidence.find((e) => e.id === "statue-nest");
     expect(nest?.whereHint?.toLowerCase()).toMatch(/statue|nest|fountain/);
+  });
+});
+
+
+
+describe("The Late Fee solution", () => {
+  it("is registered as a playable case", () => {
+    expect(playableCases.map((item) => item.id)).toContain(lateFeeCase.id);
+  });
+
+  it("has a coherent who/how/where solution", () => {
+    const { solution, suspects, howChoices, whereChoices } = lateFeeCase;
+    expect(suspects.some((s) => s.id === solution.who)).toBe(true);
+    expect(howChoices.some((c) => c.id === solution.how)).toBe(true);
+    expect(whereChoices.some((c) => c.id === solution.where)).toBe(true);
+  });
+
+  it("marks Paz as the culprit via vest-key ruse and grease-bin stash", () => {
+    expect(lateFeeCase.solution).toEqual({
+      who: "paz",
+      how: "vest-key-ruse",
+      where: "grease-bin",
+    });
+  });
+
+  it("uses a witness contradiction: Paz blames Rita, depot card clears Rita", () => {
+    const statement = lateFeeCase.evidence.find((e) => e.id === "paz-statement");
+    const timecard = lateFeeCase.evidence.find((e) => e.id === "rita-timecard");
+    expect(statement?.linkedSuspectIds).toEqual(expect.arrayContaining(["paz", "rita"]));
+    expect(timecard?.linkedSuspectIds).toEqual(expect.arrayContaining(["rita"]));
+    expect(timecard?.deduction.toLowerCase()).toMatch(/rita|cannot|collapse|clear/);
+  });
+
+  it("attaches how/where hints on every clue", () => {
+    for (const item of lateFeeCase.evidence) {
+      expect(item.howHint?.length).toBeGreaterThan(0);
+      expect(item.whereHint?.length).toBeGreaterThan(0);
+    }
   });
 });

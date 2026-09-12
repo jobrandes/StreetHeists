@@ -188,7 +188,207 @@ export const pigeonCase: CaseFile = {
   ],
 };
 
+/** Case 08 — witness contradictions + timeline/alibi (not the same puzzle shape as Case 07). */
+export const lateFeeCase: CaseFile = {
+  id: "late-fee",
+  number: 8,
+  title: "The Late Fee",
+  subtitle: "A clipped courier pouch. Two clocks that cannot both be true.",
+  premise:
+    "At the Harbor Street fair, courier Jules clipped a cash pouch to meter #441 while buying tacos. By 15:07 it was gone. Compare the statements and timestamps, then name who took it, how, and where it is now.",
+  suspects: [
+    {
+      id: "rita",
+      name: "Rita Toll",
+      role: "Meter attendant",
+      personality: "Owns the handheld ticket printer and the orange vest. Keeps a depot punch clock.",
+    },
+    {
+      id: "jules",
+      name: "Jules Spoke",
+      role: "Bike courier · pouch owner",
+      personality: "Left the pouch on the meter while ordering. Swears he never left the taco line.",
+    },
+    {
+      id: "paz",
+      name: "Paz Blanco",
+      role: "Accordion busker",
+      personality: "Worked the fair tip jar. Eager to narrate what Rita “must have” done.",
+    },
+    {
+      id: "devon",
+      name: "Devon Quill",
+      role: "Taco-truck owner",
+      personality: "Busy at the window. Grease bin sits behind the truck.",
+    },
+  ],
+  evidence: [
+    {
+      id: "meter-still",
+      title: "Meter #441 Still",
+      kind: "still",
+      caption: "Evidence #1 — Pouch clipped to the meter",
+      timestamp: "15:02",
+      location: "Harbor St · meter #441",
+      kicker: "Fair cam · 15:02",
+      description:
+        "A black courier pouch hangs from meter #441. At the edge of frame: an orange attendant vest and a handheld ticket printer.",
+      deduction: "Someone in attendant gear was at that meter just before the pouch vanished.",
+      visual: "window",
+      linkedSuspectIds: ["rita", "paz"],
+      howHint: "Attendant gear at the meter",
+      whereHint: "Meter #441 post",
+    },
+    {
+      id: "taco-receipt",
+      title: "Taco Window Receipt",
+      kind: "document",
+      caption: "Evidence #2 — Jules’s order stamp",
+      timestamp: "15:04",
+      location: "Devon’s taco truck · service window",
+      kicker: "Till strip · 15:04",
+      description:
+        "Jules Spoke paid for a #3 combo at 15:04. The receipt printer sits at Devon’s window; Jules’s name is on the order note.",
+      deduction: "Jules was at the taco line at 15:04 — not at the meter.",
+      visual: "receipt",
+      linkedSuspectIds: ["jules", "devon"],
+      howHint: "Alibi by till stamp",
+      whereHint: "Taco truck window",
+    },
+    {
+      id: "paz-statement",
+      title: "Paz’s Witness Card",
+      kind: "note",
+      caption: "Evidence #3 — Busker statement",
+      timestamp: "15:18",
+      location: "Fair interview bench",
+      kicker: "Interview · Paz Blanco",
+      description:
+        "Paz writes: “Rita ticketed #441, then walked off with a black pouch toward the alley behind the taco truck.”",
+      deduction: "Paz blames Rita and points toward the taco-truck alley.",
+      visual: "witness",
+      linkedSuspectIds: ["paz", "rita"],
+      howHint: "Claims a ticket-then-take",
+      whereHint: "Toward taco-truck alley",
+    },
+    {
+      id: "rita-timecard",
+      title: "Harbor Depot Punch Card",
+      kind: "document",
+      caption: "Evidence #4 — Rita’s on-site clock",
+      timestamp: "14:55–15:20",
+      location: "Harbor Meter Depot",
+      kicker: "Depot clock · badge Rita Toll",
+      description:
+        "Rita’s badge is punched in at the Harbor Depot from 14:55 through 15:20. The depot is a twelve-minute walk from meter #441.",
+      deduction: "Rita cannot be the attendant on Harbor Street during the theft window — Paz’s story collapses.",
+      visual: "receipt",
+      linkedSuspectIds: ["rita"],
+      howHint: "Breaks the Rita blame",
+      whereHint: "Depot, not the fair",
+    },
+    {
+      id: "tip-jar-video",
+      title: "Tip-Jar Phone Still",
+      kind: "still",
+      caption: "Evidence #5 — Vest, key, pouch",
+      timestamp: "15:05",
+      location: "Harbor St · busking spot facing #441",
+      kicker: "Paz’s phone · 15:05",
+      description:
+        "A frame from Paz’s own tip-jar video: a figure in an orange attendant vest uses a meter key, unclips the black pouch, and turns toward the taco truck. A blue accordion strap peeks from the figure’s coat.",
+      deduction: "The thief wore attendant gear and carries accordion kit — that is Paz’s kit, not Rita’s.",
+      visual: "feather",
+      linkedSuspectIds: ["paz"],
+      howHint: "Meter key + vest disguise",
+      whereHint: "Leaves toward taco truck",
+    },
+    {
+      id: "grease-bin",
+      title: "Grease-Bin Still",
+      kind: "still",
+      caption: "Evidence #6 — Stash behind the truck",
+      timestamp: "15:12",
+      location: "Devon’s taco truck · rear grease bin",
+      kicker: "Alley cam · 15:12",
+      description:
+        "The black pouch is under napkins in Devon’s grease bin. Blue accordion-strap fibers cling to the zipper.",
+      deduction: "The pouch was stashed in the grease bin after the meter theft; the fibers match Paz’s accordion strap.",
+      visual: "crumbs",
+      linkedSuspectIds: ["paz", "devon"],
+      howHint: "Stashed after the clip",
+      whereHint: "Taco-truck grease bin",
+    },
+  ],
+  howChoices: [
+    {
+      id: "vest-key-ruse",
+      label: "Attendant vest + meter key",
+      detail: "Wear stolen attendant gear, unlock the clip with a meter key, walk off.",
+    },
+    {
+      id: "taco-distract",
+      label: "Window distraction grab",
+      detail: "Someone at the taco line snags the pouch while Jules orders.",
+    },
+    {
+      id: "official-ticket",
+      label: "Real ticket confiscation",
+      detail: "A genuine attendant tickets the meter and takes the pouch as ‘abandoned property.’",
+    },
+    {
+      id: "courier-fake",
+      label: "Owner staged the loss",
+      detail: "Jules hid his own pouch to claim a payout.",
+    },
+  ],
+  whereChoices: [
+    {
+      id: "grease-bin",
+      label: "Taco-truck grease bin",
+      detail: "Rear waste bin behind Devon’s truck.",
+    },
+    {
+      id: "accordion-case",
+      label: "Busker instrument case",
+      detail: "Inside Paz’s accordion case on the curb.",
+    },
+    {
+      id: "depot-locker",
+      label: "Meter depot locker",
+      detail: "Rita’s gear cage at Harbor Depot.",
+    },
+    {
+      id: "courier-basket",
+      label: "Jules’s bike basket",
+      detail: "Moved back onto the courier bike.",
+    },
+  ],
+  solution: {
+    who: "paz",
+    how: "vest-key-ruse",
+    where: "grease-bin",
+  },
+  explanation: [
+    "Rita’s depot punch card clears her for the whole theft window — Paz’s statement blaming Rita is a false lead.",
+    "Paz’s own tip-jar still shows attendant vest + meter key, with a blue accordion strap on the thief.",
+    "The grease-bin still recovers the pouch with accordion-strap fibers — Paz took it and stashed it behind the taco truck.",
+  ],
+};
+
+export const playableCases: CaseFile[] = [pigeonCase, lateFeeCase];
+
 export const moreCases = [
   { title: "The Velvet Teaspoon", label: "Coming soon · Case 12" },
   { title: "Murder on the Dessert Trolley", label: "Coming soon · Case 18" },
 ];
+
+export function getCase(id: string): CaseFile | undefined {
+  return playableCases.find((item) => item.id === id);
+}
+
+export function requireCase(id: string): CaseFile {
+  const found = getCase(id);
+  if (!found) throw new Error(`Unknown case: ${id}`);
+  return found;
+}
