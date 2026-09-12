@@ -32,6 +32,8 @@ type LockerTab = "clues" | "people" | "places";
 
 export default function EvidenceLockerPage() {
   const { progress, inspectEvidence, togglePin } = useHeists();
+  const pinnedIds = progress.pinnedEvidenceIds ?? [];
+  const inspectedIds = progress.inspectedEvidenceIds ?? [];
   const [tab, setTab] = useState<LockerTab>("clues");
   const [openEvidence, setOpenEvidence] = useState<Evidence | null>(null);
   const [selectedEvidence, setSelectedEvidence] = useState<Evidence>(
@@ -45,13 +47,13 @@ export default function EvidenceLockerPage() {
     ),
   );
   const pinned = pigeonCase.evidence.filter((item) =>
-    progress.pinnedEvidenceIds.includes(item.id),
+    pinnedIds.includes(item.id),
   );
   const comparisonItems = [
     selectedEvidence,
     ...pinned.filter((item) => item.id !== selectedEvidence.id),
   ];
-  const inspectedCount = progress.inspectedEvidenceIds.length;
+  const inspectedCount = inspectedIds.length;
   const totalClues = pigeonCase.evidence.length;
 
   function inspect(item: Evidence) {
@@ -97,8 +99,8 @@ export default function EvidenceLockerPage() {
           </p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {pigeonCase.evidence.map((item) => {
-              const inspected = progress.inspectedEvidenceIds.includes(item.id);
-              const isPinned = progress.pinnedEvidenceIds.includes(item.id);
+              const inspected = inspectedIds.includes(item.id);
+              const isPinned = pinnedIds.includes(item.id);
               return (
                 <article
                   key={item.id}
@@ -169,12 +171,12 @@ export default function EvidenceLockerPage() {
               className="mt-1 w-full resize-none rounded-lg border border-hairline bg-[#F7F1E6] p-3 text-sm leading-snug text-ink outline-none focus:border-gold focus:ring-1 focus:ring-gold"
             />
             <Button
-              variant={progress.pinnedEvidenceIds.includes(selectedEvidence.id) ? "gold" : "bronze"}
+              variant={pinnedIds.includes(selectedEvidence.id) ? "gold" : "bronze"}
               className="mt-3 w-full rounded-lg"
               onClick={() => togglePin(selectedEvidence.id)}
             >
               <Pin className="size-4" />
-              {progress.pinnedEvidenceIds.includes(selectedEvidence.id) ? "Note pinned" : "Pin this note"}
+              {pinnedIds.includes(selectedEvidence.id) ? "Note pinned" : "Pin this note"}
             </Button>
           </section>
 
@@ -272,7 +274,7 @@ export default function EvidenceLockerPage() {
               <p className="mt-1 text-sm font-semibold text-ink">{notes[openEvidence.id]}</p>
             </div>
             <Button className="mt-4 w-full rounded-lg" onClick={() => togglePin(openEvidence.id)}>
-              <Pin className="size-4" /> {progress.pinnedEvidenceIds.includes(openEvidence.id) ? "Pinned to notes" : "Pin to notes"}
+              <Pin className="size-4" /> {pinnedIds.includes(openEvidence.id) ? "Pinned to notes" : "Pin to notes"}
             </Button>
             <Button
               variant="bronze"
