@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#E8EEF4"/><rect x="18" y="18" width="684" height="504" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">WITNESS CARD · PAZ BLANCO</text>
+  <text x="48" y="104" fill="#5B6675" font-family="ui-monospace, monospace" font-size="16">Fair interview · 15:18</text>
+  <rect x="60" y="140" width="600" height="220" fill="#FFFDF8" stroke="#1B2430" stroke-width="2"/>
+  <text x="90" y="190" fill="#1B2430" font-family="Georgia, serif" font-size="22">“Rita ticketed #441, then walked off</text>
+  <text x="90" y="230" fill="#1B2430" font-family="Georgia, serif" font-size="22">with a black pouch toward the alley</text>
+  <text x="90" y="270" fill="#1B2430" font-family="Georgia, serif" font-size="22">behind the taco truck.”</text>
+  <text x="90" y="330" fill="#C62828" font-family="ui-monospace, monospace" font-size="18">CLAIMS: RITA → ALLEY</text>
+  <text x="48" y="440" fill="#1B2430" font-family="ui-monospace, monospace" font-size="18">TELL: Paz blames Rita (check against clocks)</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/><text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="22" letter-spacing="2">15:18 · INTERVIEW · PAZ STATEMENT</text>
+</svg>

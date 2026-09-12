@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#E8EEF4"/><rect x="18" y="18" width="684" height="504" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <rect x="200" y="50" width="320" height="400" fill="#FFFDF8" stroke="#1B2430" stroke-width="2"/>
+  <text x="250" y="90" fill="#1B2430" font-family="ui-monospace, monospace" font-size="16">DEVON'S TACO TRUCK</text>
+  <text x="250" y="120" fill="#5B6675" font-family="ui-monospace, monospace" font-size="14">ORDER #3 COMBO</text>
+  <line x1="230" y1="140" x2="490" y2="140" stroke="#1B2430"/>
+  <text x="250" y="190" fill="#1B2430" font-family="ui-monospace, monospace" font-size="22">NAME: JULES SPOKE</text>
+  <rect x="230" y="220" width="260" height="70" fill="#DCE6FF" stroke="#2F5BFF" stroke-width="2"/>
+  <text x="270" y="265" fill="#1B2430" font-family="ui-monospace, monospace" font-size="28">15:04</text>
+  <text x="250" y="340" fill="#1B2430" font-family="ui-monospace, monospace" font-size="16">PAID AT SERVICE WINDOW</text>
+  <text x="48" y="470" fill="#1B2430" font-family="ui-monospace, monospace" font-size="18">TELL: Jules at taco line at 15:04</text>
+</svg>

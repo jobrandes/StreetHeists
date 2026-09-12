@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#2A3038"/><rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  <rect x="280" y="80" width="120" height="280" rx="12" fill="#5B6675" stroke="#F2F0EA" stroke-width="3"/>
+  <circle cx="340" cy="160" r="36" fill="#1B2430" stroke="#C9A227" stroke-width="3"/>
+  <text x="312" y="166" fill="#C9A227" font-size="16" font-family="ui-monospace, monospace">441</text>
+  <rect x="300" y="220" width="80" height="50" fill="#F2F0EA"/>
+  <!-- pouch -->
+  <rect x="250" y="300" width="70" height="90" rx="8" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  <text x="258" y="350" fill="#F2F0EA" font-size="12" font-family="ui-monospace, monospace">POUCH</text>
+  <!-- vest edge -->
+  <path d="M40 180 L140 220 L120 360 L40 340 Z" fill="#E87722"/>
+  <text x="50" y="260" fill="#1B2430" font-size="14" font-family="ui-monospace, monospace">ORANGE</text>
+  <text x="50" y="280" fill="#1B2430" font-size="14" font-family="ui-monospace, monospace">VEST</text>
+  <text x="80" y="430" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="18">TELL: pouch on #441 + attendant vest in frame</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/><text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="22" letter-spacing="2">15:02 · FAIR CAM · METER #441</text>
+</svg>
