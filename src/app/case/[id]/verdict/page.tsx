@@ -53,11 +53,20 @@ export default function VerdictPage() {
 
   const chosen = accusationLabels(caseFile, verdict.accusation);
   const revealed = accusationLabels(caseFile, caseFile.solution);
-  const axis = {
+  const axis = verdict.axis ?? {
     who: verdict.accusation.who === caseFile.solution.who,
     how: verdict.accusation.how === caseFile.solution.how,
     where: verdict.accusation.where === caseFile.solution.where,
+    whoEvidence: false,
+    howEvidence: false,
+    whereEvidence: false,
   };
+
+  function evidenceLabel(evidenceId: string) {
+    return (
+      caseFile!.evidence.find((item) => item.id === evidenceId)?.title ?? "No exhibit"
+    );
+  }
 
   return (
     <main className="play-day min-h-dvh px-4 pb-10 pt-7">
@@ -92,33 +101,40 @@ export default function VerdictPage() {
         <p className="mt-3 text-sm leading-relaxed text-ink">
           {verdict.correct
             ? "Marcel offers no comment, then eats part of Exhibit A."
-            : axis.who
-              ? "Right suspect, shaky paperwork. Method or hiding place contradicts the file."
-              : `${chosen.who} is cleared. Re-check who the sill, crumbs, and nest actually name.`}
+            : axis.who && (!axis.whoEvidence || !axis.howEvidence || !axis.whereEvidence)
+              ? "Names can be right and the case still fails — attach the exhibits that prove each part."
+              : axis.who
+                ? "Right suspect, shaky paperwork. Method or hiding place contradicts the file."
+                : `${chosen.who} is cleared. Re-check who the sill, crumbs, and nest actually name.`}
         </p>
       </header>
 
       <section className="mt-5 rounded-xl border border-hairline bg-card p-4">
         <p className="font-display text-[10px] font-bold tracking-[0.18em] text-gold uppercase">
-          {verdict.correct ? "Who / How / Where — confirmed" : "Your accusation — scored"}
+          {verdict.correct
+            ? "Who / How / Where — confirmed with proof"
+            : "Your accusation — scored with exhibits"}
         </p>
         <ul className="mt-3 space-y-2.5">
           <AxisRow
             label="Who"
             value={verdict.correct ? revealed.who : chosen.who}
-            ok={verdict.correct || axis.who}
+            proof={evidenceLabel(verdict.accusation.whoEvidenceId)}
+            ok={verdict.correct || (axis.who && axis.whoEvidence)}
             showMark={!verdict.correct}
           />
           <AxisRow
             label="How"
             value={verdict.correct ? revealed.how : chosen.how}
-            ok={verdict.correct || axis.how}
+            proof={evidenceLabel(verdict.accusation.howEvidenceId)}
+            ok={verdict.correct || (axis.how && axis.howEvidence)}
             showMark={!verdict.correct}
           />
           <AxisRow
             label="Where"
             value={verdict.correct ? revealed.where : chosen.where}
-            ok={verdict.correct || axis.where}
+            proof={evidenceLabel(verdict.accusation.whereEvidenceId)}
+            ok={verdict.correct || (axis.where && axis.whereEvidence)}
             showMark={!verdict.correct}
           />
         </ul>
@@ -170,14 +186,22 @@ export default function VerdictPage() {
               Evidence check
             </p>
             <p className="mt-1 text-sm text-ink">
-              Re-open the feather, crumb trail, and fountain still. Ask what links the sill to
-              the statue.
+              Re-open the feather, crumb trail, and fountain still. Confront a suspect with the
+              right exhibit, then attach proof to each part of the accusation.
             </p>
           </div>
           <Button
             asChild
             size="lg"
             className="mt-5 w-full rounded-lg font-display font-bold tracking-[0.12em] uppercase"
+          >
+            <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence</Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="bronze"
+            className="mt-3 w-full rounded-lg font-display font-bold tracking-[0.12em] uppercase"
           >
             <Link href={`/case/${caseFile.id}/accuse`}>Retry accusation</Link>
           </Button>
@@ -196,11 +220,13 @@ export default function VerdictPage() {
 function AxisRow({
   label,
   value,
+  proof,
   ok,
   showMark,
 }: {
   label: string;
   value: string;
+  proof?: string;
   ok: boolean;
   showMark: boolean;
 }) {
@@ -211,6 +237,9 @@ function AxisRow({
           {label}
         </p>
         <p className="mt-0.5 text-sm font-semibold text-ink">{value}</p>
+        {proof ? (
+          <p className="mt-0.5 text-[11px] text-muted">Exhibit · {proof}</p>
+        ) : null}
       </div>
       {showMark ? (
         <span
