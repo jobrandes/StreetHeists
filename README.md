@@ -2,7 +2,9 @@
 
 Street Heists is a short comedy-heist mystery for the phone. The splash home leads with the brand; the case board lives at `/cases`. Cases start easy and unlock harder ones only after a correct solve. Open a case, read a short story briefing, inspect clues, rebuild the scene on the desk as you key options, then make one Who / How / Where accusation.
 
-**Jo's test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
+Every case screen shares a progress strip and bottom tabs (Locker · Confront · Scene · Accuse) so you always know where you are in the journey. Scene is a draft theory desk; Accuse is the real, evidence-backed submission.
+
+**Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
 
 The seed mystery, **The Pigeon Job**, is a complete 5–10 minute case with six evidence items, four suspects, retry-aware verdicts, and two exportable Midnight Crew share cards.
 

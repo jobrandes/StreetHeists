@@ -1,11 +1,12 @@
 "use client";
 
+import { CaseChrome } from "@/components/case-chrome";
+import { SceneDraftGate } from "@/components/scene-draft-gate";
 import { SceneReconstruct } from "@/components/scene-reconstruct";
 import { Button } from "@/components/ui/button";
 import { isCaseUnlocked } from "@/lib/investigation";
 import { getCase, playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
@@ -56,38 +57,24 @@ export default function ReconstructPage() {
   );
 
   return (
-    <main className="play-day min-h-dvh px-4 pb-28 pt-4">
-      <Link
-        href={`/case/${caseFile.id}/evidence`}
-        className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
-        onClick={() => openCase(caseFile.id)}
-      >
-        <ChevronLeft className="size-4" /> Evidence Locker
-      </Link>
-
-      <div className="mt-4">
-        <SceneReconstruct
-          caseFile={caseFile}
-          picks={progress.reconstructionPicks}
-          inspectedEvidence={inspected}
-          onPick={(slotId, optionId) => {
-            openCase(caseFile.id);
-            setReconstructionPick(caseFile.id, slotId, optionId);
-          }}
-          onClearSlot={(slotId) => setReconstructionPick(caseFile.id, slotId, null)}
-        />
-      </div>
-
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
-        <div className="grid grid-cols-2 gap-2">
-          <Button asChild variant="bronze" size="lg" className="rounded-lg">
-            <Link href={`/case/${caseFile.id}/evidence`}>Keep inspecting</Link>
-          </Button>
-          <Button asChild size="lg" className="rounded-lg">
-            <Link href={`/case/${caseFile.id}/accuse`}>Accuse</Link>
-          </Button>
-        </div>
-      </div>
-    </main>
+    <CaseChrome
+      caseFile={caseFile}
+      progress={progress}
+      step="scene"
+      backHref={`/case/${caseFile.id}/evidence`}
+      backLabel="Locker"
+    >
+      <SceneDraftGate />
+      <SceneReconstruct
+        caseFile={caseFile}
+        picks={progress.reconstructionPicks}
+        inspectedEvidence={inspected}
+        onPick={(slotId, optionId) => {
+          openCase(caseFile.id);
+          setReconstructionPick(caseFile.id, slotId, optionId);
+        }}
+        onClearSlot={(slotId) => setReconstructionPick(caseFile.id, slotId, null)}
+      />
+    </CaseChrome>
   );
 }

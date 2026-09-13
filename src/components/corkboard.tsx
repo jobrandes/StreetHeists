@@ -1,5 +1,6 @@
 "use client";
 
+import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { corkLinkIsSound } from "@/lib/store";
 import type { CaseFile, CorkLink, Evidence, Suspect } from "@/lib/types";
@@ -50,11 +51,16 @@ export function CorkboardConnect({
           Corkboard
         </p>
       </div>
-      <h2 className="mt-1 font-serif text-2xl font-bold text-ink">String the board</h2>
+      <h2 className="mt-1 font-serif text-2xl font-bold text-ink">String a clue to a suspect</h2>
       <p className="mt-1 text-sm leading-snug text-ink">
-        Pick an exhibit, pick a suspect, then string them. The board tells you if the link is
-        logically sound.
+        Deliberate linking — pick an exhibit, pick a person, then string them. This is not Quick matches
+        (the auto tray on Clues). Use Corkboard when you want to commit a theory about who a clue names.
       </p>
+      <FirstUseTip
+        tipId="corkboard"
+        className="mt-2"
+        text="Corkboard = you string the thread. Quick matches (Clues tab) only auto-highlights overlaps."
+      />
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
