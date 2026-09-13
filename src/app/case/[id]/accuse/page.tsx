@@ -173,7 +173,7 @@ export default function AccusePage() {
           <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence first</Link>
         </Button>
         <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
-          <Link href={`/case/${caseFile.id}/evidence">Back to case file</Link>
+          <Link href={`/case/${caseFile.id}/evidence`}>Back to case file</Link>
         </Button>
       </div>
     </main>
