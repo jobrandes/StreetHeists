@@ -47,6 +47,7 @@ const defaultProgress: CaseProgress = {
   corkLinks: [],
   crackedConfrontationIds: [],
   confrontAttempts: 0,
+  reconstructionPicks: {},
 };
 
 const defaults: Persisted = {
@@ -100,6 +101,17 @@ function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
       : [],
     confrontAttempts:
       typeof raw?.confrontAttempts === "number" ? raw.confrontAttempts : 0,
+    reconstructionPicks:
+      raw?.reconstructionPicks &&
+      typeof raw.reconstructionPicks === "object" &&
+      !Array.isArray(raw.reconstructionPicks)
+        ? Object.fromEntries(
+            Object.entries(raw.reconstructionPicks).filter(
+              (entry): entry is [string, string] =>
+                typeof entry[0] === "string" && typeof entry[1] === "string",
+            ),
+          )
+        : {},
   };
 }
 
@@ -181,6 +193,11 @@ type Store = {
     evidenceId: string,
   ) => ConfrontResult;
   submitAccusation: (caseId: string, accusation: Accusation) => Verdict;
+  setReconstructionPick: (
+    caseId: string,
+    slotId: string,
+    optionId: string | null,
+  ) => void;
   resetCase: (caseId: string) => void;
 };
 
@@ -524,6 +541,21 @@ export function HeistProvider({ children }: { children: ReactNode }) {
           })),
         }));
         return verdict;
+      },
+      setReconstructionPick(caseId, slotId, optionId) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => {
+            const next = { ...progress.reconstructionPicks };
+            if (!optionId) {
+              delete next[slotId];
+            } else {
+              next[slotId] = optionId;
+            }
+            return { ...progress, reconstructionPicks: next };
+          }),
+        }));
       },
       resetCase(caseId) {
         setState((current) => ({
