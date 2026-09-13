@@ -9,15 +9,16 @@ import { EvidenceArt } from "@/components/evidence-art";
 import { KeyholeLogo } from "@/components/keyhole-logo";
 import { EvidenceInspectDialog } from "@/components/evidence-inspect-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
-import { getCase } from "@/lib/seed";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { isCaseUnlocked } from "@/lib/investigation";
+import { getCase, playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
   Check,
   ChevronLeft,
-  ChevronRight,
+  Clapperboard,
   ClipboardList,
   FolderOpen,
   MapPin,
@@ -29,7 +30,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 type LockerTab = "clues" | "people" | "places" | "binder";
 
@@ -46,6 +47,11 @@ export default function EvidenceLockerPage() {
     setCorkLink,
   } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
+  const progressMap = useMemo(
+    () =>
+      Object.fromEntries(playableCases.map((item) => [item.id, progressFor(item.id)])),
+    [progressFor],
+  );
   const CLUES = caseFile?.evidence ?? [];
   const pinnedIds = progress.pinnedEvidenceIds ?? [];
   const inspectedIds = progress.inspectedEvidenceIds ?? [];
@@ -96,6 +102,22 @@ export default function EvidenceLockerPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
           <Button asChild className="mt-4"><Link href="/">Return to Case Board</Link></Button>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isCaseUnlocked(caseFile, progressMap)) {
+    return (
+      <main className="play-day grid min-h-dvh place-items-center p-6 text-center">
+        <div>
+          <h1 className="font-serif text-3xl font-bold text-ink">Case still locked.</h1>
+          <p className="mt-2 text-sm text-muted">
+            Solve the prior case correctly before this locker opens.
+          </p>
+          <Button asChild className="mt-4">
+            <Link href="/">Return to Case Board</Link>
+          </Button>
         </div>
       </main>
     );
@@ -276,27 +298,37 @@ export default function EvidenceLockerPage() {
       {tab === "places" ? <PlacesRoster caseFile={caseFile} /> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <Button
             asChild
             variant="bronze"
             size="lg"
-            className="rounded-lg font-display text-xs font-bold tracking-[0.1em] uppercase"
+            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
           >
             <Link href={`/case/${caseFile.id}/confront`}>
-              <MessageSquareWarning className="size-4" /> Confront
+              <MessageSquareWarning className="size-3.5" /> Confront
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="bronze"
+            size="lg"
+            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
+          >
+            <Link href={`/case/${caseFile.id}/reconstruct`}>
+              <Clapperboard className="size-3.5" /> Scene
             </Link>
           </Button>
           <Button
             asChild
             size="lg"
-            className="rounded-lg font-display text-xs font-bold tracking-[0.1em] uppercase"
+            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
           >
             <Link href={`/case/${caseFile.id}/accuse`}>Accuse</Link>
           </Button>
         </div>
         <p className="mt-1 text-center text-[11px] text-muted">
-          {inspectedCount} of {totalClues} clues opened · binder holds chain of custody
+          {inspectedCount} of {totalClues} clues · scene desk rebuilds as you pick
         </p>
       </div>
 
