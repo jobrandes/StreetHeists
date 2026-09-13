@@ -167,7 +167,7 @@ export default function AccusePage() {
       </p>
       <div className="mt-4 grid gap-2">
         <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
-          <Link href={`/case/${caseFile.id}/reconstruct">Rebuild on the scene desk</Link>
+          <Link href={`/case/${caseFile.id}/reconstruct`}>Rebuild on the scene desk</Link>
         </Button>
         <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
           <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence first</Link>
