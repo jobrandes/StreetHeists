@@ -2,6 +2,19 @@ import { describe, expect, it } from "vitest";
 import { compareLinks, linksForEvidence, suspectDossiers } from "./case-file";
 import { lateFeeCase, pigeonCase, playableCases } from "./seed";
 
+describe("case progression metadata", () => {
+  it("ships briefing beats and reconstruction desks on playable cases", () => {
+    for (const caseFile of playableCases) {
+      expect(caseFile.briefing.length).toBeGreaterThanOrEqual(3);
+      expect(caseFile.reconstruction.slots.length).toBe(3);
+      expect(caseFile.difficulty).toBeTruthy();
+    }
+    expect(pigeonCase.difficulty).toBe("tutorial");
+    expect(lateFeeCase.difficulty).toBe("standard");
+    expect(lateFeeCase.unlockAfterCaseId).toBe("pigeon-job");
+  });
+});
+
 describe("The Pigeon Job solution", () => {
   it("has a coherent who/how/where solution", () => {
     const { solution, suspects, howChoices, whereChoices } = pigeonCase;

@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   isAccusationCorrect,
+  isCaseUnlocked,
   isSoundCorkLink,
+  reconstructionScore,
+  sceneLinesForPicks,
   scoreAxis,
 } from "./investigation";
 import { lateFeeCase, pigeonCase } from "./seed";
@@ -69,6 +72,54 @@ describe("confrontations", () => {
       (item) => item.id === "paz-blames-rita",
     );
     expect(confrontation?.correctEvidenceId).toBe("rita-timecard");
+  });
+});
+
+describe("difficulty unlocks", () => {
+  it("keeps the tutorial open with no prior case", () => {
+    expect(isCaseUnlocked(pigeonCase, {})).toBe(true);
+  });
+
+  it("locks The Late Fee until The Pigeon Job is solved correctly", () => {
+    expect(isCaseUnlocked(lateFeeCase, {})).toBe(false);
+    expect(
+      isCaseUnlocked(lateFeeCase, {
+        "pigeon-job": { lastVerdict: { correct: false } },
+      }),
+    ).toBe(false);
+    expect(
+      isCaseUnlocked(lateFeeCase, {
+        "pigeon-job": { lastVerdict: { correct: true } },
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("scene reconstruction", () => {
+  it("scores picks and builds live scene lines", () => {
+    const picks = {
+      who: "marcel",
+      how: "window-cord",
+      where: "statue-nest",
+    };
+    const score = reconstructionScore(pigeonCase, picks);
+    expect(score).toMatchObject({
+      filled: 3,
+      total: 3,
+      correct: 3,
+      complete: true,
+      perfect: true,
+    });
+    const lines = sceneLinesForPicks(pigeonCase, picks);
+    expect(lines).toHaveLength(3);
+    expect(lines[0]).toMatch(/pigeon/i);
+  });
+
+  it("does not count empty slots as correct", () => {
+    const score = reconstructionScore(pigeonCase, { who: "celine" });
+    expect(score.filled).toBe(1);
+    expect(score.correct).toBe(0);
+    expect(score.complete).toBe(false);
   });
 });
 

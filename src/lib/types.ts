@@ -86,12 +86,42 @@ export type SolutionEvidence = {
   where: string[];
 };
 
+export type CaseDifficulty = "tutorial" | "standard" | "hard";
+
+export type BriefingBeat = {
+  title: string;
+  copy: string;
+};
+
+/** One slot in the scene desk — player keys an option while browsing evidence. */
+export type ReconstructionSlot = {
+  id: string;
+  label: string;
+  prompt: string;
+  /** Options the player can key in (ids match suspects / how / where / evidence). */
+  options: Choice[];
+  correctOptionId: string;
+  /** When this option is chosen, the scene frame shows this line. */
+  sceneLineByOption: Record<string, string>;
+};
+
+export type SceneReconstruction = {
+  title: string;
+  intro: string;
+  slots: ReconstructionSlot[];
+};
+
 export type CaseFile = {
   id: string;
   number: number;
   title: string;
   subtitle: string;
   premise: string;
+  /** Short story beats for the briefing (tight, not a novella). */
+  briefing: BriefingBeat[];
+  difficulty: CaseDifficulty;
+  /** Prior case id that must be solved correctly before this one unlocks. */
+  unlockAfterCaseId?: string;
   suspects: Suspect[];
   evidence: Evidence[];
   howChoices: Choice[];
@@ -101,6 +131,7 @@ export type CaseFile = {
   explanation: string[];
   contradictions?: Contradiction[];
   confrontations?: Confrontation[];
+  reconstruction: SceneReconstruction;
 };
 
 export type VerdictAxis = {
@@ -158,4 +189,6 @@ export type CaseProgress = {
   corkLinks: CorkLink[];
   crackedConfrontationIds: string[];
   confrontAttempts: number;
+  /** slotId → chosen optionId for the scene desk */
+  reconstructionPicks: Record<string, string>;
 };
