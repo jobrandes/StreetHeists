@@ -8,17 +8,41 @@ import { cn } from "@/lib/utils";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-const empty: Accusation = { who: "", how: "", where: "" };
+const empty: Accusation = {
+  who: "",
+  how: "",
+  where: "",
+  whoEvidenceId: "",
+  howEvidenceId: "",
+  whereEvidenceId: "",
+};
 
 export default function AccusePage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const caseFile = getCase(id);
-  const { submitAccusation } = useHeists();
+  const { submitAccusation, progressFor } = useHeists();
   const [accusation, setAccusation] = useState(empty);
-  const completed = [accusation.who, accusation.how, accusation.where].filter(Boolean).length;
+  const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
+
+  const bagged = useMemo(() => {
+    if (!caseFile) return [];
+    return caseFile.evidence.filter((item) =>
+      progress.inspectedEvidenceIds.includes(item.id),
+    );
+  }, [caseFile, progress.inspectedEvidenceIds]);
+
+  const parts = [
+    accusation.who,
+    accusation.how,
+    accusation.where,
+    accusation.whoEvidenceId,
+    accusation.howEvidenceId,
+    accusation.whereEvidenceId,
+  ];
+  const completed = parts.filter(Boolean).length;
 
   if (!caseFile) {
     return (
@@ -34,7 +58,7 @@ export default function AccusePage() {
   }
 
   function submit() {
-    if (!caseFile || completed !== 3) return;
+    if (!caseFile || completed !== 6) return;
     submitAccusation(caseFile.id, accusation);
     router.push(`/case/${caseFile.id}/verdict`);
   }
@@ -47,9 +71,20 @@ export default function AccusePage() {
         </p>
         <h1 className="mt-1 font-serif text-[4.5rem] font-bold leading-[0.88] text-ink">Accuse</h1>
         <p className="mx-auto mt-3 max-w-xs text-sm leading-snug text-ink">
-          Choose one answer in each group. Your verdict stays unlocked until the theory is complete.
+          Name who / how / where — then attach the exhibit that proves each part. Right suspect with
+          the wrong proof still fails.
         </p>
       </header>
+
+      {bagged.length === 0 ? (
+        <div className="mt-6 rounded-xl border border-fail/30 bg-[#F8D7D7]/40 p-4 text-sm text-ink">
+          No exhibits bagged yet.{" "}
+          <Link href={`/case/${caseFile.id}/evidence`} className="font-semibold text-gold underline">
+            Open the Evidence Locker
+          </Link>{" "}
+          before locking a verdict.
+        </div>
+      ) : null}
 
       <ChoiceSection number={1} title="Who">
         {caseFile.suspects.map((suspect) => (
@@ -62,6 +97,13 @@ export default function AccusePage() {
           />
         ))}
       </ChoiceSection>
+      <EvidencePick
+        label="Proof of who"
+        evidence={bagged}
+        selectedId={accusation.whoEvidenceId}
+        onSelect={(whoEvidenceId) => setAccusation((value) => ({ ...value, whoEvidenceId }))}
+      />
+
       <ChoiceSection number={2} title="How">
         {caseFile.howChoices.map((choice) => (
           <Option
@@ -72,6 +114,13 @@ export default function AccusePage() {
           />
         ))}
       </ChoiceSection>
+      <EvidencePick
+        label="Proof of how"
+        evidence={bagged}
+        selectedId={accusation.howEvidenceId}
+        onSelect={(howEvidenceId) => setAccusation((value) => ({ ...value, howEvidenceId }))}
+      />
+
       <ChoiceSection number={3} title="Where">
         {caseFile.whereChoices.map((choice) => (
           <Option
@@ -82,24 +131,69 @@ export default function AccusePage() {
           />
         ))}
       </ChoiceSection>
+      <EvidencePick
+        label="Proof of where"
+        evidence={bagged}
+        selectedId={accusation.whereEvidenceId}
+        onSelect={(whereEvidenceId) => setAccusation((value) => ({ ...value, whereEvidenceId }))}
+      />
 
       <Button
         size="xl"
         className="mt-8 w-full rounded-lg font-display text-lg font-bold uppercase"
-        disabled={completed !== 3}
+        disabled={completed !== 6}
         onClick={submit}
       >
         <KeyRound className="size-5" /> Lock verdict
       </Button>
       <p className="mt-2 text-center text-xs text-muted">
-        {completed === 3
-          ? "Your theory is complete."
-          : `Select ${3 - completed} more part${3 - completed === 1 ? "" : "s"}.`}
+        {completed === 6
+          ? "Theory and proof are complete."
+          : `Fill ${6 - completed} more field${6 - completed === 1 ? "" : "s"}.`}
       </p>
-      <Button asChild variant="bronze" size="lg" className="mt-4 w-full rounded-lg text-ink">
-        <Link href={`/case/${caseFile.id}/evidence`}>Back to case file</Link>
-      </Button>
+      <div className="mt-4 grid gap-2">
+        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
+          <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence first</Link>
+        </Button>
+        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
+          <Link href={`/case/${caseFile.id}/evidence`}>Back to case file</Link>
+        </Button>
+      </div>
     </main>
+  );
+}
+
+function EvidencePick({
+  label,
+  evidence,
+  selectedId,
+  onSelect,
+}: {
+  label: string;
+  evidence: { id: string; title: string }[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div className="mt-3 rounded-xl border border-hairline bg-card p-3">
+      <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+        {label}
+      </p>
+      {evidence.length === 0 ? (
+        <p className="mt-2 text-sm text-muted">Bag exhibits before attaching proof.</p>
+      ) : (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {evidence.map((item) => (
+            <Option
+              key={item.id}
+              selected={selectedId === item.id}
+              onClick={() => onSelect(item.id)}
+              label={item.title}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
