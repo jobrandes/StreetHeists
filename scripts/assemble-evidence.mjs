@@ -3,18 +3,33 @@ import path from "node:path";
 
 /**
  * Evidence art is per-clue and must match what the player is supposed to notice.
- * Validates every imageSrc in src/lib/seed.ts (svg/png/jpg).
+ * Validates every imageSrc under src/lib (seed + case modules).
  */
 
-const seedPath = path.resolve("src/lib/seed.ts");
+const libRoot = path.resolve("src/lib");
 const publicRoot = path.resolve("public");
 const MIN_BYTES = 1000;
 
-const seed = fs.readFileSync(seedPath, "utf8");
-const imageSrcs = [...seed.matchAll(/imageSrc:\s*"([^"]+)"/g)].map((m) => m[1]);
+function collectTsFiles(dir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...collectTsFiles(full));
+    else if (entry.isFile() && entry.name.endsWith(".ts")) out.push(full);
+  }
+  return out;
+}
+
+const imageSrcs = [];
+for (const file of collectTsFiles(libRoot)) {
+  const text = fs.readFileSync(file, "utf8");
+  for (const match of text.matchAll(/imageSrc:\s*"([^"]+)"/g)) {
+    imageSrcs.push(match[1]);
+  }
+}
 
 if (imageSrcs.length === 0) {
-  console.error("FAIL: no imageSrc entries found in src/lib/seed.ts");
+  console.error("FAIL: no imageSrc entries found under src/lib");
   process.exit(1);
 }
 
@@ -80,11 +95,9 @@ for (const src of imageSrcs) {
 }
 
 if (failures.length) {
-  console.error(
-    "\nEvidence assets failed validation. Each clue needs unique, real art that matches its tell.\n" +
-      failures.map((line) => `  - ${line}`).join("\n"),
-  );
+  console.error("\nEvidence validation failed:");
+  for (const line of failures) console.error(" -", line);
   process.exit(1);
 }
 
-console.log(`Evidence assets validated (${imageSrcs.length} unique clues).`);
+console.log(`Evidence assets validated (${seen.size} unique clues).`);

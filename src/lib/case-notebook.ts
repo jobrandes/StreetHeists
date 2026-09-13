@@ -13,7 +13,7 @@ export type NotebookSection = {
   lines: NotebookLine[];
 };
 
-/** Auto-builds the running case sheet from progress — nothing to memorize. */
+/** Auto-builds the running Case file from progress — nothing to memorize. */
 export function buildCaseNotebook(
   caseFile: CaseFile,
   progress: CaseProgress,
@@ -43,7 +43,7 @@ export function buildCaseNotebook(
     const suspect = caseFile.suspects.find((item) => item.id === link.suspectId);
     return {
       label: clue?.title ?? "Clue",
-      body: `Stringed to ${suspect?.name ?? "a suspect"}`,
+      body: `Tagged to ${suspect?.name ?? "a suspect"}`,
     };
   });
 
@@ -57,7 +57,7 @@ export function buildCaseNotebook(
       };
     });
 
-  const sceneLines = caseFile.reconstruction.slots
+  const decideLines = caseFile.reconstruction.slots
     .map((slot) => {
       const pickId = progress.reconstructionPicks[slot.id];
       if (!pickId) return null;
@@ -82,37 +82,37 @@ export function buildCaseNotebook(
     {
       id: "clues",
       title: "Clues you’ve opened",
-      empty: "Open clues in the Locker — each takeaway files here automatically.",
+      empty: "Open clues in Gather — each takeaway files here automatically.",
       lines: clueLines,
     },
     {
       id: "hotspots",
       title: "Hotspots you found",
-      empty: "Tap bright spots on stills — reveals collect here.",
+      empty: "Tap bright spots on photos — reveals collect here.",
       lines: hotspotLines,
     },
     {
       id: "cork",
-      title: "Corkboard strings",
-      empty: "In Binder, string a clue to a suspect — it shows up here.",
+      title: "Suspect tags",
+      empty: "When a clue points at someone, the tag lands here.",
       lines: corkLines,
     },
     {
       id: "confront",
-      title: "Confrontations cracked",
-      empty: "Break a claim with the right exhibit — it files here.",
+      title: "Broken alibis",
+      empty: "If a claim collapses under a clue, it files here.",
       lines: confrontLines,
     },
     {
       id: "scene",
-      title: "Scene desk draft",
-      empty: "Key Who / How / Where on Scene — draft only, saved here.",
-      lines: sceneLines,
+      title: "Decide draft",
+      empty: "Fill Who / How / Where in Decide — your picks save here.",
+      lines: decideLines,
     },
     {
       id: "contradictions",
       title: "Contradictions spotted",
-      empty: "Catch a mismatch between exhibits — insight files here.",
+      empty: "Catch a mismatch between clues — insight files here.",
       lines: contradictionLines,
     },
   ];

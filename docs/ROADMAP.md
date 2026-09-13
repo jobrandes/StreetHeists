@@ -7,14 +7,15 @@ From single-case demo to a game you could actually sell.
 **Goal:** Get enough real content and variety to know if this is actually fun beyond one case.
 
 - Build out to 8–12 launch cases (not just "coming soon" teasers)
+  - Shipped playable: Pigeon Job, Late Fee, Velvet Teaspoon, Dessert Trolley
 - Vary mechanics between cases — not just new character names on the same puzzle shape:
-  - Physical evidence puzzles
-  - Witness statement contradictions
-  - Timeline/alibi puzzles
-  - Occasional red herrings / false leads
-- Design a difficulty curve: tutorial case → escalating mid-tier → one genuinely hard "master case"
+  - Physical evidence trail (Pigeon)
+  - Witness statement / clock contradiction (Late Fee)
+  - Place-card fraud + identity mark (Velvet Teaspoon)
+  - Route timing + diversion (Dessert Trolley)
+- Design a difficulty curve: tutorial case → escalating mid-tier → hard salon/theatre pair
 - Playtest with a few real strangers (not just yourself) — watch where they get stuck or bored
-- Fix the CI lockfile issue (land full `package-lock.json`, drop the `npm install` fallback)
+- ~~Fix the CI lockfile issue (land full `package-lock.json`, drop the `npm install` fallback)~~
 - Confirm Next/React versions are stable releases, not canary tags
 - Evidence art must fail the build if missing (no silent placeholders in production)
 

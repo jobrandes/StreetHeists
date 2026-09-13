@@ -186,8 +186,8 @@ export default function VerdictPage() {
               Evidence check
             </p>
             <p className="mt-1 text-sm text-ink">
-              Re-open the feather, crumb trail, and fountain still. Confront a suspect with the
-              right exhibit, then attach proof to each part of the accusation.
+              Back to Gather — reopen the clues that still itch. Then Decide again: Who / How /
+              Where, each with proof from Case file. A funny theory without exhibits still fails.
             </p>
           </div>
           <Button

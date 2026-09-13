@@ -4,6 +4,8 @@ Street Heists is a short comedy-heist mystery for the phone. The splash home lea
 
 **Direction C flow:** Briefing → **Gather** (clues we give you: photos, docs, notes) → **Decide** (Who / How / Where + attach proof → Accuse). Tap **Case file** anytime for a running sheet that auto-keeps takeaways. Phone text defaults larger; toggle Large / Comfortable on home and the case board.
 
+Playable cases: **The Pigeon Job** (tutorial), **The Late Fee** (clock contradiction), **The Velvet Teaspoon** (place-card fraud + lipstick ID), **Murder on the Dessert Trolley** (route timing + diversion).
+
 **Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
 
 The seed mystery, **The Pigeon Job**, is a complete 5–10 minute case with six evidence items, four suspects, retry-aware verdicts, and two exportable Midnight Crew share cards.
@@ -48,10 +50,12 @@ Every push to `main` can auto-rebuild. This is a private preview for testing, no
 ## Product flow
 
 - `/` — Case Board
-- `/case/pigeon-job` — three-part Briefing
-- `/case/pigeon-job/evidence` — provided evidence locker, deductions, and compare tray
-- `/case/pigeon-job/accuse` — Who / How / Where accusation
-- `/case/pigeon-job/verdict` — wrong-answer retry or solved result and share cards
+- `/case/pigeon-job` — Briefing
+- `/case/pigeon-job/evidence` — **Gather** (provided clues)
+- `/case/pigeon-job/accuse` — **Decide** (Who / How / Where + proof)
+- `/case/pigeon-job/verdict` — retry or solved + share cards
+
+Confront / reconstruct URLs redirect into Gather / Decide.
 
 Legacy `/heist/*`, `/run/*`, `/plan`, and `/complete` links redirect into the case flow.
 
