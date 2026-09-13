@@ -89,7 +89,7 @@ export default function HomeSplashPage() {
                 </Button>
               </DialogTrigger>
               <DialogContent title="How it works" className="play-day">
-                <ol className="space-y-3 text-sm leading-snug text-ink">
+                <ol className="max-h-[min(58vh,28rem)] space-y-3 overflow-y-auto text-sm leading-snug text-ink">
                   <li>
                     <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
                       1 · Case board
@@ -98,18 +98,42 @@ export default function HomeSplashPage() {
                   </li>
                   <li>
                     <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
-                      2 · Evidence
+                      2 · Briefing
                     </span>
-                    <p className="mt-1">Inspect stills and documents, rebuild the scene, confront if you need to.</p>
+                    <p className="mt-1">Story beats for this case — then open the locker.</p>
                   </li>
                   <li>
                     <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
-                      3 · Accuse
+                      3 · Evidence locker
                     </span>
-                    <p className="mt-1">Name who / how / where — and attach the exhibits that prove each part.</p>
+                    <p className="mt-1">
+                      Clues to inspect; People / Places dossiers; Binder for custody + Corkboard
+                      (deliberate links). Quick matches auto-fill from opened clues.
+                    </p>
+                  </li>
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      4 · Confront
+                    </span>
+                    <p className="mt-1">Press a suspect with one exhibit that breaks their claim.</p>
+                  </li>
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      5 · Scene desk
+                    </span>
+                    <p className="mt-1">Draft Who / How / Where — scratchpad only; does not lock the case.</p>
+                  </li>
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      6 · Accuse
+                    </span>
+                    <p className="mt-1">The real call: same questions, but attach proof. Wrong proof fails.</p>
                   </li>
                 </ol>
-                <Button asChild className="mt-5 w-full rounded-lg font-display tracking-[0.12em] uppercase">
+                <p className="mt-3 text-[11px] leading-snug text-muted">
+                  On every case screen, bottom tabs keep Locker · Confront · Scene · Accuse one tap away.
+                </p>
+                <Button asChild className="mt-4 w-full rounded-lg font-display tracking-[0.12em] uppercase">
                   <Link href="/cases">Open case board</Link>
                 </Button>
               </DialogContent>
