@@ -2,8 +2,10 @@
 
 import { KeyholeLogo } from "@/components/keyhole-logo";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -21,55 +23,48 @@ export default function HomeSplashPage() {
   }, [progressFor]);
 
   return (
-    <main className="play-day relative flex min-h-dvh flex-col overflow-hidden">
-      {/* Full-bleed atmosphere — cool street wash under paper light */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 90% 55% at 50% 18%, rgba(47,91,255,0.22), transparent 58%),
-            linear-gradient(180deg, rgba(27,36,48,0.08) 0%, transparent 42%),
-            linear-gradient(165deg, #D5DCE8 0%, #EEF2F6 38%, #C8D2E2 100%)
-          `,
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] opacity-[0.14]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            90deg,
-            transparent 0,
-            transparent 18px,
-            rgba(27,36,48,0.35) 18px,
-            rgba(27,36,48,0.35) 19px
-          ), linear-gradient(180deg, transparent, rgba(27,36,48,0.25))`,
-        }}
-      />
-      <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[1]" />
+    <main className="relative flex min-h-dvh flex-col overflow-hidden bg-[#1B2430] text-white">
+      {/* Mock B — full-bleed street wash */}
+      <div aria-hidden className="absolute inset-0">
+        <Image
+          src="/splash/street-wash.jpg"
+          alt=""
+          fill
+          priority
+          sizes="430px"
+          className="object-cover object-[center_35%]"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              linear-gradient(180deg, rgba(27,36,48,0.55) 0%, rgba(27,36,48,0.28) 38%, rgba(27,36,48,0.72) 72%, rgba(27,36,48,0.92) 100%),
+              radial-gradient(ellipse 80% 45% at 50% 20%, rgba(47,91,255,0.18), transparent 60%)
+            `,
+          }}
+        />
+      </div>
+      <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[1] opacity-40" />
 
       <div className="relative z-10 flex flex-1 flex-col px-5 pb-10 pt-8">
         <header className="flex items-center justify-between">
-          <p className="font-display text-[10px] font-bold tracking-[0.22em] text-[#2F5BFF] uppercase">
-            Comedy crime division
+          <p className="font-display text-[10px] font-bold tracking-[0.22em] text-[#9EB0FF] uppercase">
+            Street Heists
           </p>
-          <span className="max-w-[7rem] truncate rounded-full border border-hairline bg-card/80 px-3 py-1 text-[11px] text-ink backdrop-blur-sm">
+          <span className="max-w-[7rem] truncate rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] text-white backdrop-blur-sm">
             {alias}
           </span>
         </header>
 
         <section className="flex flex-1 flex-col items-center justify-center text-center">
-          <KeyholeLogo className="size-14 drop-shadow-[0_8px_18px_rgba(47,91,255,0.35)]" />
-          <h1 className="mt-5 font-display text-[3.35rem] leading-[0.82] font-bold tracking-[0.08em] text-ink uppercase sm:text-[3.75rem]">
+          <KeyholeLogo className="size-14 drop-shadow-[0_10px_24px_rgba(47,91,255,0.45)]" />
+          <h1 className="mt-5 font-display text-[3.4rem] leading-[0.82] font-bold tracking-[0.08em] text-white uppercase sm:text-[3.8rem]">
             Street
             <br />
             Heists
           </h1>
-          <p className="mt-5 max-w-[16rem] font-serif text-xl leading-snug text-ink italic">
-            Crack the case from your couch.
-          </p>
-          <p className="mt-3 max-w-[18rem] text-sm leading-snug text-muted">
+          <p className="mt-5 font-serif text-xl text-white/90 italic">Comedy crime division</p>
+          <p className="mt-3 max-w-[18rem] text-sm leading-snug text-white/75">
             Inspect the evidence we give you. One accusation. No walking required.
           </p>
 
@@ -79,26 +74,61 @@ export default function HomeSplashPage() {
               size="xl"
               className="h-16 w-full rounded-lg font-display text-lg font-bold tracking-[0.14em] uppercase shadow-[0_6px_0_#2549d6]"
             >
-              <Link href="/cases">Enter the division</Link>
+              <Link href="/cases">Open case board</Link>
             </Button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="bronze"
+                  size="lg"
+                  className="w-full rounded-lg border-white/30 bg-white/10 font-display text-sm font-bold tracking-[0.1em] text-white uppercase backdrop-blur-sm hover:bg-white/18"
+                >
+                  How it works
+                </Button>
+              </DialogTrigger>
+              <DialogContent title="How it works" className="play-day">
+                <ol className="space-y-3 text-sm leading-snug text-ink">
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      1 · Case board
+                    </span>
+                    <p className="mt-1">Pick an unlocked file. Harder cases open only after a correct solve.</p>
+                  </li>
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      2 · Evidence
+                    </span>
+                    <p className="mt-1">Inspect stills and documents, rebuild the scene, confront if you need to.</p>
+                  </li>
+                  <li>
+                    <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                      3 · Accuse
+                    </span>
+                    <p className="mt-1">Name who / how / where — and attach the exhibits that prove each part.</p>
+                  </li>
+                </ol>
+                <Button asChild className="mt-5 w-full rounded-lg font-display tracking-[0.12em] uppercase">
+                  <Link href="/cases">Open case board</Link>
+                </Button>
+              </DialogContent>
+            </Dialog>
+
             {continueCase ? (
               <Button
                 asChild
-                variant="bronze"
+                variant="ghost"
                 size="lg"
-                className="w-full rounded-lg font-display text-sm font-bold tracking-[0.1em] uppercase"
+                className="w-full rounded-lg font-display text-sm font-bold tracking-[0.1em] text-white/90 uppercase hover:bg-white/10"
               >
                 <Link href={`/case/${continueCase.id}`}>Continue {continueCase.title}</Link>
               </Button>
-            ) : (
-              <p className="text-[11px] text-muted">
-                Case board unlocks harder files after a correct solve.
-              </p>
-            )}
+            ) : null}
           </div>
         </section>
 
-        <p className="text-center font-display text-[10px] tracking-[0.2em] text-muted uppercase">
+        <p className="text-center font-display text-[10px] tracking-[0.2em] text-white/55 uppercase">
           Phone mystery · 5–10 min cases
         </p>
       </div>
