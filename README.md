@@ -1,10 +1,8 @@
 # Street Heists
 
-Street Heists is a short comedy-heist mystery for the phone. The splash home leads with the brand; the case board lives at `/cases`. Cases start easy and unlock harder ones only after a correct solve. Open a case, read a short story briefing, inspect clues, rebuild the scene on the desk as you key options, then make one Who / How / Where accusation.
+Street Heists is a short comedy-heist mystery for the phone. The splash home leads with the brand; the case board lives at `/cases`. Cases start easy and unlock harder ones only after a correct solve.
 
-Every case screen shares a progress strip and bottom tabs (Locker · Confront · Scene · Accuse). Tap **Case file** anytime for a running sheet that auto-keeps clue takeaways, cork links, confrontations, and your working theory — so you don’t have to memorize the case. Scene is a draft theory desk; Accuse is the real, evidence-backed submission.
-
-Phone text defaults to a larger size (toggle **Text · Large / Comfortable** on the home splash and case board). Pinch-zoom stays available.
+**Direction C flow:** Briefing → **Gather** (clues we give you: photos, docs, notes) → **Decide** (Who / How / Where + attach proof → Accuse). Tap **Case file** anytime for a running sheet that auto-keeps takeaways. Phone text defaults larger; toggle Large / Comfortable on home and the case board.
 
 **Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
 
