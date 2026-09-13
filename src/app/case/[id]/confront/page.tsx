@@ -1,10 +1,12 @@
 "use client";
 
+import { CaseChrome } from "@/components/case-chrome";
+import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { getCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, MessageSquareWarning, Scale } from "lucide-react";
+import { MessageSquareWarning, Scale } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -35,7 +37,7 @@ export default function ConfrontPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
@@ -60,15 +62,14 @@ export default function ConfrontPage() {
   }
 
   return (
-    <main className="play-day min-h-dvh px-4 pb-10 pt-4">
-      <Link
-        href={`/case/${caseFile.id}/evidence`}
-        className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
-      >
-        <ChevronLeft className="size-4" /> Evidence locker
-      </Link>
-
-      <header className="mt-4 border-b border-hairline pb-4">
+    <CaseChrome
+      caseFile={caseFile}
+      progress={progress}
+      step="confront"
+      backHref={`/case/${caseFile.id}/evidence`}
+      backLabel="Locker"
+    >
+      <header className="border-b border-hairline pb-4">
         <div className="flex items-center gap-2">
           <MessageSquareWarning className="size-5 text-gold" />
           <p className="font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">
@@ -76,6 +77,11 @@ export default function ConfrontPage() {
           </p>
         </div>
         <h1 className="mt-1 font-serif text-4xl font-bold text-ink">Confront</h1>
+        <FirstUseTip
+          tipId="confront"
+          className="mt-2"
+          text="Confront = press a suspect with one exhibit that breaks their claim. Not the same as Accuse."
+        />
         <p className="mt-2 max-w-md text-sm leading-snug text-ink">
           A suspect makes a claim. Pick the specific exhibit that contradicts it. Wrong proof —
           they wriggle free. Right proof — they crack.
@@ -199,6 +205,6 @@ export default function ConfrontPage() {
       <Button asChild variant="bronze" className="mt-6 w-full rounded-lg">
         <Link href={`/case/${caseFile.id}/accuse`}>Ready to accuse</Link>
       </Button>
-    </main>
+    </CaseChrome>
   );
 }

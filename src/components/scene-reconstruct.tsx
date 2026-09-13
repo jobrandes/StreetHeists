@@ -1,5 +1,6 @@
 "use client";
 
+import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import {
   reconstructionScore,
@@ -30,13 +31,26 @@ export function SceneReconstruct({
   return (
     <div className="space-y-5">
       <header className="border-b border-hairline pb-4">
-        <p className="inline-flex items-center gap-1.5 font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">
-          <Clapperboard className="size-3.5" /> Scene desk
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="inline-flex items-center gap-1.5 font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">
+            <Clapperboard className="size-3.5" /> Scene desk
+          </p>
+          <span className="rounded-md border border-dashed border-[#C9A227] bg-[#FFF6D9] px-2 py-0.5 font-display text-[10px] font-bold tracking-[0.14em] text-[#7A5B00] uppercase">
+            Draft · does not count
+          </span>
+        </div>
         <h1 className="mt-1 font-serif text-3xl font-bold leading-none text-ink">
           {reconstruction.title}
         </h1>
         <p className="mt-2 text-sm leading-snug text-ink">{reconstruction.intro}</p>
+        <FirstUseTip
+          tipId="scene-desk"
+          className="mt-2"
+          text="Scene desk = draft theory board. Same Who / How / Where as Accuse, but nothing locks until you Accuse with proof."
+        />
+        <p className="mt-2 rounded-lg border border-[#2F5BFF]/25 bg-[#DCE6FF]/60 px-3 py-2 text-[12px] font-medium leading-snug text-ink">
+          Scratchpad only — Accuse is where Who / How / Where becomes the real call with proof attached.
+        </p>
       </header>
 
       <section
