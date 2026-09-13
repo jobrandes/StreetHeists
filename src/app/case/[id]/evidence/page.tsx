@@ -174,8 +174,17 @@ export default function GatherPage() {
           labNote={labNote}
           setLabNote={setLabNote}
           onClose={() => setOpenIndex(null)}
-          goPrev={() => openAt((openIndex - 1 + clues.length) % clues.length)}
-          goNext={() => openAt((openIndex + 1) % clues.length)}
+          goPrev={() => {
+            if (openIndex <= 0) return;
+            openAt(openIndex - 1);
+          }}
+          goNext={() => {
+            if (openIndex >= clues.length - 1) {
+              setOpenIndex(null);
+              return;
+            }
+            openAt(openIndex + 1);
+          }}
           discoverHotspot={discoverHotspot}
           queueAnalysis={queueAnalysis}
         />

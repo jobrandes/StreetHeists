@@ -74,6 +74,8 @@ export function EvidenceInspectDialog({
   }>({ evidenceId: openEvidence.id, sampleId: null });
   const selectedSampleId =
     sampleState.evidenceId === openEvidence.id ? sampleState.sampleId : null;
+  const isFirst = openIndex <= 0;
+  const isLast = openIndex >= totalClues - 1;
 
   return (
       <Dialog
@@ -91,7 +93,8 @@ export function EvidenceInspectDialog({
               <button
                 type="button"
                 onClick={goPrev}
-                className="inline-flex items-center gap-1 rounded-full border border-hairline bg-card px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase"
+                disabled={isFirst}
+                className="inline-flex items-center gap-1 rounded-full border border-hairline bg-card px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase disabled:opacity-40"
                 aria-label="Previous clue"
               >
                 <ChevronLeft className="size-4" /> Prev
@@ -111,14 +114,16 @@ export function EvidenceInspectDialog({
                 type="button"
                 onClick={goNext}
                 className="inline-flex items-center gap-1 rounded-full border border-hairline bg-card px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase"
-                aria-label="Next clue"
+                aria-label={isLast ? "Finish clues" : "Next clue"}
               >
-                Next <ChevronRight className="size-4" />
+                {isLast ? "Done" : "Next"} <ChevronRight className="size-4" />
               </button>
             </div>
 
             <p className="mb-2 text-center text-[11px] text-muted">
-              Swipe the photo left or right for the next clue
+              {isLast
+                ? `Clue ${openIndex + 1} of ${totalClues} — last one`
+                : `Clue ${openIndex + 1} of ${totalClues}`}
             </p>
 
             <PhotoExamine
@@ -357,7 +362,15 @@ export function EvidenceInspectDialog({
             </p>
 
             <Button className="mt-2 w-full rounded-lg" onClick={goNext}>
-              Next clue <ChevronRight className="size-4" />
+              {isLast ? (
+                <>
+                  Finish clues <ChevronRight className="size-4" />
+                </>
+              ) : (
+                <>
+                  Next clue <ChevronRight className="size-4" />
+                </>
+              )}
             </Button>
             <DialogClose asChild>
               <Button variant="ghost" className="mt-1 w-full text-ink">
