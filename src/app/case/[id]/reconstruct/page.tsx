@@ -27,7 +27,7 @@ export default function ReconstructPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
@@ -43,7 +43,7 @@ export default function ReconstructPage() {
             Solve the prior case correctly before this scene desk opens.
           </p>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
