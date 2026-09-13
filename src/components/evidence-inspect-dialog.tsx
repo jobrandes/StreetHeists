@@ -176,3 +176,175 @@ export function EvidenceInspectDialog({
                 >
                   <Plus className="size-4" />
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setZoom(1)}
+                  className="border-l border-hairline p-2 text-ink"
+                  aria-label="Reset zoom"
+                >
+                  <RotateCcw className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            <dl className="mt-3 grid grid-cols-2 gap-2 rounded-lg border border-hairline bg-card p-3 text-xs text-muted">
+              <div className="flex items-center gap-1.5">
+                <Clock3 className="size-3.5 text-gold" />
+                <div>
+                  <dt className="sr-only">Timestamp</dt>
+                  <dd>{openEvidence.timestamp}</dd>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin className="size-3.5 text-gold" />
+                <div>
+                  <dt className="sr-only">Location</dt>
+                  <dd>{openEvidence.location}</dd>
+                </div>
+              </div>
+            </dl>
+
+            <div className="mt-3 rounded-lg border-2 border-[#1B2430] bg-[#F4F1EA] px-3 py-2.5">
+              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-ink uppercase">
+                In the frame · look for this
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-snug text-ink">
+                {openEvidence.visualTell}
+              </p>
+            </div>
+
+            <p className="mt-2 text-sm leading-relaxed text-ink">
+              {openEvidence.description}
+            </p>
+
+            {openEvidence.analysis ? (
+              <div className="mt-3 rounded-lg border-2 border-gold bg-card p-3">
+                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                  Forensic queue
+                </p>
+                {progress.completedAnalysisIds.includes(openEvidence.id) ? (
+                  <>
+                    <p className="mt-2 font-serif text-lg font-bold text-ink">
+                      {openEvidence.analysis.resultTitle}
+                    </p>
+                    <p className="mt-1 text-sm leading-snug text-ink">
+                      {openEvidence.analysis.resultText}
+                    </p>
+                  </>
+                ) : progress.pendingAnalyses.some((item) => item.evidenceId === openEvidence.id) ? (
+                  <p className="mt-2 text-sm font-semibold text-ink">
+                    Lab has the sample. Keep inspecting other clues — results return after the wait.
+                  </p>
+                ) : (
+                  <Button
+                    variant="bronze"
+                    className="mt-2 w-full rounded-lg"
+                    onClick={() => {
+                      const result = queueAnalysis(caseFile.id, openEvidence.id);
+                      setLabNote(
+                        result.ok
+                          ? "Sample sent. Keep working the file."
+                          : (result.reason ?? null),
+                      );
+                    }}
+                  >
+                    <Beaker className="size-4" />
+                    {openEvidence.analysis.buttonLabel}
+                  </Button>
+                )}
+                {labNote ? <p className="mt-2 text-xs font-semibold text-ink">{labNote}</p> : null}
+              </div>
+            ) : null}
+
+            {(openEvidence.howHint || openEvidence.whereHint) ? (
+              <div className="mt-3 grid gap-2 rounded-lg border-2 border-gold bg-[#DCE6FF]/55 p-3">
+                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                  Case-file links · How / Where
+                </p>
+                {openEvidence.howHint ? (
+                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
+                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">
+                      How this points
+                    </p>
+                    <p className="mt-0.5 text-sm font-semibold text-ink">
+                      {openEvidence.howHint}
+                    </p>
+                  </div>
+                ) : null}
+                {openEvidence.whereHint ? (
+                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
+                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">
+                      Where this points
+                    </p>
+                    <p className="mt-0.5 text-sm font-semibold text-ink">
+                      {openEvidence.whereHint}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            <div className="mt-3">
+              <p className="mb-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                Linked people & place
+              </p>
+              <LinkChips
+                caseFile={caseFile}
+                links={linksForEvidence(caseFile, openEvidence)}
+              />
+            </div>
+
+            <div className="mt-4 border-l-4 border-gold bg-[#E8EEF8] p-3">
+              <label
+                className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase"
+                htmlFor="inspect-note"
+              >
+                Your deduction note
+              </label>
+              <textarea
+                id="inspect-note"
+                rows={2}
+                value={notes[openEvidence.id] ?? ""}
+                onChange={(event) =>
+                  setNotes((current) => ({
+                    ...current,
+                    [openEvidence.id]: event.target.value,
+                  }))
+                }
+                className="mt-1 w-full resize-none rounded-md border border-hairline bg-card p-2 text-sm font-semibold text-ink outline-none focus:border-gold"
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Button
+                variant="bronze"
+                className="rounded-lg"
+                onClick={() => togglePin(caseFile.id, openEvidence.id)}
+              >
+                <Pin className="size-4" />
+                {pinnedIds.includes(openEvidence.id) ? "On tray" : "Add to tray"}
+              </Button>
+              <Button
+                variant="bronze"
+                className="rounded-lg"
+                disabled={comparisonItemsLength < 2}
+                onClick={onOpenCompare}
+              >
+                <Scale className="size-4" /> Compare
+              </Button>
+            </div>
+
+            <Button className="mt-2 w-full rounded-lg" onClick={goNext}>
+              Next clue <ChevronRight className="size-4" />
+            </Button>
+            <DialogClose asChild>
+              <Button variant="ghost" className="mt-1 w-full text-ink">
+                Close file
+              </Button>
+            </DialogClose>
+          </DialogContent>
+        ) : null}
+      </Dialog>
+
+  );
+}
