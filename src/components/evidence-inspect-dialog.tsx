@@ -19,7 +19,7 @@ import {
   RotateCcw,
   Scale,
 } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 
 export function EvidenceInspectDialog({
   caseFile,
@@ -73,10 +73,18 @@ export function EvidenceInspectDialog({
   queueAnalysis: (
     caseId: string,
     evidenceId: string,
+    sampleId: string,
   ) => { ok: boolean; reason?: string };
   togglePin: (caseId: string, evidenceId: string) => void;
   onOpenCompare: () => void;
 }) {
+  const [sampleState, setSampleState] = useState<{
+    evidenceId: string;
+    sampleId: string | null;
+  }>({ evidenceId: openEvidence.id, sampleId: null });
+  const selectedSampleId =
+    sampleState.evidenceId === openEvidence.id ? sampleState.sampleId : null;
+
   return (
       <Dialog
         open
@@ -204,23 +212,14 @@ export function EvidenceInspectDialog({
               </div>
             </dl>
 
-            <div className="mt-3 rounded-lg border-2 border-[#1B2430] bg-[#F4F1EA] px-3 py-2.5">
-              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-ink uppercase">
-                In the frame · look for this
-              </p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-ink">
-                {openEvidence.visualTell}
-              </p>
-            </div>
-
-            <p className="mt-2 text-sm leading-relaxed text-ink">
+            <p className="mt-3 text-sm leading-relaxed text-ink">
               {openEvidence.description}
             </p>
 
             {openEvidence.analysis ? (
               <div className="mt-3 rounded-lg border-2 border-gold bg-card p-3">
                 <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
-                  Forensic queue
+                  Lab desk
                 </p>
                 {progress.completedAnalysisIds.includes(openEvidence.id) ? (
                   <>
@@ -233,24 +232,72 @@ export function EvidenceInspectDialog({
                   </>
                 ) : progress.pendingAnalyses.some((item) => item.evidenceId === openEvidence.id) ? (
                   <p className="mt-2 text-sm font-semibold text-ink">
-                    Lab has the sample. Keep inspecting other clues — results return after the wait.
+                    Lab has your sample. Keep inspecting other clues — results return after the wait.
                   </p>
                 ) : (
-                  <Button
-                    variant="bronze"
-                    className="mt-2 w-full rounded-lg"
-                    onClick={() => {
-                      const result = queueAnalysis(caseFile.id, openEvidence.id);
-                      setLabNote(
-                        result.ok
-                          ? "Sample sent. Keep working the file."
-                          : (result.reason ?? null),
-                      );
-                    }}
-                  >
-                    <Beaker className="size-4" />
-                    {openEvidence.analysis.buttonLabel}
-                  </Button>
+                  <>
+                    <p className="mt-2 text-sm font-semibold text-ink">
+                      {openEvidence.analysis.prompt}
+                    </p>
+                    <div className="mt-2 grid gap-2" role="radiogroup" aria-label="Lab sample">
+                      {openEvidence.analysis.samples.map((sample) => {
+                        const selected = selectedSampleId === sample.id;
+                        return (
+                          <button
+                            key={sample.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={selected}
+                            onClick={() => {
+                              setSampleState({
+                                evidenceId: openEvidence.id,
+                                sampleId: sample.id,
+                              });
+                              setLabNote(null);
+                            }}
+                            className={cn(
+                              "rounded-lg border px-3 py-2.5 text-left transition-colors",
+                              selected
+                                ? "border-gold bg-[#DCE6FF] shadow-[3px_3px_0_rgba(47,91,255,0.25)]"
+                                : "border-hairline bg-card hover:bg-[#E8EEF8]",
+                            )}
+                          >
+                            <p className="font-serif text-base font-semibold text-ink">
+                              {sample.label}
+                            </p>
+                            <p className="text-[11px] text-muted">{sample.detail}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <Button
+                      variant="bronze"
+                      className="mt-3 w-full rounded-lg"
+                      disabled={!selectedSampleId}
+                      onClick={() => {
+                        if (!selectedSampleId) return;
+                        const result = queueAnalysis(
+                          caseFile.id,
+                          openEvidence.id,
+                          selectedSampleId,
+                        );
+                        setLabNote(
+                          result.ok
+                            ? "Sample sent. Keep working the file."
+                            : (result.reason ?? null),
+                        );
+                        if (!result.ok) {
+                          setSampleState({
+                            evidenceId: openEvidence.id,
+                            sampleId: null,
+                          });
+                        }
+                      }}
+                    >
+                      <Beaker className="size-4" />
+                      Send to lab
+                    </Button>
+                  </>
                 )}
                 {labNote ? <p className="mt-2 text-xs font-semibold text-ink">{labNote}</p> : null}
               </div>
