@@ -1,21 +1,29 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { EvidenceArt } from "@/components/evidence-art";
 import { FirstRunCoach } from "@/components/first-run-coach";
 import { KeyholeLogo } from "@/components/keyhole-logo";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { difficultyLabel, isCaseUnlocked } from "@/lib/investigation";
 import { moreCases, playableCases, pigeonCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
+import { Lock } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function CaseBoardPage() {
   const { alias, setAlias, progressFor, resetCase } = useHeists();
   const [nextAlias, setNextAlias] = useState(alias);
   const featuredProgress = progressFor(pigeonCase.id);
   const resume = Boolean(featuredProgress.startedAt);
+
+  const progressMap = useMemo(
+    () =>
+      Object.fromEntries(playableCases.map((item) => [item.id, progressFor(item.id)])),
+    [progressFor],
+  );
 
   return (
     <main className="play-day flex min-h-dvh flex-col px-4 pb-8 pt-5">
@@ -54,7 +62,7 @@ export default function CaseBoardPage() {
           Start here
         </p>
         <p className="text-xs font-medium text-ink">
-          Case {String(pigeonCase.number).padStart(2, "0")} · tutorial · 5–10 min
+          Case {String(pigeonCase.number).padStart(2, "0")} · {difficultyLabel(pigeonCase.difficulty)} · 5–10 min
         </p>
       </div>
 
@@ -83,10 +91,47 @@ export default function CaseBoardPage() {
         <h2 className="border-b border-hairline pb-2 font-display text-lg font-bold tracking-[0.18em] text-ink uppercase">
           Open cases
         </h2>
-        <div className="divide-y divide-hairline rounded-b-xl border-x border-b border-hairline bg-card">
+        <p className="mt-2 text-xs text-muted">
+          Harder files unlock only after you solve the prior case correctly.
+        </p>
+        <div className="mt-2 divide-y divide-hairline rounded-b-xl border-x border-b border-hairline bg-card">
           {playableCases.map((item) => {
             const progress = progressFor(item.id);
             const solved = Boolean(progress.lastVerdict?.correct);
+            const unlocked = isCaseUnlocked(item, progressMap);
+            const prior = item.unlockAfterCaseId
+              ? playableCases.find((c) => c.id === item.unlockAfterCaseId)
+              : null;
+            const status = !unlocked
+              ? `Locked · solve ${prior?.title ?? "the prior case"} first`
+              : solved
+                ? "Solved"
+                : progress.startedAt
+                  ? "In progress"
+                  : `${difficultyLabel(item.difficulty)} · physical evidence`;
+
+            if (!unlocked) {
+              return (
+                <div
+                  key={item.id}
+                  className="block px-4 py-3 opacity-70"
+                  aria-disabled="true"
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="inline-flex items-center gap-2 font-serif text-lg font-semibold text-ink">
+                      <Lock className="size-3.5 shrink-0 text-muted" />
+                      {item.title}
+                    </p>
+                    <p className="shrink-0 font-display text-[10px] font-bold tracking-[0.14em] text-muted uppercase">
+                      {difficultyLabel(item.difficulty)}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted">{item.subtitle}</p>
+                  <p className="mt-1 text-[11px] font-medium text-ink">{status}</p>
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item.id}
@@ -96,19 +141,11 @@ export default function CaseBoardPage() {
                 <div className="flex items-baseline justify-between gap-3">
                   <p className="font-serif text-lg font-semibold text-ink">{item.title}</p>
                   <p className="shrink-0 font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
-                    Case {String(item.number).padStart(2, "0")}
+                    {difficultyLabel(item.difficulty)} · {String(item.number).padStart(2, "0")}
                   </p>
                 </div>
                 <p className="text-xs text-muted">{item.subtitle}</p>
-                <p className="mt-1 text-[11px] font-medium text-ink">
-                  {solved
-                    ? "Solved"
-                    : progress.startedAt
-                      ? "In progress"
-                      : item.id === pigeonCase.id
-                        ? "Tutorial · physical evidence"
-                        : "Witness clocks · false lead"}
-                </p>
+                <p className="mt-1 text-[11px] font-medium text-ink">{status}</p>
               </Link>
             );
           })}
@@ -122,7 +159,10 @@ export default function CaseBoardPage() {
         <div className="divide-y divide-hairline rounded-b-xl border-x border-b border-hairline bg-card">
           {moreCases.map((item) => (
             <div key={item.title} className="px-4 py-3">
-              <p className="font-serif text-lg font-semibold text-ink">{item.title}</p>
+              <p className="inline-flex items-center gap-2 font-serif text-lg font-semibold text-ink">
+                <Lock className="size-3.5 text-muted" />
+                {item.title}
+              </p>
               <p className="text-xs text-muted">{item.label}</p>
             </div>
           ))}
