@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">TROLLEY CAM STILL</text>
+  <rect x="120" y="120" width="480" height="260" fill="#1B2430" stroke="#C9A227" stroke-width="3"/>
+  <rect x="180" y="160" width="200" height="160" fill="#F7F4EC"/>
+  <circle cx="280" cy="220" r="40" fill="#5B3A1A"/>
+  <text x="240" y="226" fill="#F2F0EA" font-size="12">MOUSSE</text>
+  <path d="M400 200 L480 180 L490 260 L410 270 Z" fill="#2F5BFF"/>
+  <text x="420" y="230" fill="#F2F0EA" font-size="14">HAND</text>
+  <text x="160" y="360" fill="#F2F0EA" font-size="16">Otto pushes · Vance reaches</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: Vance hand near Inspector Mousse during roll</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">20:12 · HOUSE CAM · AISLE</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

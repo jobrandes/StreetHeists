@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">POWDER-ROOM CHART</text>
+  <rect x="90" y="110" width="540" height="270" fill="#FFF0F3" stroke="#1B2430" stroke-width="2"/>
+  <text x="120" y="160" font-size="20" fill="#1B2430">Shade log · Gilded Infuser</text>
+  <text x="120" y="210" font-size="18" fill="#1B2430">Cordelia — Pearl Nude</text>
+  <text x="120" y="250" font-size="18" fill="#1B2430">Roux — Brick Lecture</text>
+  <text x="120" y="290" font-size="18" fill="#C62828">Pippa — Opera Rose ★ only wearer</text>
+  <text x="120" y="340" font-size="16" fill="#2F5BFF">Basil — "tea only, thank you"</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: Opera Rose worn only by Pippa Steep</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">16:20 · POWDER ROOM · CHART</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

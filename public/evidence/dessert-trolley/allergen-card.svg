@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">ALLERGEN CARD SWAP</text>
+  <rect x="140" y="120" width="440" height="260" fill="#FFFDF6" stroke="#1B2430" stroke-width="3"/>
+  <text x="170" y="170" font-size="22" fill="#1B2430">TILDA FRONTROW</text>
+  <text x="170" y="220" font-size="18" fill="#1B2430">Allergies: shellfish</text>
+  <rect x="170" y="240" width="280" height="60" fill="#F8D7D7" stroke="#C62828" stroke-width="2"/>
+  <text x="190" y="278" font-size="18" fill="#C62828">+ HAZELNUT (sticky)</text>
+  <text x="170" y="340" font-size="16" fill="#2F5BFF">Original card peeks underneath</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: hazelnut sticker added over Tilda Frontrow card</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">20:05 · PROPS TABLE · CARD</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

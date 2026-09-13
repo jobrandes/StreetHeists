@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">SEATING CHART</text>
+  <rect x="80" y="100" width="560" height="280" fill="#FFFDF6" stroke="#1B2430" stroke-width="2"/>
+  <text x="110" y="150" font-size="18" fill="#1B2430">Table 1 Cordelia · Table 2 Basil</text>
+  <text x="110" y="200" font-size="18" fill="#1B2430">Table 3 Roux ────→ Pippa</text>
+  <text x="110" y="250" font-size="18" fill="#C62828">MARGIN: "quiet pourer covers nest"</text>
+  <path d="M420 190 L520 190" stroke="#2F5BFF" stroke-width="4" marker-end="url(#a)"/>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: inked arrow swaps Roux ↔ Pippa mid-service</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">16:05 · HOSTESS DESK · CHART</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

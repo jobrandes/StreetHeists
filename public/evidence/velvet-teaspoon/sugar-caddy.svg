@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">SUGAR CADDY STILL</text>
+  <rect x="200" y="120" width="320" height="240" rx="12" fill="#5B3A1A" stroke="#C9A227" stroke-width="4"/>
+  <rect x="230" y="160" width="260" height="140" fill="#F7F4EC"/>
+  <path d="M280 220 L420 210" stroke="#C9A227" stroke-width="10"/>
+  <text x="270" y="190" font-size="16" fill="#4A2C6A">VELVET SPOON</text>
+  <circle cx="400" cy="250" r="18" fill="#C62828"/>
+  <text x="250" y="330" font-size="16" fill="#C62828">Opera Rose smear on lining</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: velvet spoon in T3 drawer + Opera Rose smear</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">16:22 · TABLE 3 · CADDY</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

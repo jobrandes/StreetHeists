@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">BASIL SCORE CARD</text>
+  <rect x="100" y="110" width="520" height="260" fill="#FFFDF6" stroke="#1B2430" stroke-width="2"/>
+  <text x="130" y="160" font-size="20" fill="#1B2430">Steep #2: theatrical · 7/10</text>
+  <text x="130" y="210" font-size="20" fill="#1B2430">Pourer Pippa: orbit ×2 at T3</text>
+  <text x="130" y="260" font-size="18" fill="#2F5BFF">"Not tasting. Transporting."</text>
+  <text x="130" y="310" font-size="18" fill="#1B2430">Cordelia: distracted by speech</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: Pippa circled table 3 twice during Second Steep</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">16:18 · CRITIC NOTES · BASIL</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>

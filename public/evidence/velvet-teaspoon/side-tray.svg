@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#EEF2F6"/>
+  <rect x="24" y="24" width="672" height="420" fill="#F7F4EC" stroke="#1B2430" stroke-width="3"/>
+  <text x="48" y="70" fill="#1B2430" font-family="Georgia, serif" font-size="28" font-weight="700">SIDE TRAY PHOTO</text>
+  <rect x="160" y="140" width="400" height="220" rx="16" fill="#DCE6FF" stroke="#1B2430" stroke-width="3"/>
+  <ellipse cx="280" cy="230" rx="50" ry="30" fill="#F2F0EA"/>
+  <rect x="360" y="200" width="140" height="80" fill="#F7F4EC" stroke="#1B2430"/>
+  <text x="380" y="245" font-size="16">NAPKIN</text>
+  <path d="M390 260 L470 270" stroke="#C9A227" stroke-width="6"/>
+  <text x="200" y="330" font-size="16" fill="#C62828">silhouette under linen</text>
+  <text x="48" y="430" fill="#2F5BFF" font-family="ui-monospace, monospace" font-size="16">TELL: extra teaspoon silhouette under napkin on pourer tray</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.78"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="1">16:14 · PASS CAM · TRAY</text>
+  <!-- padding so validators never see a thin stub: ················································································ -->
+</svg>
