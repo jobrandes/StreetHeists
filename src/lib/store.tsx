@@ -180,7 +180,11 @@ type Store = {
     evidenceId: string,
     hotspotId: string,
   ) => string | null;
-  queueAnalysis: (caseId: string, evidenceId: string) => AnalysisResult;
+  queueAnalysis: (
+    caseId: string,
+    evidenceId: string,
+    sampleId: string,
+  ) => AnalysisResult;
   markContradiction: (caseId: string, contradictionId: string) => void;
   setCorkLink: (
     caseId: string,
@@ -393,11 +397,18 @@ export function HeistProvider({ children }: { children: ReactNode }) {
         }));
         return hotspot.reveal;
       },
-      queueAnalysis(caseId, evidenceId) {
+      queueAnalysis(caseId, evidenceId, sampleId) {
         const caseFile = getCase(caseId);
         const evidence = caseFile?.evidence.find((item) => item.id === evidenceId);
         if (!evidence?.analysis) {
           return { ok: false, reason: "Nothing here needs lab work." };
+        }
+        const sample = evidence.analysis.samples.find((item) => item.id === sampleId);
+        if (!sample) {
+          return { ok: false, reason: "Pick a sample before you send." };
+        }
+        if (sampleId !== evidence.analysis.correctSampleId) {
+          return { ok: false, reason: evidence.analysis.wrongSampleResponse };
         }
         const progress = progressFor(state.progressByCase, caseId);
         if (!progress.inspectedEvidenceIds.includes(evidenceId)) {
@@ -423,7 +434,7 @@ export function HeistProvider({ children }: { children: ReactNode }) {
             custodyLog: pushCustody(p.custodyLog, {
               evidenceId,
               action: "lab-sent",
-              detail: evidence.analysis!.buttonLabel,
+              detail: `Sent · ${sample.label}`,
             }),
           })),
         }));
