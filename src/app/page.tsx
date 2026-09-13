@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyholeLogo } from "@/components/keyhole-logo";
+import { TextScaleToggle } from "@/components/text-scale";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { playableCases } from "@/lib/seed";
@@ -47,13 +48,16 @@ export default function HomeSplashPage() {
       <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[1] opacity-40" />
 
       <div className="relative z-10 flex flex-1 flex-col px-5 pb-10 pt-8">
-        <header className="flex items-center justify-between">
-          <p className="font-display text-[10px] font-bold tracking-[0.22em] text-[#9EB0FF] uppercase">
+        <header className="flex items-center justify-between gap-2">
+          <p className="font-display text-xs font-bold tracking-[0.22em] text-[#9EB0FF] uppercase">
             Street Heists
           </p>
-          <span className="max-w-[7rem] truncate rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] text-white backdrop-blur-sm">
-            {alias}
-          </span>
+          <div className="flex items-center gap-2">
+            <TextScaleToggle className="border-white/30 bg-white/10 text-white" />
+            <span className="max-w-[7rem] truncate rounded-full border border-white/25 bg-white/10 px-3 py-2 text-sm text-white backdrop-blur-sm">
+              {alias}
+            </span>
+          </div>
         </header>
 
         <section className="flex flex-1 flex-col items-center justify-center text-center">
@@ -63,8 +67,8 @@ export default function HomeSplashPage() {
             <br />
             Heists
           </h1>
-          <p className="mt-5 font-serif text-xl text-white/90 italic">Comedy crime division</p>
-          <p className="mt-3 max-w-[18rem] text-sm leading-snug text-white/75">
+          <p className="mt-5 font-serif text-2xl text-white/90 italic">Comedy crime division</p>
+          <p className="mt-3 max-w-[20rem] text-base leading-snug text-white/80">
             Inspect the evidence we give you. One accusation. No walking required.
           </p>
 
@@ -130,8 +134,10 @@ export default function HomeSplashPage() {
                     <p className="mt-1">The real call: same questions, but attach proof. Wrong proof fails.</p>
                   </li>
                 </ol>
-                <p className="mt-3 text-[11px] leading-snug text-muted">
-                  On every case screen, bottom tabs keep Locker · Confront · Scene · Accuse one tap away.
+                <p className="mt-3 text-sm leading-snug text-muted">
+                  Bottom tabs keep Locker · Confront · Scene · Accuse one tap away. Tap{" "}
+                  <strong className="font-semibold text-ink">Case file</strong> anytime —
+                  it auto-keeps every clue takeaway so you don’t memorize the case.
                 </p>
                 <Button asChild className="mt-4 w-full rounded-lg font-display tracking-[0.12em] uppercase">
                   <Link href="/cases">Open case board</Link>
