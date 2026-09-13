@@ -61,7 +61,7 @@ export function CaseNotebookButton({
             <p className="font-serif text-xl font-bold leading-tight text-ink">
               {caseFile.title}
             </p>
-            <p className="mt-1 text-base leading-snug text-ink">
+            <p className="mt-1 text-lg leading-snug text-ink">
               Your running sheet — everything you’ve opened, linked, or cracked
               lands here so you don’t have to hold it in your head.
             </p>
@@ -70,8 +70,8 @@ export function CaseNotebookButton({
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4">
             <section className="rounded-xl border border-[#2F5BFF]/25 bg-[#DCE6FF]/50 p-3">
               <div className="flex items-center gap-2">
-                <NotebookPen className="size-4 text-[#2F5BFF]" aria-hidden />
-                <h3 className="font-display text-xs font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
+                <NotebookPen className="size-5 text-[#2F5BFF]" aria-hidden />
+                <h3 className="font-display text-sm font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
                   Working theory
                 </h3>
               </div>
@@ -80,20 +80,20 @@ export function CaseNotebookButton({
                 onChange={(event) => saveTheory(event.target.value)}
                 rows={3}
                 placeholder="Who / how / where — jot it in plain words. This stays on this phone."
-                className="mt-2 w-full resize-y rounded-lg border border-hairline bg-white px-3 py-2.5 text-base leading-snug text-ink placeholder:text-muted"
+                className="mt-2 w-full resize-y rounded-lg border border-hairline bg-white px-3 py-2.5 text-lg leading-snug text-ink placeholder:text-muted"
               />
             </section>
 
             {sections.map((section) => (
               <section key={section.id}>
-                <h3 className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
+                <h3 className="font-display text-sm font-bold tracking-[0.14em] text-gold uppercase">
                   {section.title}
                   {section.lines.length > 0 ? (
                     <span className="ml-2 text-muted">· {section.lines.length}</span>
                   ) : null}
                 </h3>
                 {section.lines.length === 0 ? (
-                  <p className="mt-1.5 text-base leading-snug text-muted">
+                  <p className="mt-1.5 text-lg leading-snug text-muted">
                     {section.empty}
                   </p>
                 ) : (
@@ -101,12 +101,12 @@ export function CaseNotebookButton({
                     {section.lines.map((line) => (
                       <li
                         key={`${section.id}-${line.label}-${line.body.slice(0, 24)}`}
-                        className="rounded-lg border border-hairline bg-card px-3 py-2.5"
+                        className="rounded-lg border border-hairline bg-card px-3 py-3"
                       >
-                        <p className="font-serif text-lg font-semibold leading-tight text-ink">
+                        <p className="font-serif text-xl font-semibold leading-tight text-ink">
                           {line.label}
                         </p>
-                        <p className="mt-1 text-base leading-snug text-ink">
+                        <p className="mt-1 text-lg leading-snug text-ink">
                           {line.body}
                         </p>
                       </li>
