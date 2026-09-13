@@ -32,7 +32,7 @@ export default function VerdictPage() {
       <main className="play-day grid min-h-dvh place-items-center p-6 text-center">
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
-          <Button asChild className="mt-4"><Link href="/">Return to Case Board</Link></Button>
+          <Button asChild className="mt-4"><Link href="/cases">Return to Case Board</Link></Button>
         </div>
       </main>
     );
@@ -176,7 +176,7 @@ export default function VerdictPage() {
             <ShareExports caseFile={caseFile} verdict={verdict} alias={alias} />
           </div>
           <Button asChild variant="bronze" className="mt-7 w-full">
-            <Link href="/">Back to Case Board</Link>
+            <Link href="/cases">Back to Case Board</Link>
           </Button>
         </>
       ) : (
@@ -195,7 +195,7 @@ export default function VerdictPage() {
             size="lg"
             className="mt-5 w-full rounded-lg font-display font-bold tracking-[0.12em] uppercase"
           >
-            <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence</Link>
+            <Link href={`/case/${caseFile.id}/evidence`}>Back to Gather</Link>
           </Button>
           <Button
             asChild
@@ -203,10 +203,10 @@ export default function VerdictPage() {
             variant="bronze"
             className="mt-3 w-full rounded-lg font-display font-bold tracking-[0.12em] uppercase"
           >
-            <Link href={`/case/${caseFile.id}/accuse`}>Retry accusation</Link>
+            <Link href={`/case/${caseFile.id}/accuse`}>Retry Decide</Link>
           </Button>
           <Button asChild variant="bronze" className="mt-3 w-full">
-            <Link href={`/case/${caseFile.id}/evidence`}>Review evidence</Link>
+            <Link href={`/case/${caseFile.id}/evidence`}>Review clues</Link>
           </Button>
           <p className="mt-3 text-center text-xs text-muted">
             All opened and pinned evidence is preserved.
