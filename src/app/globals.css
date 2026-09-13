@@ -24,8 +24,22 @@ body {
   min-height: 100%;
 }
 
+/* Phone-first readability (esp. 50+ eyes). Large is default; Comfortable is denser. */
+html {
+  font-size: 18px;
+}
+html[data-text-scale="comfortable"] {
+  font-size: 16px;
+}
+html[data-text-scale="large"] {
+  font-size: 18.5px;
+}
+
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .font-display {

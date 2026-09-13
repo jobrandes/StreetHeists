@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { EvidenceArt } from "@/components/evidence-art";
 import { FirstRunCoach } from "@/components/first-run-coach";
 import { KeyholeLogo } from "@/components/keyhole-logo";
+import { TextScaleToggle } from "@/components/text-scale";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { difficultyLabel, isCaseUnlocked } from "@/lib/investigation";
@@ -60,6 +61,10 @@ export default function CaseBoardPage() {
       </header>
 
       <FirstRunCoach />
+
+      <div className="mt-3 flex justify-end">
+        <TextScaleToggle />
+      </div>
 
       <div className="relative z-10 mx-2 mb-[-0.65rem] mt-5 w-fit -rotate-1 border border-[#2F5BFF] bg-[#DCE6FF] px-5 py-3 shadow-[4px_5px_0_rgba(27,36,48,0.14)]">
         <p className="font-display text-lg font-bold tracking-[0.14em] text-ink uppercase">

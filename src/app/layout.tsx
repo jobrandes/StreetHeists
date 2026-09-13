@@ -50,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
+      data-text-scale="large"
       className={`${sans.variable} ${display.variable} ${serif.variable} h-full antialiased`}
     >
       <body className="min-h-full">
