@@ -1,12 +1,15 @@
 "use client";
 
 import { PeopleRoster, PlacesRoster } from "@/components/case-file-rosters";
-import { CompareBoard, LinkChips } from "@/components/compare-board";
+import { CompareBoard } from "@/components/compare-board";
+import { ContradictionSpotter } from "@/components/contradiction-spotter";
+import { CorkboardConnect } from "@/components/corkboard";
+import { CustodyLog } from "@/components/custody-log";
 import { EvidenceArt } from "@/components/evidence-art";
 import { KeyholeLogo } from "@/components/keyhole-logo";
+import { EvidenceInspectDialog } from "@/components/evidence-inspect-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
-import { linksForEvidence } from "@/lib/case-file";
 import { getCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Evidence } from "@/lib/types";
@@ -15,33 +18,33 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Clock3,
+  ClipboardList,
   FolderOpen,
   MapPin,
   MapPinned,
-  Minus,
   Pin,
-  Plus,
-  RotateCcw,
   Scale,
+  MessageSquareWarning,
   Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import {
-  useCallback,
-  useRef,
-  useState,
-  type PointerEvent,
-  type ReactNode,
-} from "react";
+import { useState, type ReactNode } from "react";
 
-type LockerTab = "clues" | "people" | "places";
+type LockerTab = "clues" | "people" | "places" | "binder";
 
 export default function EvidenceLockerPage() {
   const { id } = useParams<{ id: string }>();
   const caseFile = getCase(id);
-  const { progressFor, inspectEvidence, togglePin } = useHeists();
+  const {
+    progressFor,
+    inspectEvidence,
+    togglePin,
+    discoverHotspot,
+    queueAnalysis,
+    markContradiction,
+    setCorkLink,
+  } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const CLUES = caseFile?.evidence ?? [];
   const pinnedIds = progress.pinnedEvidenceIds ?? [];
@@ -53,7 +56,8 @@ export default function EvidenceLockerPage() {
     Object.fromEntries(CLUES.map((item) => [item.id, item.deduction])),
   );
   const [compareOpen, setCompareOpen] = useState(false);
-  const swipeStartX = useRef<number | null>(null);
+  const [labNote, setLabNote] = useState<string | null>(null);
+  const [hotspotNote, setHotspotNote] = useState<string | null>(null);
 
   const openEvidence: Evidence | null =
     openIndex === null ? null : (CLUES[openIndex] ?? null);
@@ -63,19 +67,18 @@ export default function EvidenceLockerPage() {
   const inspectedCount = inspectedIds.length;
   const totalClues = CLUES.length;
 
-  const openAt = useCallback(
-    (index: number) => {
-      if (!caseFile) return;
-      const item = CLUES[index];
-      if (!item) return;
-      inspectEvidence(caseFile.id, item.id);
-      // Opening a clue auto-adds it to the compare tray.
-      if (!pinnedIds.includes(item.id)) togglePin(caseFile.id, item.id);
-      setZoom(1);
-      setOpenIndex(index);
-    },
-    [CLUES, caseFile, inspectEvidence, pinnedIds, togglePin],
-  );
+  function openAt(index: number) {
+    if (!caseFile) return;
+    const item = CLUES[index];
+    if (!item) return;
+    inspectEvidence(caseFile.id, item.id);
+    // Opening a clue auto-adds it to the compare tray.
+    if (!pinnedIds.includes(item.id)) togglePin(caseFile.id, item.id);
+    setZoom(1);
+    setHotspotNote(null);
+    setLabNote(null);
+    setOpenIndex(index);
+  }
 
   function goPrev() {
     if (openIndex === null) return;
@@ -85,23 +88,6 @@ export default function EvidenceLockerPage() {
   function goNext() {
     if (openIndex === null) return;
     openAt((openIndex + 1) % CLUES.length);
-  }
-
-  function onPointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (zoom !== 1) return;
-    swipeStartX.current = event.clientX;
-  }
-
-  function onPointerUp(event: PointerEvent<HTMLDivElement>) {
-    if (swipeStartX.current === null || zoom !== 1) {
-      swipeStartX.current = null;
-      return;
-    }
-    const delta = event.clientX - swipeStartX.current;
-    swipeStartX.current = null;
-    if (Math.abs(delta) < 56) return;
-    if (delta < 0) goNext();
-    else goPrev();
   }
 
   if (!caseFile) {
@@ -141,7 +127,7 @@ export default function EvidenceLockerPage() {
       </header>
 
       <div
-        className="mt-4 grid grid-cols-3 gap-1 rounded-xl border border-hairline bg-card p-1"
+        className="mt-4 grid grid-cols-4 gap-1 rounded-xl border border-hairline bg-card p-1"
         role="tablist"
         aria-label="Case file sections"
       >
@@ -162,6 +148,12 @@ export default function EvidenceLockerPage() {
           onClick={() => setTab("places")}
           icon={<MapPinned className="size-3.5" />}
           label="Places"
+        />
+        <TabButton
+          active={tab === "binder"}
+          onClick={() => setTab("binder")}
+          icon={<ClipboardList className="size-3.5" />}
+          label="Binder"
         />
       </div>
 
@@ -261,248 +253,80 @@ export default function EvidenceLockerPage() {
         </>
       ) : null}
 
+      {tab === "binder" ? (
+        <div className="mt-4 space-y-4">
+          <CustodyLog caseFile={caseFile} entries={progress.custodyLog} />
+          <CorkboardConnect
+            caseFile={caseFile}
+            evidence={inspected}
+            suspects={caseFile.suspects}
+            links={progress.corkLinks}
+            onLink={(evidenceId, suspectId) => setCorkLink(caseFile.id, evidenceId, suspectId)}
+          />
+          <ContradictionSpotter
+            caseFile={caseFile}
+            inspectedIds={inspectedIds}
+            foundIds={progress.foundContradictionIds}
+            onFound={(contradictionId) => markContradiction(caseFile.id, contradictionId)}
+          />
+        </div>
+      ) : null}
+
       {tab === "people" ? <PeopleRoster caseFile={caseFile} /> : null}
       {tab === "places" ? <PlacesRoster caseFile={caseFile} /> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
-        <Button
-          asChild
-          size="lg"
-          className="w-full rounded-lg font-display text-base font-bold tracking-[0.12em] uppercase"
-        >
-          <Link href={`/case/${caseFile.id}/accuse`}>Accuse when ready</Link>
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            asChild
+            variant="bronze"
+            size="lg"
+            className="rounded-lg font-display text-xs font-bold tracking-[0.1em] uppercase"
+          >
+            <Link href={`/case/${caseFile.id}/confront`}>
+              <MessageSquareWarning className="size-4" /> Confront
+            </Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            className="rounded-lg font-display text-xs font-bold tracking-[0.1em] uppercase"
+          >
+            <Link href={`/case/${caseFile.id}/accuse`}>Accuse</Link>
+          </Button>
+        </div>
         <p className="mt-1 text-center text-[11px] text-muted">
-          {inspectedCount} of {totalClues} clues opened · swipe inside a clue to keep moving
+          {inspectedCount} of {totalClues} clues opened · binder holds chain of custody
         </p>
       </div>
 
-      <Dialog
-        open={openEvidence !== null}
-        onOpenChange={(open) => {
-          if (!open) setOpenIndex(null);
-        }}
-      >
-        {openEvidence && openIndex !== null ? (
-          <DialogContent
-            title={`Clue ${openIndex + 1} of ${totalClues}`}
-            className="play-day max-h-[94dvh] overflow-y-auto"
-          >
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={goPrev}
-                className="inline-flex items-center gap-1 rounded-full border border-hairline bg-card px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase"
-                aria-label="Previous clue"
-              >
-                <ChevronLeft className="size-4" /> Prev
-              </button>
-              <div className="flex items-center gap-1.5" aria-hidden>
-                {CLUES.map((item, index) => (
-                  <span
-                    key={item.id}
-                    className={cn(
-                      "size-1.5 rounded-full",
-                      index === openIndex ? "bg-gold" : "bg-hairline",
-                    )}
-                  />
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={goNext}
-                className="inline-flex items-center gap-1 rounded-full border border-hairline bg-card px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.12em] text-ink uppercase"
-                aria-label="Next clue"
-              >
-                Next <ChevronRight className="size-4" />
-              </button>
-            </div>
-
-            <p className="mb-2 text-center text-[11px] text-muted">
-              Swipe the photo left or right for the next clue
-            </p>
-
-            <div
-              className="relative h-[min(42dvh,20rem)] touch-pan-y overflow-hidden rounded-lg bg-[#1B2430]"
-              onPointerDown={onPointerDown}
-              onPointerUp={onPointerUp}
-              onPointerCancel={() => {
-                swipeStartX.current = null;
-              }}
-            >
-              <div
-                className="h-full w-full origin-center transition-transform duration-200"
-                style={{ transform: `scale(${zoom})` }}
-              >
-                <EvidenceArt evidence={openEvidence} className="h-full w-full" />
-              </div>
-            </div>
-
-            <div className="mt-3 flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-display text-[9px] font-bold tracking-[0.16em] text-gold uppercase">
-                  {openEvidence.kind}
-                </p>
-                <h2 className="font-serif text-xl font-bold leading-tight text-ink">
-                  {openEvidence.title}
-                </h2>
-                <p className="mt-1 text-sm text-ink">{openEvidence.caption}</p>
-              </div>
-              <div
-                className="flex shrink-0 items-center rounded-full border border-hairline bg-card"
-                aria-label="Evidence zoom controls"
-              >
-                <button
-                  type="button"
-                  onClick={() => setZoom((value) => Math.max(1, value - 0.5))}
-                  className="p-2 text-ink disabled:opacity-30"
-                  disabled={zoom === 1}
-                  aria-label="Zoom out"
-                >
-                  <Minus className="size-4" />
-                </button>
-                <span className="w-11 text-center text-xs font-bold text-ink">
-                  {Math.round(zoom * 100)}%
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setZoom((value) => Math.min(3, value + 0.5))}
-                  className="p-2 text-ink disabled:opacity-30"
-                  disabled={zoom === 3}
-                  aria-label="Zoom in"
-                >
-                  <Plus className="size-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setZoom(1)}
-                  className="border-l border-hairline p-2 text-ink"
-                  aria-label="Reset zoom"
-                >
-                  <RotateCcw className="size-4" />
-                </button>
-              </div>
-            </div>
-
-            <dl className="mt-3 grid grid-cols-2 gap-2 rounded-lg border border-hairline bg-card p-3 text-xs text-muted">
-              <div className="flex items-center gap-1.5">
-                <Clock3 className="size-3.5 text-gold" />
-                <div>
-                  <dt className="sr-only">Timestamp</dt>
-                  <dd>{openEvidence.timestamp}</dd>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <MapPin className="size-3.5 text-gold" />
-                <div>
-                  <dt className="sr-only">Location</dt>
-                  <dd>{openEvidence.location}</dd>
-                </div>
-              </div>
-            </dl>
-
-            <div className="mt-3 rounded-lg border-2 border-[#1B2430] bg-[#F4F1EA] px-3 py-2.5">
-              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-ink uppercase">
-                In the frame · look for this
-              </p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-ink">
-                {openEvidence.visualTell}
-              </p>
-            </div>
-
-            <p className="mt-2 text-sm leading-relaxed text-ink">
-              {openEvidence.description}
-            </p>
-
-            {(openEvidence.howHint || openEvidence.whereHint) ? (
-              <div className="mt-3 grid gap-2 rounded-lg border-2 border-gold bg-[#DCE6FF]/55 p-3">
-                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
-                  Case-file links · How / Where
-                </p>
-                {openEvidence.howHint ? (
-                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
-                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">
-                      How this points
-                    </p>
-                    <p className="mt-0.5 text-sm font-semibold text-ink">
-                      {openEvidence.howHint}
-                    </p>
-                  </div>
-                ) : null}
-                {openEvidence.whereHint ? (
-                  <div className="rounded-md border border-hairline bg-card px-3 py-2">
-                    <p className="font-display text-[9px] font-bold tracking-[0.14em] text-muted uppercase">
-                      Where this points
-                    </p>
-                    <p className="mt-0.5 text-sm font-semibold text-ink">
-                      {openEvidence.whereHint}
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-
-            <div className="mt-3">
-              <p className="mb-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
-                Linked people & place
-              </p>
-              <LinkChips
-                caseFile={caseFile}
-                links={linksForEvidence(caseFile, openEvidence)}
-              />
-            </div>
-
-            <div className="mt-4 border-l-4 border-gold bg-[#E8EEF8] p-3">
-              <label
-                className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase"
-                htmlFor="inspect-note"
-              >
-                Your deduction note
-              </label>
-              <textarea
-                id="inspect-note"
-                rows={2}
-                value={notes[openEvidence.id] ?? ""}
-                onChange={(event) =>
-                  setNotes((current) => ({
-                    ...current,
-                    [openEvidence.id]: event.target.value,
-                  }))
-                }
-                className="mt-1 w-full resize-none rounded-md border border-hairline bg-card p-2 text-sm font-semibold text-ink outline-none focus:border-gold"
-              />
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <Button
-                variant="bronze"
-                className="rounded-lg"
-                onClick={() => togglePin(caseFile.id, openEvidence.id)}
-              >
-                <Pin className="size-4" />
-                {pinnedIds.includes(openEvidence.id) ? "On tray" : "Add to tray"}
-              </Button>
-              <Button
-                variant="bronze"
-                className="rounded-lg"
-                disabled={comparisonItems.length < 2}
-                onClick={() => setCompareOpen(true)}
-              >
-                <Scale className="size-4" /> Compare
-              </Button>
-            </div>
-
-            <Button className="mt-2 w-full rounded-lg" onClick={goNext}>
-              Next clue <ChevronRight className="size-4" />
-            </Button>
-            <DialogClose asChild>
-              <Button variant="ghost" className="mt-1 w-full text-ink">
-                Close file
-              </Button>
-            </DialogClose>
-          </DialogContent>
-        ) : null}
-      </Dialog>
+      {openEvidence && openIndex !== null ? (
+        <EvidenceInspectDialog
+          caseFile={caseFile}
+          openEvidence={openEvidence}
+          openIndex={openIndex}
+          totalClues={totalClues}
+          clues={CLUES}
+          zoom={zoom}
+          setZoom={setZoom}
+          notes={notes}
+          setNotes={setNotes}
+          pinnedIds={pinnedIds}
+          comparisonItemsLength={comparisonItems.length}
+          progress={progress}
+          hotspotNote={hotspotNote}
+          setHotspotNote={setHotspotNote}
+          labNote={labNote}
+          setLabNote={setLabNote}
+          onClose={() => setOpenIndex(null)}
+          goPrev={goPrev}
+          goNext={goNext}
+          discoverHotspot={discoverHotspot}
+          queueAnalysis={queueAnalysis}
+          togglePin={togglePin}
+          onOpenCompare={() => setCompareOpen(true)}
+        />
+      ) : null}
 
       <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
         <DialogContent
