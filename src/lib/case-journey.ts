@@ -1,25 +1,22 @@
 import type { CaseFile, CaseProgress } from "@/lib/types";
 
-export type CaseStep = "briefing" | "locker" | "confront" | "scene" | "accuse";
+/** Direction C — two rooms only (briefing is entry, not a room tab). */
+export type CaseStep = "briefing" | "gather" | "decide";
 
 export const CASE_STEPS: { id: CaseStep; label: string }[] = [
   { id: "briefing", label: "Briefing" },
-  { id: "locker", label: "Locker" },
-  { id: "confront", label: "Confront" },
-  { id: "scene", label: "Scene" },
-  { id: "accuse", label: "Accuse" },
+  { id: "gather", label: "Gather" },
+  { id: "decide", label: "Decide" },
 ];
 
-/** Sticky destinations (briefing stays a back-link, not a tab). */
+/** Top-room switcher destinations. */
 export const CASE_NAV: {
   id: Exclude<CaseStep, "briefing">;
   label: string;
   href: (caseId: string) => string;
 }[] = [
-  { id: "locker", label: "Locker", href: (caseId) => `/case/${caseId}/evidence` },
-  { id: "confront", label: "Confront", href: (caseId) => `/case/${caseId}/confront` },
-  { id: "scene", label: "Scene", href: (caseId) => `/case/${caseId}/reconstruct` },
-  { id: "accuse", label: "Accuse", href: (caseId) => `/case/${caseId}/accuse` },
+  { id: "gather", label: "Gather", href: (caseId) => `/case/${caseId}/evidence` },
+  { id: "decide", label: "Decide", href: (caseId) => `/case/${caseId}/accuse` },
 ];
 
 export function stepIndex(step: CaseStep): number {
@@ -29,21 +26,16 @@ export function stepIndex(step: CaseStep): number {
 export function caseJourneyStats(caseFile: CaseFile, progress: CaseProgress) {
   const clueTotal = caseFile.evidence.length;
   const cluesOpened = progress.inspectedEvidenceIds.length;
-  const confrontTotal = caseFile.confrontations?.length ?? 0;
-  const confrontCracked = progress.crackedConfrontationIds.length;
-  const sceneTotal = caseFile.reconstruction.slots.length;
-  const sceneFilled = caseFile.reconstruction.slots.filter((slot) =>
-    Boolean(progress.reconstructionPicks[slot.id]),
+  const decideFilled = ["who", "how", "where"].filter((slot) =>
+    Boolean(progress.reconstructionPicks[slot] || false),
   ).length;
+  // Prefer reconstruction picks; accuse page also tracks local picks.
   const corkLinks = progress.corkLinks.length;
 
   return {
     clueTotal,
     cluesOpened,
-    confrontTotal,
-    confrontCracked,
-    sceneTotal,
-    sceneFilled,
+    decideFilled,
     corkLinks,
   };
 }
@@ -53,44 +45,40 @@ export function progressStripCopy(
   caseFile: CaseFile,
   progress: CaseProgress,
 ): { stepLabel: string; detail: string } {
-  const index = stepIndex(step) + 1;
-  const total = CASE_STEPS.length;
   const stats = caseJourneyStats(caseFile, progress);
-  const stepLabel = `Step ${index} of ${total} · ${CASE_STEPS[index - 1]?.label ?? ""}`;
 
   switch (step) {
     case "briefing":
-      return { stepLabel, detail: "Read the beats, then work the locker." };
-    case "locker":
       return {
-        stepLabel,
-        detail: `Clues ${stats.cluesOpened}/${stats.clueTotal} · Cork links ${stats.corkLinks}`,
+        stepLabel: "Briefing",
+        detail: "Read the beats, then Gather clues we give you.",
       };
-    case "confront":
+    case "gather":
       return {
-        stepLabel,
-        detail:
-          stats.confrontTotal > 0
-            ? `Confronted ${stats.confrontCracked}/${stats.confrontTotal} · Clues ${stats.cluesOpened}/${stats.clueTotal}`
-            : `Clues ${stats.cluesOpened}/${stats.clueTotal}`,
+        stepLabel: "Gather",
+        detail: `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · then Decide`,
       };
-    case "scene":
+    case "decide":
       return {
-        stepLabel,
-        detail: `Theory draft ${stats.sceneFilled}/${stats.sceneTotal} · Clues ${stats.cluesOpened}/${stats.clueTotal}`,
-      };
-    case "accuse":
-      return {
-        stepLabel,
-        detail: `Clues ${stats.cluesOpened}/${stats.clueTotal} · Confronted ${stats.confrontCracked}/${Math.max(stats.confrontTotal, 1)}`,
+        stepLabel: "Decide",
+        detail: `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · fill Who / How / Where + proof`,
       };
   }
 }
 
-/** Soft-gate: thin file if few clues opened or no confrontations cracked. */
+/** Soft-gate: thin if few clues opened (confront is optional in Direction C). */
 export function accuseLooksThin(caseFile: CaseFile, progress: CaseProgress): boolean {
   const stats = caseJourneyStats(caseFile, progress);
-  const thinClues = stats.cluesOpened < Math.max(2, Math.ceil(stats.clueTotal / 2));
-  const noConfront = stats.confrontTotal === 0 || stats.confrontCracked === 0;
-  return thinClues || noConfront;
+  return stats.cluesOpened < Math.max(2, Math.ceil(stats.clueTotal / 2));
+}
+
+export function evidenceKindLabel(kind: CaseFile["evidence"][number]["kind"]): string {
+  switch (kind) {
+    case "still":
+      return "Photo";
+    case "document":
+      return "Doc";
+    case "note":
+      return "Note";
+  }
 }
