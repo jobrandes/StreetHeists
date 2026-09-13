@@ -292,7 +292,7 @@ export default function EvidenceLockerPage() {
             size="lg"
             className="rounded-lg font-display text-xs font-bold tracking-[0.1em] uppercase"
           >
-            <Link href={`/case/${caseFile.id}/accuse">Accuse</Link>
+            <Link href={`/case/${caseFile.id}/accuse`}>Accuse</Link>
           </Button>
         </div>
         <p className="mt-1 text-center text-[11px] text-muted">
