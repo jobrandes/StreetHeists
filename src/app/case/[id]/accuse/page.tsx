@@ -24,8 +24,17 @@ export default function AccusePage() {
   const { id } = useParams<{ id: string }>();
   const caseFile = getCase(id);
   const { submitAccusation, progressFor } = useHeists();
-  const [accusation, setAccusation] = useState(empty);
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
+  const [local, setLocal] = useState<Accusation>(empty);
+  const desk = progress.reconstructionPicks;
+  const accusation: Accusation = {
+    who: local.who || desk.who || "",
+    how: local.how || desk.how || "",
+    where: local.where || desk.where || "",
+    whoEvidenceId: local.whoEvidenceId,
+    howEvidenceId: local.howEvidenceId,
+    whereEvidenceId: local.whereEvidenceId,
+  };
 
   const bagged = useMemo(() => {
     if (!caseFile) return [];
@@ -73,6 +82,11 @@ export default function AccusePage() {
         <p className="mx-auto mt-3 max-w-xs text-sm leading-snug text-ink">
           Name who / how / where — then attach the exhibit that proves each part. Right suspect with
           the wrong proof still fails.
+          {progress.reconstructionPicks.who ||
+          progress.reconstructionPicks.how ||
+          progress.reconstructionPicks.where
+            ? " Scene-desk picks are prefilled — change them if your theory shifted."
+            : ""}
         </p>
       </header>
 
@@ -91,7 +105,7 @@ export default function AccusePage() {
           <Option
             key={suspect.id}
             selected={accusation.who === suspect.id}
-            onClick={() => setAccusation((value) => ({ ...value, who: suspect.id }))}
+            onClick={() => setLocal((value) => ({ ...value, who: suspect.id }))}
             label={suspect.name}
             detail={suspect.role}
           />
@@ -101,7 +115,7 @@ export default function AccusePage() {
         label="Proof of who"
         evidence={bagged}
         selectedId={accusation.whoEvidenceId}
-        onSelect={(whoEvidenceId) => setAccusation((value) => ({ ...value, whoEvidenceId }))}
+        onSelect={(whoEvidenceId) => setLocal((value) => ({ ...value, whoEvidenceId }))}
       />
 
       <ChoiceSection number={2} title="How">
@@ -109,7 +123,7 @@ export default function AccusePage() {
           <Option
             key={choice.id}
             selected={accusation.how === choice.id}
-            onClick={() => setAccusation((value) => ({ ...value, how: choice.id }))}
+            onClick={() => setLocal((value) => ({ ...value, how: choice.id }))}
             label={choice.label}
           />
         ))}
@@ -118,7 +132,7 @@ export default function AccusePage() {
         label="Proof of how"
         evidence={bagged}
         selectedId={accusation.howEvidenceId}
-        onSelect={(howEvidenceId) => setAccusation((value) => ({ ...value, howEvidenceId }))}
+        onSelect={(howEvidenceId) => setLocal((value) => ({ ...value, howEvidenceId }))}
       />
 
       <ChoiceSection number={3} title="Where">
@@ -126,7 +140,7 @@ export default function AccusePage() {
           <Option
             key={choice.id}
             selected={accusation.where === choice.id}
-            onClick={() => setAccusation((value) => ({ ...value, where: choice.id }))}
+            onClick={() => setLocal((value) => ({ ...value, where: choice.id }))}
             label={choice.label}
           />
         ))}
@@ -135,7 +149,7 @@ export default function AccusePage() {
         label="Proof of where"
         evidence={bagged}
         selectedId={accusation.whereEvidenceId}
-        onSelect={(whereEvidenceId) => setAccusation((value) => ({ ...value, whereEvidenceId }))}
+        onSelect={(whereEvidenceId) => setLocal((value) => ({ ...value, whereEvidenceId }))}
       />
 
       <Button
@@ -152,6 +166,9 @@ export default function AccusePage() {
           : `Fill ${6 - completed} more field${6 - completed === 1 ? "" : "s"}.`}
       </p>
       <div className="mt-4 grid gap-2">
+        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
+          <Link href={`/case/${caseFile.id}/reconstruct">Rebuild on the scene desk</Link>
+        </Button>
         <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
           <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence first</Link>
         </Button>
