@@ -26,7 +26,7 @@ export default function BriefingPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
@@ -43,7 +43,7 @@ export default function BriefingPage() {
             Solve {prior?.title ?? "the prior case"} correctly to unlock this file.
           </p>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
@@ -53,7 +53,7 @@ export default function BriefingPage() {
   return (
     <main className="play-day min-h-dvh px-4 pb-8 pt-4">
       <Link
-        href="/"
+        href="/cases"
         className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
       >
         <ChevronLeft className="size-4" /> Case Board
