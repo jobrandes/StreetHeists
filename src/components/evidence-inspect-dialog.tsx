@@ -1,1 +1,1 @@
-FILE_CONTENT_PLACEHOLDER_DO_NOT_USE
+__LOAD_FROM__/workspace/src/components/evidence-inspect-dialog.tsx

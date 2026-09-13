@@ -1,1 +1,1 @@
-PLACEHOLDER
+__LOAD_FROM__/workspace/src/app/case/[id]/evidence/page.tsx
