@@ -28,14 +28,14 @@ export function FirstUseTip({
   return (
     <div
       className={cn(
-        "flex items-start gap-2 rounded-md border border-[#2F5BFF]/30 bg-[#DCE6FF]/80 px-2.5 py-1.5 text-[11px] leading-snug text-ink",
+        "flex items-start gap-2 rounded-md border border-[#2F5BFF]/30 bg-[#DCE6FF]/80 px-3 py-2 text-sm leading-snug text-ink",
         className,
       )}
     >
       <p className="min-w-0 flex-1">{text}</p>
       <button
         type="button"
-        className="shrink-0 font-display text-[9px] font-bold tracking-[0.12em] text-[#2F5BFF] uppercase"
+        className="min-h-10 shrink-0 px-1 font-display text-xs font-bold tracking-[0.12em] text-[#2F5BFF] uppercase"
         onClick={() => {
           window.localStorage.setItem(key, "1");
           setVisible(false);

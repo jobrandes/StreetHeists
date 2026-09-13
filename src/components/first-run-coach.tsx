@@ -22,6 +22,11 @@ const STOPS = [
   },
   {
     icon: ClipboardList,
+    title: "Case file remembers for you",
+    copy: "Tap Case file anytime. Every clue takeaway, cork string, and cracked claim auto-files there — you don’t have to hold the case in your head.",
+  },
+  {
+    icon: ClipboardList,
     title: "Quick matches vs Corkboard",
     copy: "Opened clues auto-fill Quick matches. Corkboard (Binder) is where you deliberately string a clue to a suspect.",
   },
@@ -68,12 +73,12 @@ export function FirstRunCoach() {
           <p className="font-display text-[11px] font-semibold tracking-[0.18em] text-gold uppercase">
             First-run coach
           </p>
-          <h2 className="font-serif text-xl font-semibold text-ink">The whole case journey</h2>
+          <h2 className="font-serif text-2xl font-semibold text-ink">The whole case journey</h2>
         </div>
         <button
           type="button"
           onClick={dismiss}
-          className="rounded-full p-1 text-muted hover:bg-ink/5 hover:text-ink"
+          className="min-h-11 min-w-11 rounded-full p-1 text-muted hover:bg-ink/5 hover:text-ink"
           aria-label="Dismiss how to play"
         >
           <X className="size-5" />
@@ -83,12 +88,12 @@ export function FirstRunCoach() {
         {STOPS.map((stop, index) => {
           const Icon = stop.icon;
           return (
-            <li key={stop.title} className="flex gap-2.5 text-sm leading-snug text-ink">
-              <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md bg-[#DCE6FF] text-[#2F5BFF]">
-                <Icon className="size-3.5" />
+            <li key={stop.title} className="flex gap-2.5 text-base leading-snug text-ink">
+              <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md bg-[#DCE6FF] text-[#2F5BFF]">
+                <Icon className="size-4" />
               </span>
               <div>
-                <p className="font-display text-[10px] font-bold tracking-[0.12em] text-gold uppercase">
+                <p className="font-display text-xs font-bold tracking-[0.12em] text-gold uppercase">
                   {index + 1} · {stop.title}
                 </p>
                 <p className="mt-0.5">{stop.copy}</p>
@@ -97,8 +102,9 @@ export function FirstRunCoach() {
           );
         })}
       </ol>
-      <p className="mt-3 text-[11px] leading-snug text-muted">
+      <p className="mt-3 text-sm leading-snug text-muted">
         Bottom tabs stay visible on every case screen: Locker · Confront · Scene · Accuse.
+        Case file keeps the facts for you.
       </p>
       <Button className="mt-3 w-full" onClick={dismiss}>
         I understand
