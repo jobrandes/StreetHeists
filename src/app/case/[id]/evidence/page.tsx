@@ -22,7 +22,6 @@ export default function GatherPage() {
   const {
     progressFor,
     inspectEvidence,
-    togglePin,
     discoverHotspot,
     queueAnalysis,
   } = useHeists();
@@ -35,7 +34,6 @@ export default function GatherPage() {
 
   const clues = caseFile?.evidence ?? [];
   const inspectedIds = progress.inspectedEvidenceIds ?? [];
-  const pinnedIds = progress.pinnedEvidenceIds ?? [];
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
   const [notes, setNotes] = useState<Record<string, string>>(() =>
@@ -53,7 +51,6 @@ export default function GatherPage() {
     const item = clues[index];
     if (!item) return;
     inspectEvidence(caseFile.id, item.id);
-    if (!pinnedIds.includes(item.id)) togglePin(caseFile.id, item.id);
     setZoom(1);
     setHotspotNote(null);
     setLabNote(null);
@@ -171,8 +168,6 @@ export default function GatherPage() {
           setZoom={setZoom}
           notes={notes}
           setNotes={setNotes}
-          pinnedIds={pinnedIds}
-          comparisonItemsLength={inspectedIds.length}
           progress={progress}
           hotspotNote={hotspotNote}
           setHotspotNote={setHotspotNote}
@@ -183,8 +178,6 @@ export default function GatherPage() {
           goNext={() => openAt((openIndex + 1) % clues.length)}
           discoverHotspot={discoverHotspot}
           queueAnalysis={queueAnalysis}
-          togglePin={togglePin}
-          onOpenCompare={() => setOpenIndex(null)}
         />
       ) : null}
     </CaseChrome>

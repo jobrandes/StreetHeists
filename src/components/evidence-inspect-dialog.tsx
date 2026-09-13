@@ -14,10 +14,8 @@ import {
   Clock3,
   MapPin,
   Minus,
-  Pin,
   Plus,
   RotateCcw,
-  Scale,
 } from "lucide-react";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
@@ -31,8 +29,6 @@ export function EvidenceInspectDialog({
   setZoom,
   notes,
   setNotes,
-  pinnedIds,
-  comparisonItemsLength,
   progress,
   hotspotNote,
   setHotspotNote,
@@ -43,8 +39,6 @@ export function EvidenceInspectDialog({
   goNext,
   discoverHotspot,
   queueAnalysis,
-  togglePin,
-  onOpenCompare,
 }: {
   caseFile: CaseFile;
   openEvidence: Evidence;
@@ -55,8 +49,6 @@ export function EvidenceInspectDialog({
   setZoom: Dispatch<SetStateAction<number>>;
   notes: Record<string, string>;
   setNotes: Dispatch<SetStateAction<Record<string, string>>>;
-  pinnedIds: string[];
-  comparisonItemsLength: number;
   progress: CaseProgress;
   hotspotNote: string | null;
   setHotspotNote: Dispatch<SetStateAction<string | null>>;
@@ -75,8 +67,6 @@ export function EvidenceInspectDialog({
     evidenceId: string,
     sampleId: string,
   ) => { ok: boolean; reason?: string };
-  togglePin: (caseId: string, evidenceId: string) => void;
-  onOpenCompare: () => void;
 }) {
   const [sampleState, setSampleState] = useState<{
     evidenceId: string;
@@ -362,24 +352,9 @@ export function EvidenceInspectDialog({
               />
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <Button
-                variant="bronze"
-                className="rounded-lg"
-                onClick={() => togglePin(caseFile.id, openEvidence.id)}
-              >
-                <Pin className="size-4" />
-                {pinnedIds.includes(openEvidence.id) ? "On tray" : "Add to tray"}
-              </Button>
-              <Button
-                variant="bronze"
-                className="rounded-lg"
-                disabled={comparisonItemsLength < 2}
-                onClick={onOpenCompare}
-              >
-                <Scale className="size-4" /> Compare
-              </Button>
-            </div>
+            <p className="mt-4 rounded-lg border border-[#2F5BFF]/25 bg-[#DCE6FF]/70 px-3 py-2 text-sm font-medium text-ink">
+              Filed in Case file — ready to use as proof in Decide.
+            </p>
 
             <Button className="mt-2 w-full rounded-lg" onClick={goNext}>
               Next clue <ChevronRight className="size-4" />
