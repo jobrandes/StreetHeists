@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { compareLinks, linksForEvidence, suspectDossiers } from "./case-file";
-import { lateFeeCase, pigeonCase, playableCases } from "./seed";
+import {
+  dessertTrolleyCase,
+  lateFeeCase,
+  pigeonCase,
+  playableCases,
+  velvetTeaspoonCase,
+} from "./seed";
 
 describe("case progression metadata", () => {
   it("ships briefing beats and reconstruction desks on playable cases", () => {
@@ -12,6 +18,23 @@ describe("case progression metadata", () => {
     expect(pigeonCase.difficulty).toBe("tutorial");
     expect(lateFeeCase.difficulty).toBe("standard");
     expect(lateFeeCase.unlockAfterCaseId).toBe("pigeon-job");
+    expect(velvetTeaspoonCase.unlockAfterCaseId).toBe("late-fee");
+    expect(dessertTrolleyCase.unlockAfterCaseId).toBe("velvet-teaspoon");
+  });
+
+  it("keeps hard-case hooks distinct from the tutorial trail and clock puzzle", () => {
+    expect(velvetTeaspoonCase.difficulty).toBe("hard");
+    expect(dessertTrolleyCase.difficulty).toBe("hard");
+    expect(velvetTeaspoonCase.solution).toEqual({
+      who: "pippa",
+      how: "place-card-clear",
+      where: "sugar-caddy",
+    });
+    expect(dessertTrolleyCase.solution).toEqual({
+      who: "vance",
+      how: "allergen-shriek",
+      where: "prompt-cubby",
+    });
   });
 });
 
