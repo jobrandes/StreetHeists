@@ -1,10 +1,12 @@
 "use client";
 
+import { CaseChrome } from "@/components/case-chrome";
+import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { difficultyLabel, isCaseUnlocked } from "@/lib/investigation";
 import { getCase, playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
-import { ChevronLeft, Clapperboard } from "lucide-react";
+import { Clapperboard } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
@@ -50,16 +52,17 @@ export default function BriefingPage() {
     );
   }
 
-  return (
-    <main className="play-day min-h-dvh px-4 pb-8 pt-4">
-      <Link
-        href="/cases"
-        className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
-      >
-        <ChevronLeft className="size-4" /> Case Board
-      </Link>
+  const progress = progressFor(caseFile.id);
 
-      <header className="mt-5 border-b border-hairline pb-4">
+  return (
+    <CaseChrome
+      caseFile={caseFile}
+      progress={progress}
+      step="briefing"
+      backHref="/cases"
+      backLabel="Case Board"
+    >
+      <header className="border-b border-hairline pb-4">
         <p className="font-display text-[11px] font-bold tracking-[0.22em] text-gold uppercase">
           Briefing · Case {String(caseFile.number).padStart(2, "0")} ·{" "}
           {difficultyLabel(caseFile.difficulty)}
@@ -68,6 +71,11 @@ export default function BriefingPage() {
           {caseFile.title}
         </h1>
         <p className="mt-3 text-base leading-snug text-ink">{caseFile.subtitle}</p>
+        <FirstUseTip
+          tipId="briefing-journey"
+          className="mt-3"
+          text="Journey shape: Briefing → Locker (Clues / People / Places / Binder) → Confront → Scene (draft) → Accuse (real). Tabs at the bottom stay with you."
+        />
         <p className="mt-4 inline-block border-l-4 border-gold bg-card px-3 py-2 text-sm font-semibold text-ink">
           Read the beats, then work the locker and scene desk before you accuse.
         </p>
@@ -106,10 +114,10 @@ export default function BriefingPage() {
           className="w-full rounded-lg font-display text-sm font-bold tracking-[0.1em] uppercase"
         >
           <Link href={`/case/${caseFile.id}/reconstruct`} onClick={() => openCase(caseFile.id)}>
-            <Clapperboard className="size-4" /> Scene desk
+            <Clapperboard className="size-4" /> Scene desk (draft)
           </Link>
         </Button>
       </div>
-    </main>
+    </CaseChrome>
   );
 }
