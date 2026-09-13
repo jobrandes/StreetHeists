@@ -8,7 +8,8 @@
 
 ## Product locks
 
-- Couch crime-puzzle: Case Board → Briefing → Evidence Locker → Accuse → Verdict.
+- Couch crime-puzzle: Case Board → Briefing → Evidence Locker → Confront → Accuse → Verdict.
+- Detective-work pass: chain-of-custody binder, photo hotspots, lab send/return, contradiction phrase-click, corkboard links, confront-with-evidence, evidence-backed Who/How/Where.
 - No player camera, uploads, walking, or GPS.
 - Play Day B2 cool paper on play screens (`#EEF2F6`); Midnight Crew only on solved share cards.
 - Seed case: The Pigeon Job (`src/lib/seed.ts`).
