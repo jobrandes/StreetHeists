@@ -1,6 +1,8 @@
 "use client";
 
+import { CaseChrome } from "@/components/case-chrome";
 import { PeopleRoster, PlacesRoster } from "@/components/case-file-rosters";
+import { FirstUseTip } from "@/components/first-use-tip";
 import { CompareBoard } from "@/components/compare-board";
 import { ContradictionSpotter } from "@/components/contradiction-spotter";
 import { CorkboardConnect } from "@/components/corkboard";
@@ -17,15 +19,12 @@ import type { Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
   Check,
-  ChevronLeft,
-  Clapperboard,
   ClipboardList,
   FolderOpen,
   MapPin,
   MapPinned,
   Pin,
   Scale,
-  MessageSquareWarning,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -101,7 +100,7 @@ export default function EvidenceLockerPage() {
       <main className="play-day grid min-h-dvh place-items-center p-6 text-center">
         <div>
           <h1 className="font-serif text-3xl font-bold text-ink">Case not filed.</h1>
-          <Button asChild className="mt-4"><Link href="/">Return to Case Board</Link></Button>
+          <Button asChild className="mt-4"><Link href="/cases">Return to Case Board</Link></Button>
         </div>
       </main>
     );
@@ -116,7 +115,7 @@ export default function EvidenceLockerPage() {
             Solve the prior case correctly before this locker opens.
           </p>
           <Button asChild className="mt-4">
-            <Link href="/">Return to Case Board</Link>
+            <Link href="/cases">Return to Case Board</Link>
           </Button>
         </div>
       </main>
@@ -124,15 +123,14 @@ export default function EvidenceLockerPage() {
   }
 
   return (
-    <main className="play-day min-h-dvh px-4 pb-28 pt-4">
-      <Link
-        href={`/case/${caseFile.id}`}
-        className="inline-flex items-center gap-1 font-display text-xs font-bold tracking-[0.16em] text-muted uppercase"
-      >
-        <ChevronLeft className="size-4" /> Briefing
-      </Link>
-
-      <header className="mt-4 border-b border-hairline pb-4 text-center">
+    <CaseChrome
+      caseFile={caseFile}
+      progress={progress}
+      step="locker"
+      backHref={`/case/${caseFile.id}`}
+      backLabel="Briefing"
+    >
+      <header className="border-b border-hairline pb-4 text-center">
         <KeyholeLogo className="mx-auto size-8" />
         <p className="mt-1 font-display text-[11px] font-bold tracking-[0.22em] text-gold uppercase">
           Street Heists · Case {String(caseFile.number).padStart(2, "0")}
@@ -239,15 +237,20 @@ export default function EvidenceLockerPage() {
 
           <section className="mt-5 rounded-xl border-2 border-gold bg-card p-4">
             <p className="font-display text-[10px] font-bold tracking-[0.18em] text-gold uppercase">
-              Link board
+              Quick matches
             </p>
             <h2 className="mt-1 font-serif text-2xl font-bold text-ink">
-              Compare people, how & where
+              Auto-highlights from opened clues
             </h2>
             <p className="mt-1 text-sm leading-snug text-ink">
-              Opened clues land on the tray automatically. Shared names and places
-              light up so you can accuse with a clear map.
+              Opened clues land on this tray automatically — shared people and places light up.
+              Deliberate stringing happens on the Corkboard in the Binder tab.
             </p>
+            <FirstUseTip
+              tipId="quick-matches"
+              className="mt-2"
+              text="Quick matches = automatic overlap. Corkboard (Binder) = you string a clue to a suspect on purpose."
+            />
             <Button
               variant="gold"
               className="mt-3 w-full rounded-lg"
@@ -277,6 +280,10 @@ export default function EvidenceLockerPage() {
 
       {tab === "binder" ? (
         <div className="mt-4 space-y-4">
+          <FirstUseTip
+            tipId="binder-cork"
+            text="Binder holds custody + the Corkboard. String a clue to a suspect here — that is the deliberate link, not Quick matches."
+          />
           <CustodyLog caseFile={caseFile} entries={progress.custodyLog} />
           <CorkboardConnect
             caseFile={caseFile}
@@ -296,41 +303,6 @@ export default function EvidenceLockerPage() {
 
       {tab === "people" ? <PeopleRoster caseFile={caseFile} /> : null}
       {tab === "places" ? <PlacesRoster caseFile={caseFile} /> : null}
-
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-hairline bg-[#EEF2F6]/95 p-4 backdrop-blur">
-        <div className="grid grid-cols-3 gap-2">
-          <Button
-            asChild
-            variant="bronze"
-            size="lg"
-            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
-          >
-            <Link href={`/case/${caseFile.id}/confront`}>
-              <MessageSquareWarning className="size-3.5" /> Confront
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="bronze"
-            size="lg"
-            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
-          >
-            <Link href={`/case/${caseFile.id}/reconstruct`}>
-              <Clapperboard className="size-3.5" /> Scene
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            className="rounded-lg font-display text-[10px] font-bold tracking-[0.08em] uppercase"
-          >
-            <Link href={`/case/${caseFile.id}/accuse`}>Accuse</Link>
-          </Button>
-        </div>
-        <p className="mt-1 text-center text-[11px] text-muted">
-          {inspectedCount} of {totalClues} clues · scene desk rebuilds as you pick
-        </p>
-      </div>
 
       {openEvidence && openIndex !== null ? (
         <EvidenceInspectDialog
@@ -380,7 +352,7 @@ export default function EvidenceLockerPage() {
           </Button>
         </DialogContent>
       </Dialog>
-    </main>
+    </CaseChrome>
   );
 }
 
