@@ -20,11 +20,7 @@ jobs:
         run: |
           set -euo pipefail
           cd public/splash
-          if [ -f street-wash.jpg.b64 ]; then
-            base64 -d street-wash.jpg.b64 > street-wash.jpg
-          else
-            cat $(ls street-wash.jpg.b64.part* | sort) | tr -d '\n\r ' | base64 -d > street-wash.jpg
-          fi
+          cat $(ls street-wash.jpg.b64.p* | sort) | tr -d '\n\r ' | base64 -d > street-wash.jpg
           file street-wash.jpg
           test "$(wc -c < street-wash.jpg)" -gt 1000
       - name: Commit street-wash.jpg if needed
