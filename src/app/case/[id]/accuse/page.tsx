@@ -1,6 +1,10 @@
 "use client";
 
+import { CaseChrome } from "@/components/case-chrome";
+import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { accuseLooksThin } from "@/lib/case-journey";
 import { getCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Accusation } from "@/lib/types";
@@ -8,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 const empty: Accusation = {
   who: "",
@@ -26,6 +30,7 @@ export default function AccusePage() {
   const { submitAccusation, progressFor } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const [local, setLocal] = useState<Accusation>(empty);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const desk = progress.reconstructionPicks;
   const accusation: Accusation = {
     who: local.who || desk.who || "",
@@ -52,6 +57,7 @@ export default function AccusePage() {
     accusation.whereEvidenceId,
   ];
   const completed = parts.filter(Boolean).length;
+  const thin = caseFile ? accuseLooksThin(caseFile, progress) : true;
 
   if (!caseFile) {
     return (
@@ -66,25 +72,43 @@ export default function AccusePage() {
     );
   }
 
-  function submit() {
+  function lockVerdict() {
     if (!caseFile || completed !== 6) return;
     submitAccusation(caseFile.id, accusation);
     router.push(`/case/${caseFile.id}/verdict`);
   }
 
+  function requestSubmit() {
+    if (completed !== 6) return;
+    if (thin) {
+      setConfirmOpen(true);
+      return;
+    }
+    lockVerdict();
+  }
+
   return (
-    <main className="play-day min-h-dvh px-4 pb-8 pt-4">
-      <header className="border-b border-hairline pb-5 pt-3 text-center">
-        <p className="font-display text-[11px] font-bold tracking-[0.22em] text-gold uppercase">
-          Street Heists · {caseFile.title}
+    <CaseChrome
+      caseFile={caseFile}
+      progress={progress}
+      step="accuse"
+      backHref={`/case/${caseFile.id}/evidence`}
+      backLabel="Locker"
+    >
+      <header className="border-b border-hairline pb-5 text-center">
+        <p className="inline-flex items-center gap-2 rounded-md bg-[#2F5BFF] px-2.5 py-1 font-display text-[10px] font-bold tracking-[0.16em] text-white uppercase">
+          Final call · counts
         </p>
-        <h1 className="mt-1 font-serif text-[4.5rem] font-bold leading-[0.88] text-ink">Accuse</h1>
+        <h1 className="mt-2 font-serif text-[4.2rem] font-bold leading-[0.88] text-ink">Accuse</h1>
+        <FirstUseTip
+          tipId="accuse-vs-scene"
+          className="mt-3 text-left"
+          text="Accuse is the real submission with proof. Scene desk is only a draft theory — it never locks the case."
+        />
         <p className="mx-auto mt-3 max-w-xs text-sm leading-snug text-ink">
           Name who / how / where — then attach the exhibit that proves each part. Right suspect with
           the wrong proof still fails.
-          {progress.reconstructionPicks.who ||
-          progress.reconstructionPicks.how ||
-          progress.reconstructionPicks.where
+          {desk.who || desk.how || desk.where
             ? " Scene-desk picks are prefilled — change them if your theory shifted."
             : ""}
         </p>
@@ -97,6 +121,13 @@ export default function AccusePage() {
             Open the Evidence Locker
           </Link>{" "}
           before locking a verdict.
+        </div>
+      ) : null}
+
+      {thin && bagged.length > 0 ? (
+        <div className="mt-4 rounded-xl border border-[#C9A227]/50 bg-[#FFF6D9]/70 p-3 text-sm text-ink">
+          Thin file warning — you have opened few clues or cracked no confrontations yet. You can still
+          accuse, but we will ask you to confirm.
         </div>
       ) : null}
 
@@ -156,7 +187,7 @@ export default function AccusePage() {
         size="xl"
         className="mt-8 w-full rounded-lg font-display text-lg font-bold uppercase"
         disabled={completed !== 6}
-        onClick={submit}
+        onClick={requestSubmit}
       >
         <KeyRound className="size-5" /> Lock verdict
       </Button>
@@ -165,18 +196,43 @@ export default function AccusePage() {
           ? "Theory and proof are complete."
           : `Fill ${6 - completed} more field${6 - completed === 1 ? "" : "s"}.`}
       </p>
-      <div className="mt-4 grid gap-2">
-        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
-          <Link href={`/case/${caseFile.id}/reconstruct`}>Rebuild on the scene desk</Link>
-        </Button>
-        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
-          <Link href={`/case/${caseFile.id}/confront`}>Confront with evidence first</Link>
-        </Button>
-        <Button asChild variant="bronze" size="lg" className="w-full rounded-lg text-ink">
-          <Link href={`/case/${caseFile.id}/evidence`}>Back to case file</Link>
-        </Button>
-      </div>
-    </main>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent title="Accuse with a thin file?" className="play-day">
+          <p className="text-sm leading-snug text-ink">
+            You have not opened much evidence and/or have not cracked a confrontation yet. Accuse
+            anyway?
+          </p>
+          <div className="mt-4 grid gap-2">
+            <Button
+              className="w-full rounded-lg"
+              onClick={() => {
+                setConfirmOpen(false);
+                lockVerdict();
+              }}
+            >
+              Accuse anyway
+            </Button>
+            <Button
+              asChild
+              variant="bronze"
+              className="w-full rounded-lg text-ink"
+              onClick={() => setConfirmOpen(false)}
+            >
+              <Link href={`/case/${caseFile.id}/evidence`}>Back to locker</Link>
+            </Button>
+            <Button
+              asChild
+              variant="bronze"
+              className="w-full rounded-lg text-ink"
+              onClick={() => setConfirmOpen(false)}
+            >
+              <Link href={`/case/${caseFile.id}/confront`}>Try Confront first</Link>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </CaseChrome>
   );
 }
 
@@ -221,7 +277,7 @@ function ChoiceSection({
 }: {
   number: number;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <fieldset className="mt-6">
