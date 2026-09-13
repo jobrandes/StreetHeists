@@ -1,6 +1,6 @@
 # Street Heists
 
-Street Heists is a short comedy-heist mystery for the phone. Open a case, inspect the clues supplied by the game, pin deductions, compare evidence, and make one Who / How / Where accusation.
+Street Heists is a short comedy-heist mystery for the phone. Cases start easy and unlock harder ones only after a correct solve. Open a case, read a short story briefing, inspect clues, rebuild the scene on the desk as you key options, then make one Who / How / Where accusation.
 
 **Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
 
