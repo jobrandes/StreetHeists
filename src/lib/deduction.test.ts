@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   canAccuse,
+  gradeClueLink,
   isDeductionChainUnlocked,
   isDeductionUnlocked,
 } from "@/lib/deduction";
@@ -98,5 +99,37 @@ describe("accusation draft shape", () => {
     };
     expect(progress.accusationDraft.whoEvidenceId).toBe("tip-jar-video");
     expect(progress.accusationDraft.whereEvidenceId).toBe("grease-bin");
+  });
+});
+
+describe("PRISM teaching miss + Compare gate", () => {
+  it("miss copy explains time/person/route and does not mutate progress", () => {
+    const progress = emptyProgress();
+    progress.inspectedEvidenceIds = ["crumb-trail", "statue-nest", "blue-feather"];
+    const before = structuredClone(progress);
+    const grade = gradeClueLink(pigeonCase, progress, "crumb-trail", "blue-feather");
+    expect(grade.sound).toBe(false);
+    expect(grade.missReason?.toLowerCase()).toMatch(/time|person|route/);
+    expect(progress).toEqual(before);
+    expect(grade.unlockedChainIds).toEqual([]);
+  });
+
+  it("correct Last Toast pair still needs Compare before the chain unlocks", () => {
+    const progress = emptyProgress();
+    progress.inspectedEvidenceIds = [
+      "cctv-912",
+      "cctv-916",
+      "kitchen-ticket",
+      "seating-chart",
+    ];
+    const grade = gradeClueLink(
+      lastToastCase,
+      progress,
+      "kitchen-ticket",
+      "cctv-912",
+    );
+    expect(grade.sound).toBe(true);
+    expect(grade.unlockedChainIds).toEqual([]);
+    expect(grade.message.toLowerCase()).toMatch(/compare|contradiction/);
   });
 });
