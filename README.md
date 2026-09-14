@@ -2,9 +2,11 @@
 
 Street Heists is a short comedy-heist mystery for the phone. The splash home leads with the brand; the case board lives at `/cases`. Cases start easy and unlock harder ones only after a correct solve.
 
+**v0.3** — Corkboard deduction chains, flagship Late Fee stakes (rent + Rita’s badge), proof preserved on wrong accuse, richer inspect + share cards.
+
 **Direction C flow:** Briefing → **Gather** (clues we give you: photos, docs, notes) → **Decide** (Who / How / Where + attach proof → Accuse). Tap **Case file** anytime for a running sheet that auto-keeps takeaways. Phone text defaults larger; toggle Large / Comfortable on home and the case board.
 
-Playable cases: **The Pigeon Job** (tutorial), **The Late Fee** (clock contradiction), **The Velvet Teaspoon** (place-card fraud + lipstick ID), **Murder on the Dessert Trolley** (route timing + diversion).
+Playable cases: **The Pigeon Job** (tutorial), **The Late Fee** (clock contradiction · real stakes), **The Velvet Teaspoon** (place-card fraud + lipstick ID), **Murder on the Dessert Trolley** (route timing + diversion).
 
 **Jo’s test clone:** [github.com/jobrandes/StreetHeists](https://github.com/jobrandes/StreetHeists). Agents must sync finished work to this GitHub repo whenever they push Cursor Origin — Origin and GitHub are not the same remote. See `docs/AGENT_NOTES.md`.
 
@@ -45,13 +47,13 @@ Easiest way to open the app on your phone: deploy a preview from GitHub.
 
 Netlify will give you a URL like `https://something.netlify.app`. Open that on your phone — no same-Wi‑Fi dance.
 
-Every push to `main` can auto-rebuild. This is a private preview for testing, not a public launch.
+Every push to `main` can auto-rebuild. Blessed production phone preview: [https://streetheists.netlify.app](https://streetheists.netlify.app).
 
 ## Product flow
 
 - `/` — Case Board
 - `/case/pigeon-job` — Briefing
-- `/case/pigeon-job/evidence` — **Gather** (provided clues)
+- `/case/pigeon-job/evidence` — **Gather** (provided clues + corkboard)
 - `/case/pigeon-job/accuse` — **Decide** (Who / How / Where + proof)
 - `/case/pigeon-job/verdict` — retry or solved + share cards
 
