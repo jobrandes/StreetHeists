@@ -2,21 +2,26 @@
 
 import { KeyholeLogo } from "@/components/keyhole-logo";
 import { Button } from "@/components/ui/button";
-import { FolderSearch, Scale, X } from "lucide-react";
+import { FolderSearch, Pin, Scale, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "street-heists.onboarding-seen";
+const STORAGE_KEY = "street-heists.onboarding-seen-v2";
 
 const STOPS = [
   {
     icon: FolderSearch,
-    title: "Gather",
-    copy: "We give you every photo, doc, and note. Open each clue — takeaways auto-file into Case file.",
+    title: "Locker",
+    copy: "Open every photo, doc, and note we give you. Pin the ones that itch.",
+  },
+  {
+    icon: Pin,
+    title: "Corkboard",
+    copy: "Hang pins, string red yarn between related clues, unlock yellow sticky deductions.",
   },
   {
     icon: Scale,
-    title: "Decide",
-    copy: "Fill Who / How / Where, attach proof from filed clues, then Accuse. That’s the only call that locks the case.",
+    title: "Accuse",
+    copy: "When enough stickies unlock, name Who / How / Where with proof. That’s the call that closes the case.",
   },
 ] as const;
 
@@ -45,7 +50,7 @@ export function FirstRunCoach() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-gold uppercase">
             First-run coach
           </p>
-          <h2 className="font-serif text-2xl font-semibold text-ink">Two rooms only</h2>
+          <h2 className="font-serif text-2xl font-semibold text-ink">Three rooms</h2>
         </div>
         <button
           type="button"
@@ -75,7 +80,7 @@ export function FirstRunCoach() {
         })}
       </ol>
       <p className="mt-3 text-base leading-snug text-muted">
-        Tap Case file anytime — it remembers so you don’t have to.
+        Red dots are pushpins. Red lines are yarn. Yellow stickies unlock Accuse.
       </p>
       <Button className="mt-3 h-12 w-full" onClick={dismiss}>
         I understand

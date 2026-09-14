@@ -160,7 +160,7 @@ export function gradeClueLink(
     return {
       sound: false,
       unlockedChainIds: [],
-      message: "Miss — that pair doesn’t hold. Board stays; try another string.",
+      message: "Not a match — that yarn stays, but it won’t unlock a sticky. Try another pair.",
     };
   }
 
@@ -179,13 +179,13 @@ export function gradeClueLink(
     return {
       sound: true,
       unlockedChainIds: newlyUnlocked.map((c) => c.id),
-      message: `Deduction card unlocked: ${newlyUnlocked.map((c) => c.title).join(" · ")}`,
+      message: `Sticky unlocked: ${newlyUnlocked.map((c) => c.title).join(" · ")}`,
     };
   }
 
   return {
     sound: true,
     unlockedChainIds: [],
-    message: "Sound thread — that pair belongs on the board.",
+    message: "Good pair — that yarn fits a sticky.",
   };
 }

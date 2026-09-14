@@ -128,7 +128,7 @@ export function PinClueSheet({
             )}
             onClick={() => setMode((m) => (m === "link" ? "idle" : "link"))}
           >
-            <Link2 className="size-3.5" /> Link to chain
+            <Link2 className="size-3.5" /> String yarn
           </Button>
           <Button
             type="button"
@@ -145,7 +145,9 @@ export function PinClueSheet({
         {mode !== "idle" ? (
           <div className="mt-3 rounded-lg border border-[#C4A574]/50 bg-[#FFF8EE] p-3">
             <p className="font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
-              {mode === "link" ? "Pick a pin to string yarn" : "Pick a pin to compare"}
+              {mode === "link"
+                ? "Pick another pin — this strings red yarn between them"
+                : "Pick a pin to compare side by side"}
             </p>
             {others.length === 0 ? (
               <p className="mt-2 text-sm text-muted">Pin another clue first.</p>
@@ -178,7 +180,7 @@ export function PinClueSheet({
           <div className="rounded-b-md rounded-tr-md border border-[#C4A574]/40 bg-[#FFF8EE] p-3">
             {chainPreview.length < 2 ? (
               <p className="text-sm text-muted">
-                Link this pin to another clue — yarn shows here (2–3 cards).
+                String yarn to another clue — the connection shows here.
               </p>
             ) : (
               <div className="flex items-stretch gap-1">

@@ -29,15 +29,15 @@ export function DeductionChainsPanel({
       <div className="flex items-center gap-2">
         <GitBranch className="size-4 text-gold" />
         <p className="font-display text-[10px] font-bold tracking-[0.16em] text-gold uppercase">
-          Deduction cards
+          Sticky deductions
         </p>
       </div>
       <h2 className="mt-1 font-serif text-2xl font-bold text-ink">
-        Grade the chain — not three naked guesses
+        Connect clues — unlock the yellow stickies
       </h2>
       <p className="mt-1 text-sm leading-snug text-ink">
-        String sound clue pairs on the corkboard. Accuse stays locked until{" "}
-        {need === 1 ? "the required card" : `${need} cards`} open.
+        String related pins with yarn. When a pair fits, a sticky unlocks. Accuse stays locked
+        until {need === 1 ? "that sticky" : `${need} stickies`} open.
       </p>
       <p
         className={cn(
@@ -48,8 +48,8 @@ export function DeductionChainsPanel({
         )}
       >
         {accuseReady
-          ? `Decide unlocked · ${unlocked.length}/${need} required cards`
-          : `Accuse locked · ${unlocked.length}/${need} required cards`}
+          ? `Accuse unlocked · ${unlocked.length}/${need} stickies`
+          : `Accuse locked · ${unlocked.length}/${need} stickies`}
       </p>
       <ul className="mt-4 space-y-3">
         {chains.map((chain) => {
@@ -88,7 +88,7 @@ export function DeductionChainsPanel({
                     <p className="mt-1 text-xs text-muted">
                       Filed {filed}/{chain.requiredEvidenceIds.length}
                       {pairs.length
-                        ? ` · sound pairs ${linkedPairs}/${chain.pairsRequired ?? pairs.length}`
+                        ? ` · matching pairs ${linkedPairs}/${chain.pairsRequired ?? pairs.length}`
                         : ""}
                       {chain.unlockOnContradictionId ? " · spot the contradiction" : ""}
                     </p>

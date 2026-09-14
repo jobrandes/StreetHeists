@@ -5,10 +5,11 @@ import { FirstUseTip } from "@/components/first-use-tip";
 import { PinClueSheet } from "@/components/pin-clue-sheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { isCorrectPairForChain } from "@/lib/deduction";
+import { chainsRequiredToAccuse, isCorrectPairForChain } from "@/lib/deduction";
 import type { CaseFile, ClueLink, DeductionChain, Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Pin, RefreshCw } from "lucide-react";
+import { Link2, Pin, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 /** Deterministic polaroid slots — leaves center free for sticky deductions. */
@@ -60,7 +61,10 @@ export function MosaicCorkboard({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [compareIds, setCompareIds] = useState<[string, string] | null>(null);
   const [linkPick, setLinkPick] = useState<string[]>([]);
+  const [yarnMode, setYarnMode] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const stickiesNeeded = chainsRequiredToAccuse(caseFile);
+  const stickiesHave = unlockedChains.length;
 
   const pinned = useMemo(
     () =>
@@ -93,16 +97,22 @@ export function MosaicCorkboard({
     const result = onLink(a, b);
     setToast(result.message);
     setLinkPick([]);
+    setYarnMode(false);
     return result;
   }
 
   function onPinClick(id: string) {
-    if (linkPick.length === 1 && linkPick[0] !== id) {
+    if (yarnMode || linkPick.length === 1) {
+      if (linkPick.length === 0) {
+        setLinkPick([id]);
+        return;
+      }
+      if (linkPick[0] === id) {
+        setLinkPick([]);
+        return;
+      }
       tryLink(linkPick[0]!, id);
-      return;
-    }
-    if (linkPick.length === 1 && linkPick[0] === id) {
-      setLinkPick([]);
+      setYarnMode(false);
       return;
     }
     setSelectedId(id);
@@ -113,13 +123,49 @@ export function MosaicCorkboard({
       <header>
         <h1 className="font-serif text-4xl font-bold leading-none text-ink">Corkboard</h1>
         <p className="mt-2 text-base leading-snug text-ink">
-          Pin stills, string red yarn, unlock sticky deductions. Accuse stays locked until the
-          chains hold.
+          This is your wall of clues. Red dots are pushpins. Red lines are yarn you string
+          between two clues. Matching pairs unlock yellow sticky notes — Accuse opens when those
+          stickies unlock.
+        </p>
+        <ol className="mt-3 space-y-1.5 rounded-xl border border-[#C4A574]/45 bg-[#FFF8EE] px-3 py-3 text-sm leading-snug text-ink">
+          <li>
+            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
+              1 · Pin
+            </span>{" "}
+            Hang filed stills with Add pin.
+          </li>
+          <li>
+            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
+              2 · String yarn
+            </span>{" "}
+            Connect two related clues (tap String yarn, then two pins — or open a pin → String yarn).
+          </li>
+          <li>
+            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
+              3 · Unlock stickies
+            </span>{" "}
+            Sound pairs light a yellow sticky. Get {stickiesNeeded || "the"} sticky
+            {stickiesNeeded === 1 ? "" : "s"}, then Accuse opens.
+          </li>
+        </ol>
+        <p
+          className={cn(
+            "mt-3 rounded-lg border px-3 py-2 text-sm font-semibold",
+            stickiesNeeded > 0 && stickiesHave >= stickiesNeeded
+              ? "border-[#2F5BFF]/35 bg-[#DCE6FF]/70 text-ink"
+              : "border-[#C4A574]/40 bg-[#F7F1E6] text-ink",
+          )}
+        >
+          {stickiesNeeded === 0
+            ? "No stickies required on this case — Accuse is open when you’re ready."
+            : stickiesHave >= stickiesNeeded
+              ? `Stickies unlocked ${stickiesHave}/${stickiesNeeded} · Accuse is open`
+              : `Stickies unlocked ${stickiesHave}/${stickiesNeeded} · keep stringing sound pairs`}
         </p>
         <FirstUseTip
-          tipId="mosaic-corkboard-yarn"
+          tipId="mosaic-corkboard-howto-v2"
           className="mt-2"
-          text="ADD PIN from the Locker, open a pin, then Link to chain — or tap two pins on the board. CLEAR CHAIN pulls yarn only."
+          text="Red dots = pushpins. Red lines = yarn between two clues. Yellow stickies = deductions. Accuse unlocks when enough stickies open."
         />
       </header>
 
@@ -197,7 +243,7 @@ export function MosaicCorkboard({
             </div>
           ) : pinned.length >= 2 ? (
             <p className="absolute left-1/2 top-1/2 z-0 w-[70%] -translate-x-1/2 -translate-y-1/2 text-center font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22]/70 uppercase">
-              String two pins — sticky unlocks here
+              Open a pin → String yarn — sticky unlocks here
             </p>
           ) : null}
 
@@ -206,8 +252,11 @@ export function MosaicCorkboard({
               <div>
                 <p className="font-serif text-xl font-bold text-ink">Empty board</p>
                 <p className="mt-1 text-sm text-ink/80">
-                  File clues in the Locker, then ADD PIN to hang stills.
+                  Open clues in the Locker, then Add pin to hang them here.
                 </p>
+                <Button asChild className="mt-4 h-11 rounded-xl bg-[#1B2430] font-display text-xs font-bold tracking-[0.12em] text-[#F2F0EA] uppercase">
+                  <Link href={`/case/${caseFile.id}/evidence`}>Open Locker</Link>
+                </Button>
               </div>
             </div>
           ) : (
@@ -254,33 +303,65 @@ export function MosaicCorkboard({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <Button
           type="button"
-          className="h-12 rounded-xl bg-[#D4B483] font-display text-sm font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
+          className="h-12 rounded-xl bg-[#D4B483] font-display text-[11px] font-bold tracking-[0.1em] text-ink uppercase hover:bg-[#C9A574]"
           onClick={() => setAddOpen(true)}
         >
           <Pin className="size-4" /> Add pin
         </Button>
         <Button
           type="button"
+          className={cn(
+            "h-12 rounded-xl font-display text-[11px] font-bold tracking-[0.1em] uppercase",
+            yarnMode
+              ? "bg-[#C62828] text-white hover:bg-[#B71C1C]"
+              : "border border-[#C62828]/40 bg-[#F8D7D7]/50 text-ink hover:bg-[#F8D7D7]/80",
+          )}
+          disabled={pinned.length < 2}
+          onClick={() => {
+            setSelectedId(null);
+            setLinkPick([]);
+            setYarnMode((on) => !on);
+            setToast(
+              yarnMode
+                ? null
+                : "Yarn mode on — tap two pins to connect them.",
+            );
+          }}
+        >
+          <Link2 className="size-4" /> {yarnMode ? "Cancel yarn" : "String yarn"}
+        </Button>
+        <Button
+          type="button"
           variant="bronze"
-          className="h-12 rounded-xl border border-[#C4A574]/50 bg-[#F7F1E6] font-display text-sm font-bold tracking-[0.12em] uppercase"
+          className="h-12 rounded-xl border border-[#C4A574]/50 bg-[#F7F1E6] font-display text-[11px] font-bold tracking-[0.1em] uppercase"
           disabled={links.length === 0}
           onClick={() => {
             onClearChain();
             setToast("Yarn cleared — pins stay.");
             setLinkPick([]);
+            setYarnMode(false);
           }}
         >
-          <RefreshCw className="size-4" /> Clear chain
+          <RefreshCw className="size-4" /> Clear yarn
         </Button>
       </div>
 
-      {linkPick.length === 1 ? (
+      {yarnMode || linkPick.length === 1 ? (
         <p className="rounded-lg border border-[#C62828]/30 bg-[#F8D7D7]/35 px-3 py-2 text-sm font-semibold text-ink">
-          Yarn mode · tap a second pin (or open a pin → Link to chain).
-          <button type="button" className="ml-2 underline" onClick={() => setLinkPick([])}>
+          {linkPick.length === 0
+            ? "Yarn mode · tap the first pin, then the second."
+            : "Yarn mode · tap a second pin to finish the string."}{" "}
+          <button
+            type="button"
+            className="underline"
+            onClick={() => {
+              setLinkPick([]);
+              setYarnMode(false);
+            }}
+          >
             Cancel
           </button>
         </p>
@@ -294,8 +375,15 @@ export function MosaicCorkboard({
 
       {links.length > 0 ? (
         <ul className="space-y-1.5 rounded-xl border border-[#C4A574]/40 bg-[#FFF8EE]/80 p-3">
-          <li className="list-none font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
-            Yarn on board
+          <li className="list-none space-y-1">
+            <p className="font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
+              Yarn on board
+            </p>
+            <p className="text-[11px] font-normal normal-case tracking-normal text-muted">
+              <span className="font-semibold text-ink">Fits a sticky</span> = helps unlock a yellow
+              note. <span className="font-semibold text-ink">Not yet</span> = stays on the board, does
+              not unlock Accuse.
+            </p>
           </li>
           {links.map((link) => {
             const a =
@@ -311,7 +399,7 @@ export function MosaicCorkboard({
                 <span className="mx-1 text-[#C62828]">∿</span>
                 <span className="font-semibold">{b}</span>
                 <span className="ml-1 text-[11px] text-muted">
-                  {sound ? "· sound" : "· frayed"}
+                  {sound ? "· fits a sticky" : "· not yet"}
                 </span>
               </li>
             );

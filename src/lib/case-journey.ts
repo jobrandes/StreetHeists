@@ -69,15 +69,15 @@ export function progressStripCopy(
       return {
         stepLabel: "Corkboard",
         detail: ready
-          ? `Chains open ${stats.chains}/${need || stats.chains} · Accuse unlocked`
-          : `Pins ${stats.pins} · yarn ${stats.clueLinks} · Accuse needs ${need} chain${need === 1 ? "" : "s"}`,
+          ? `Stickies ${stats.chains}/${need || stats.chains} · Accuse unlocked`
+          : `Pins ${stats.pins} · yarn ${stats.clueLinks} · need ${need} ${need === 1 ? "sticky" : "stickies"}`,
       };
     case "accuse":
       return {
         stepLabel: "Accuse",
         detail: ready
           ? `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · fill Who / How / Where + proof`
-          : `Locked until corkboard chains unlock (${stats.chains}/${need})`,
+          : `Locked until corkboard stickies unlock (${stats.chains}/${need})`,
       };
   }
 }
