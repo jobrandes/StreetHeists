@@ -15,8 +15,11 @@ import {
   Clock3,
   MapPin,
   Minus,
+  Pin,
   Plus,
   RotateCcw,
+  Scale,
+  ShieldCheck,
 } from "lucide-react";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
@@ -41,6 +44,9 @@ export function EvidenceInspectDialog({
   discoverHotspot,
   queueAnalysis,
   revealConceal,
+  onPinNote,
+  onCompare,
+  isPinned,
 }: {
   caseFile: CaseFile;
   openEvidence: Evidence;
@@ -70,6 +76,9 @@ export function EvidenceInspectDialog({
     sampleId: string,
   ) => { ok: boolean; reason?: string };
   revealConceal?: (caseId: string, evidenceId: string) => void;
+  onPinNote?: () => void;
+  onCompare?: () => void;
+  isPinned?: boolean;
 }) {
   const [sampleState, setSampleState] = useState<{
     evidenceId: string;
@@ -152,6 +161,52 @@ export function EvidenceInspectDialog({
                 <p className="mt-1 text-sm font-semibold text-ink">{hotspotNote}</p>
               </div>
             ) : null}
+
+            {openEvidence.alibiCheck ? (
+              <div className="mt-3 rounded-xl border-2 border-[#C4A574]/55 bg-[#F7F1E6] p-3 shadow-[0_2px_0_rgba(80,50,20,0.08)]">
+                <div className="flex items-start gap-2">
+                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold" />
+                  <div className="min-w-0">
+                    <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                      Alibi check — {openEvidence.alibiCheck.stage}
+                    </p>
+                    <p className="mt-1 font-display text-sm font-bold tracking-[0.08em] text-ink uppercase">
+                      {openEvidence.alibiCheck.window}
+                    </p>
+                    <p className="mt-1 text-sm leading-snug text-ink">
+                      {openEvidence.alibiCheck.detail}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {(onPinNote || onCompare) ? (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {onPinNote ? (
+                  <Button
+                    type="button"
+                    variant="bronze"
+                    className="h-12 rounded-xl font-display text-xs font-bold tracking-[0.12em] uppercase"
+                    onClick={onPinNote}
+                  >
+                    <Pin className="size-4" />
+                    {isPinned ? "Pinned note" : "Pin note"}
+                  </Button>
+                ) : <span />}
+                {onCompare ? (
+                  <Button
+                    type="button"
+                    className="h-12 rounded-xl bg-[#2F5BFF] font-display text-xs font-bold tracking-[0.12em] text-white uppercase hover:bg-[#2549d6]"
+                    onClick={onCompare}
+                  >
+                    <Scale className="size-4" />
+                    Compare to alibi
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
+
 
             <div className="mt-3 flex items-start justify-between gap-3">
               <div className="min-w-0">
