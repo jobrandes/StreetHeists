@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#1A1F28"/>
+  <rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  
+  <rect x="80" y="50" width="560" height="320" fill="#121820"/>
+  <circle cx="360" cy="160" r="36" fill="#C4A484"/>
+  <rect x="300" y="200" width="120" height="140" fill="#8B3A4A"/>
+  <!-- mismatched sleeve -->
+  <rect x="290" y="220" width="30" height="80" fill="#2F5BFF"/>
+  <text x="200" y="100" fill="#C9A227" font-size="18" font-family="ui-monospace, monospace">21:16 · SAME ANGLE</text>
+  <text x="220" y="350" fill="#F8D7D7" font-size="15" font-family="ui-monospace, monospace">NECKLACE GONE · SLEEVE MISMATCH</text>
+  <!-- lift reflection hotspot area -->
+  <rect x="520" y="240" width="90" height="110" fill="#0E141C" stroke="#C9A227" stroke-dasharray="4 3"/>
+  <text x="528" y="300" fill="#C9A227" font-size="11" font-family="ui-monospace, monospace">LIFT</text>
+  
+  <text x="48" y="460" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="16">TELL: necklace gone + mismatched sleeve; lift glass reflection</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="2">21:16 · SAME ANGLE · NECKLACE GONE</text>
+</svg>

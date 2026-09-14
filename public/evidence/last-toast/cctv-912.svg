@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#1A1F28"/>
+  <rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  
+  <rect x="80" y="50" width="560" height="320" fill="#121820"/>
+  <circle cx="360" cy="160" r="36" fill="#C4A484"/>
+  <rect x="300" y="200" width="120" height="140" fill="#2F5BFF"/>
+  <circle cx="360" cy="210" r="18" fill="#E8D48B" stroke="#C9A227" stroke-width="3"/>
+  <text x="250" y="100" fill="#C9A227" font-size="18" font-family="ui-monospace, monospace">21:12 · TOAST BEGINS</text>
+  <text x="230" y="360" fill="#E8D48B" font-size="16" font-family="ui-monospace, monospace">NECKLACE VISIBLE ON CHAIR</text>
+  
+  <text x="48" y="460" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="16">TELL: $2M necklace still on Elena at toast start</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="2">21:12 · BALLROOM CAM · NECKLACE ON</text>
+</svg>
