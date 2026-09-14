@@ -16,15 +16,26 @@ import {
   pigeonCase,
 } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
-import { Coffee, Lock, MapPin, ShieldCheck, Star } from "lucide-react";
+import { Fingerprint, Lock, Star } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+
+/** Pigeon board still — seed location/caption only (never mock “Shadow Heights”). */
+const pigeonBoardStill =
+  pigeonCase.evidence.find((item) => item.id === "statue-nest") ??
+  pigeonCase.evidence[0];
+
+const lastToastBoardStill =
+  lastToastCase.evidence.find((item) => item.id === "cctv-916") ??
+  lastToastCase.evidence[0];
 
 export default function CaseBoardPage() {
   const { alias, setAlias, progressFor, resetCase } = useHeists();
   const [nextAlias, setNextAlias] = useState(alias);
   const featuredProgress = progressFor(lastToastCase.id);
-  const resume = Boolean(featuredProgress.startedAt);
+  const tutorialProgress = progressFor(pigeonCase.id);
+  const resumeFeatured = Boolean(featuredProgress.startedAt);
+  const resumeTutorial = Boolean(tutorialProgress.startedAt);
 
   const progressMap = useMemo(
     () =>
@@ -39,33 +50,34 @@ export default function CaseBoardPage() {
   );
 
   return (
-    <main className="play-day flex min-h-dvh flex-col px-4 pb-10 pt-5">
-      <header className="flex items-start justify-between gap-3">
+    <main className="play-day relative flex min-h-dvh flex-col overflow-x-hidden px-4 pb-10 pt-0">
+      <header className="sticky top-0 z-20 -mx-4 flex items-center justify-between gap-3 border-b border-[#1B2430]/80 bg-[#1B2430] px-4 py-3 text-[#F2F0EA]">
         <Link href="/" className="min-w-0">
           <div className="flex items-center gap-2">
-            <KeyholeLogo className="size-8" />
+            <KeyholeLogo className="size-7" gold />
             <div>
-              <p className="font-display text-sm font-bold tracking-[0.2em] text-ink uppercase">
+              <p className="font-display text-sm font-bold tracking-[0.2em] uppercase">
                 Street Heists
               </p>
-              <p className="font-display text-[10px] font-bold tracking-[0.18em] text-gold uppercase">
+              <p className="font-display text-[10px] font-bold tracking-[0.18em] text-[#C9A227] uppercase">
                 Case board v0.2
               </p>
             </div>
           </div>
         </Link>
-        <div className="flex items-center gap-2">
-          <div className="hidden max-w-[9rem] items-center gap-1.5 rounded-md border border-dashed border-[#C4A574] bg-[#FFF8EE] px-2 py-1.5 sm:flex">
-            <Coffee className="size-3.5 shrink-0 text-[#8A5A22]" />
-            <p className="font-serif text-[10px] leading-tight text-ink italic">
-              Coffee. Clues. Questionable decisions.
-            </p>
-          </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="hidden items-center gap-1.5 font-display text-[10px] font-bold tracking-[0.16em] text-[#C9A227] uppercase sm:inline-flex">
+            Play day
+            <span className="inline-block size-1.5 rotate-45 bg-[#C9A227]" aria-hidden />
+          </span>
+          <span className="rounded-sm border border-[#F2F0EA]/35 px-2 py-1 font-display text-[10px] font-bold tracking-[0.18em] uppercase">
+            No map
+          </span>
           <Dialog>
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="max-w-[5.5rem] truncate rounded-full border border-hairline bg-card px-3 py-1.5 text-xs font-semibold text-ink"
+                className="max-w-[5.5rem] truncate rounded-full border border-[#F2F0EA]/30 bg-[#F2F0EA]/10 px-3 py-1.5 text-xs font-semibold"
               >
                 {alias}
               </button>
@@ -87,95 +99,140 @@ export default function CaseBoardPage() {
         </div>
       </header>
 
-      <FirstRunCoach />
-
       <div className="mt-3 flex justify-end">
         <TextScaleToggle />
       </div>
 
-      <div className="mt-4">
+      <FirstRunCoach />
+
+      <div className="relative mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-5">
+        <aside className="order-3 hidden space-y-3 lg:order-1 lg:block">
+          <StickyNote rotate={-2}>
+            Every case has a crack. Find it before they do.
+          </StickyNote>
+          <StickyNote rotate={1.5} tone="gold">
+            Comedy in the cracks. Stakes in the case.
+          </StickyNote>
+        </aside>
+
+        {/* FEATURED — The Last Toast */}
         <Link
-          href={`/case/${pigeonCase.id}`}
-          className="inline-flex items-center gap-2 font-display text-[11px] font-bold tracking-[0.16em] text-[#2F5BFF] uppercase"
+          href={`/case/${lastToastCase.id}`}
+          className="order-1 relative block overflow-hidden rounded-sm border border-[#1B2430]/25 bg-[#F7F1E6] shadow-[0_12px_28px_rgba(27,36,48,0.14)] lg:order-2"
         >
-          <span aria-hidden>→</span> Start here
+          <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-1 bg-[#1B2430] px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-[#F2F0EA] uppercase shadow">
+            <Star className="size-3 fill-current text-[#C9A227]" /> Featured
+          </span>
+          <div className="grid gap-0 sm:grid-cols-[1.1fr_0.9fr]">
+            <EvidenceArt
+              evidence={lastToastBoardStill}
+              className="h-40 w-full sm:h-full sm:min-h-[11rem]"
+              priority
+            />
+            <div className="relative border-t border-[#1B2430]/10 p-4 sm:border-t-0 sm:border-l">
+              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
+                Charity gala · $2M necklace
+              </p>
+              <h1 className="mt-1 font-serif text-[2.15rem] font-bold leading-[0.9] tracking-tight text-ink uppercase">
+                {lastToastCase.title}
+              </h1>
+              <p className="mt-2 text-sm leading-snug text-ink">
+                Elena Voss about to be blamed.
+              </p>
+              <p className="mt-3 line-clamp-2 text-xs text-muted">
+                {lastToastCase.subtitle}
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-sm border border-[#1B2430]/20 bg-[#1B2430] px-3 py-2.5 font-display text-[11px] font-bold tracking-[0.14em] text-[#F2F0EA] uppercase">
+                <Fingerprint className="size-3.5 text-[#C9A227]" />
+                {resumeFeatured ? "Resume this case" : "Start this case"}
+                <span aria-hidden>→</span>
+              </div>
+            </div>
+          </div>
         </Link>
-        <p className="mt-1 text-sm text-ink">
-          New to Street Heists? Begin with the{" "}
-          <Link href={`/case/${pigeonCase.id}`} className="font-semibold text-[#2F5BFF] underline-offset-2 hover:underline">
-            Pigeon tutorial
+
+        {/* TUTORIAL — The Pigeon Job + START HERE */}
+        <div className="order-2 relative lg:order-3">
+          <div className="mb-2 flex items-end justify-center gap-2 lg:absolute lg:-top-10 lg:right-2 lg:mb-0 lg:justify-end">
+            <p className="start-here-nudge font-serif text-lg font-bold tracking-tight text-[#1B2430] italic">
+              Start here
+            </p>
+            <svg
+              className="start-here-arrow size-10 text-[#1B2430] lg:size-12"
+              viewBox="0 0 48 48"
+              fill="none"
+              aria-hidden
+            >
+              <path
+                d="M10 8c8 2 18 10 22 22"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              <path
+                d="M26 28l8 4-2 9"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <Link
+            href={`/case/${pigeonCase.id}`}
+            className="relative block overflow-hidden rounded-sm border-2 border-[#C9A227]/70 bg-[#FFFCF6] shadow-[0_12px_28px_rgba(27,36,48,0.12)]"
+            aria-label={`Start here: ${pigeonCase.title} tutorial. Evidence still: ${pigeonBoardStill.location}`}
+          >
+            <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-1 bg-[#C9A227] px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-[#1A1408] uppercase shadow">
+              <Star className="size-3 fill-current" /> Tutorial
+            </span>
+            <div className="p-4 pt-10">
+              <h2 className="font-serif text-[2.05rem] font-bold leading-[0.9] tracking-tight text-ink uppercase">
+                {pigeonCase.title}
+              </h2>
+              <p className="mt-2 text-sm leading-snug text-ink">
+                New players — learn the ropes here first, then the gala.
+              </p>
+
+              <div className="mt-4 rotate-1 border border-[#1B2430]/20 bg-white p-1.5 shadow-md">
+                <EvidenceArt
+                  evidence={pigeonBoardStill}
+                  className="aspect-[4/3] w-full"
+                />
+                <div className="px-1.5 pt-1.5 pb-1">
+                  <p className="font-display text-[9px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
+                    Evidence photo
+                  </p>
+                  {/* Seed location + caption — never mock “Shadow Heights rooftop” */}
+                  <p className="mt-0.5 font-serif text-xs font-semibold text-ink">
+                    {pigeonBoardStill.location}
+                  </p>
+                  <p className="text-[11px] text-muted">{pigeonBoardStill.caption}</p>
+                </div>
+              </div>
+
+              <div className="mt-4 flex h-12 items-center justify-center rounded-sm bg-[#1B2430] font-display text-[12px] font-bold tracking-[0.14em] text-[#F2F0EA] uppercase">
+                {resumeTutorial ? "Resume tutorial" : "Start tutorial"}
+                <span className="ml-2" aria-hidden>
+                  →
+                </span>
+              </div>
+            </div>
           </Link>
-          — then take on the featured flagship.
-        </p>
+        </div>
       </div>
 
-      <Link
-        href={`/case/${lastToastCase.id}`}
-        className="relative mt-3 block overflow-hidden rounded-2xl border-2 border-[#C4A574]/70 bg-[#F7F1E6] shadow-[0_14px_36px_rgba(27,36,48,0.14)]"
-      >
-        <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 rounded-sm border border-[#8A5A22]/40 bg-[#E8D4B0] px-2.5 py-1 font-display text-[10px] font-bold tracking-[0.14em] text-ink uppercase shadow">
-          <Star className="size-3 fill-current" /> Featured
-        </span>
-        <EvidenceArt
-          evidence={lastToastCase.evidence[1] ?? lastToastCase.evidence[0]}
-          className="h-44 w-full"
-        />
-        <div className="p-5">
-          <h1 className="font-serif text-[2.6rem] font-bold leading-[0.88] tracking-tight text-ink uppercase">
-            {lastToastCase.title}
-          </h1>
-          <p className="mt-2 inline-flex items-center gap-1.5 font-display text-[11px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
-            <MapPin className="size-3.5" /> Charity gala
-          </p>
-          <p className="mt-3 text-[15px] leading-snug text-ink">
-            {lastToastCase.subtitle}
-          </p>
-          <p className="mt-3 inline-flex items-start gap-2 text-sm text-ink">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold" />
-            <span>
-              <span className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
-                Stakes ·{" "}
-              </span>
-              Her reputation. Your case.
-            </span>
-          </p>
-          <div className="mt-5 flex h-14 items-center justify-center rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase shadow-[0_4px_0_rgba(120,80,30,0.28)]">
-            {resume ? "Resume this case" : "Start this case"}
-          </div>
-        </div>
-      </Link>
+      <aside className="mt-5 grid gap-3 sm:grid-cols-2 lg:hidden">
+        <StickyNote rotate={-1.5}>
+          Every case has a crack. Find it before they do.
+        </StickyNote>
+        <StickyNote rotate={1} tone="gold">
+          Comedy in the cracks. Stakes in the case.
+        </StickyNote>
+      </aside>
 
-      <p className="mt-4 text-center text-xs text-muted">
-        Every case has clues. Every choice has stakes.
-      </p>
-
-      <section className="mt-6 rounded-2xl border border-hairline bg-card p-4 shadow-[0_2px_0_rgba(27,36,48,0.06)]">
-        <span className="inline-flex rounded-sm border border-[#2F5BFF]/35 bg-[#DCE6FF] px-2 py-1 font-display text-[10px] font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
-          Tutorial
-        </span>
-        <div className="mt-3 flex gap-3">
-          <EvidenceArt
-            evidence={pigeonCase.evidence[0]}
-            className="size-20 shrink-0 rounded-md"
-          />
-          <div className="min-w-0">
-            <h2 className="font-serif text-2xl font-bold leading-tight text-ink">
-              {pigeonCase.title}
-            </h2>
-            <p className="mt-1 text-sm leading-snug text-ink">
-              Learn the ropes with a feathered thief and zero pressure.
-            </p>
-            <p className="mt-2 text-xs font-medium text-muted">
-              Perfect for first-timers. (And pigeon fans.)
-            </p>
-          </div>
-        </div>
-        <Button asChild variant="bronze" className="mt-4 w-full rounded-xl">
-          <Link href={`/case/${pigeonCase.id}`}>View tutorial case →</Link>
-        </Button>
-      </section>
-
-      <section className="mt-7">
+      <section className="mt-8">
         <h2 className="border-b border-hairline pb-2 font-display text-lg font-bold tracking-[0.18em] text-ink uppercase">
           More cases
         </h2>
@@ -243,11 +300,7 @@ export default function CaseBoardPage() {
         </div>
       </section>
 
-      <p className="mt-8 rounded-md border border-dashed border-[#C4A574]/60 bg-[#FFF8EE] px-3 py-2 text-center font-serif text-xs text-ink italic">
-        One wrong move. One clever twist. That&apos;s the fun. — E
-      </p>
-
-      {featuredProgress.startedAt || progressFor(pigeonCase.id).startedAt ? (
+      {featuredProgress.startedAt || tutorialProgress.startedAt ? (
         <button
           type="button"
           onClick={() => resetCase(pigeonCase.id)}
@@ -257,9 +310,33 @@ export default function CaseBoardPage() {
         </button>
       ) : null}
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex flex-col items-center gap-2">
         <VersionStamp />
+        <p className="font-display text-[9px] tracking-[0.16em] text-muted uppercase">
+          Street Heists · field notes only
+        </p>
       </div>
     </main>
+  );
+}
+
+function StickyNote({
+  children,
+  rotate = 0,
+  tone = "cream",
+}: {
+  children: React.ReactNode;
+  rotate?: number;
+  tone?: "cream" | "gold";
+}) {
+  return (
+    <div
+      className={`border border-[#1B2430]/15 px-3 py-3 font-serif text-sm leading-snug text-ink shadow-[0_2px_0_rgba(27,36,48,0.08)] ${
+        tone === "gold" ? "bg-[#F0E0B8]" : "bg-[#FFF8EE]"
+      }`}
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      {children}
+    </div>
   );
 }

@@ -115,6 +115,25 @@ body {
   background-size: 18px 18px, 22px 22px, 16px 16px, 100% 100%;
 }
 
+/* Case Board v0.2 — START HERE nudge on Pigeon Tutorial */
+.start-here-nudge {
+  animation: start-here-bob 2.4s ease-in-out infinite;
+}
+.start-here-arrow {
+  animation: start-here-bob 2.4s ease-in-out infinite;
+  animation-delay: 0.12s;
+  transform-origin: 70% 80%;
+}
+@keyframes start-here-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
 .cork-sticky {
   transform: rotate(-1.5deg);
   animation: cork-pop 0.45s ease-out;

@@ -13,7 +13,7 @@
 export const APP_VERSION = {
   major: 0,
   minor: 5,
-  patch: 3,
+  patch: 4,
   /** ISO date of this release */
   updatedOn: "2026-09-14",
 } as const;
@@ -26,6 +26,11 @@ export type VersionNote = {
 
 /** Newest first — keep this short; the stamp only shows the tip. */
 export const VERSION_UPDATES: VersionNote[] = [
+  {
+    version: "0.5.4",
+    date: "2026-09-14",
+    note: "Final Case Board SoT: Featured Last Toast + Tutorial Pigeon START HERE, NO MAP; pigeon still uses seed location/caption.",
+  },
   {
     version: "0.5.3",
     date: "2026-09-14",
