@@ -12,7 +12,7 @@
 
 export const APP_VERSION = {
   major: 0,
-  minor: 2,
+  minor: 3,
   patch: 0,
   /** ISO date of this release */
   updatedOn: "2026-09-14",
@@ -26,6 +26,11 @@ export type VersionNote = {
 
 /** Newest first — keep this short; the stamp only shows the tip. */
 export const VERSION_UPDATES: VersionNote[] = [
+  {
+    version: "0.3.0",
+    date: "2026-09-14",
+    note: "Corkboard deduction chains, Late Fee stakes, proof-preserve on wrong accuse, richer inspect + share payoff.",
+  },
   {
     version: "0.2.0",
     date: "2026-09-14",
