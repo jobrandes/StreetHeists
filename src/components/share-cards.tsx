@@ -139,81 +139,98 @@ export function ShareCardA({
   alias: string;
 }) {
   const cleanSolve = verdict.wrongAttempts === 0;
-  const epigraph = caseFile.subtitle.replace(/\.$/, "");
+  const epigraph =
+    caseFile.id === "last-toast"
+      ? "We steal moments. Tonight, the toast was the score."
+      : caseFile.subtitle.replace(/\.$/, "");
 
   return (
-    <div className="midnight-share relative h-[360px] w-[540px] overflow-hidden border border-[#C9A227]/55 bg-[#0B0B0C] text-[#F2F0EA]">
+    <div className="midnight-share relative h-[360px] w-[540px] overflow-hidden border border-[#C9A227]/50 bg-[#0B0B0C] text-[#F2F0EA]">
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
+        className="pointer-events-none absolute inset-0 opacity-50"
         style={{
           background:
-            "radial-gradient(ellipse 55% 60% at 78% 45%, rgba(201,162,39,0.18), transparent 60%), linear-gradient(135deg, #0B0B0C 0%, #141210 55%, #0B0B0C 100%)",
+            "radial-gradient(ellipse 50% 55% at 78% 42%, rgba(201,162,39,0.16), transparent 62%), linear-gradient(145deg, #0A0A0B 0%, #151310 52%, #0B0B0C 100%)",
         }}
       />
-      <div className="relative grid h-full grid-cols-[1.05fr_1fr] gap-4 p-5 pb-14">
-        <div className="flex min-w-0 flex-col">
-          <div className="flex items-center gap-2">
-            <KeyholeLogo className="size-6" gold />
-            <span className="font-display text-xs font-bold tracking-[0.22em] text-[#C9A227] uppercase">
-              Street Heists
-            </span>
-          </div>
-          <p className="mt-5 font-display text-[2.35rem] font-bold leading-none tracking-[0.06em] text-[#C9A227] uppercase">
-            Case closed
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-25"
+        viewBox="0 0 540 360"
+        aria-hidden
+      >
+        <line x1="320" y1="70" x2="430" y2="160" stroke="#7A1F1F" strokeWidth="2" />
+        <line x1="450" y1="90" x2="400" y2="200" stroke="#7A1F1F" strokeWidth="1.5" />
+        <line x1="360" y1="240" x2="470" y2="180" stroke="#7A1F1F" strokeWidth="1.5" />
+      </svg>
+
+      <div className="relative flex h-full flex-col px-7 py-5">
+        <div className="flex items-center justify-center gap-3">
+          <span className="h-px w-10 bg-[#C9A227]/70" />
+          <p className="font-display text-[11px] font-bold tracking-[0.28em] text-[#C9A227] uppercase">
+            Midnight Crew
           </p>
-          <p className="mt-2 font-display text-[10px] font-bold tracking-[0.2em] text-[#B7B1A4] uppercase">
-            {cleanSolve ? "Stronger payoff · Clean solve" : "Stronger payoff · Solved"}
-          </p>
-          <h2 className="mt-4 font-serif text-[1.85rem] leading-[0.95] font-bold text-[#F2F0EA] italic">
-            {caseFile.title}
-          </h2>
-          <dl className="mt-5 space-y-1.5 border-l-2 border-[#C9A227]/80 pl-3 text-xs">
-            <div>
-              <dt className="inline text-[#C9A227]">Time · </dt>
-              <dd className="inline">{formatElapsed(verdict.elapsedMs)}</dd>
-            </div>
-            <div>
-              <dt className="inline text-[#C9A227]">Mark · </dt>
-              <dd className="inline">{cleanSolve ? "Clean solve" : "Solved on retry"}</dd>
-            </div>
-            <div>
-              <dt className="inline text-[#C9A227]">Case · </dt>
-              <dd className="inline">{String(caseFile.number).padStart(2, "0")}</dd>
-            </div>
-            <div>
-              <dt className="inline text-[#C9A227]">Operative · </dt>
-              <dd className="inline">{alias}</dd>
-            </div>
-          </dl>
-          <p className="mt-auto pt-4 text-[10px] leading-snug text-[#B7B1A4]">
-            Public print — seal, time, and mark only. Who / How / Where stay private.
-          </p>
+          <span className="h-px w-10 bg-[#C9A227]/70" />
         </div>
-        <div className="relative min-h-0">
-          <CorkYarnBoard caseFile={caseFile} />
-        </div>
-      </div>
-      <div className="absolute inset-x-5 bottom-3 flex items-end justify-between gap-3 border-t border-[#C9A227]/45 pt-2.5">
-        <p className="max-w-[16rem] truncate font-serif text-sm text-[#F2F0EA]/90 italic">
-          “{epigraph}”
+        <p className="mt-1 text-center font-display text-[9px] tracking-[0.2em] text-[#B7B1A4] uppercase">
+          Landscape share card · spoiler-safe
         </p>
-        <div className="flex shrink-0 items-center gap-2 text-[#C9A227]">
-          <Trophy className="size-4" />
-          <div className="text-right">
-            <p className="font-display text-[10px] font-bold tracking-[0.16em] uppercase">
-              Trophy moment
+
+        <div className="mt-5 grid flex-1 grid-cols-[1.15fr_0.85fr] items-center gap-4">
+          <div className="min-w-0">
+            <p className="font-display text-[2.75rem] font-bold leading-none tracking-[0.04em] text-[#C9A227] uppercase">
+              Case closed
             </p>
-            <p className="text-[9px] tracking-[0.12em] text-[#B7B1A4] uppercase">
-              {cleanSolve ? "One hero badge only" : `${alias} · closed`}
-            </p>
+            <h2 className="mt-3 font-serif text-[1.9rem] leading-none font-bold text-[#F2F0EA] italic">
+              {caseFile.title}
+            </h2>
+            <div className="mt-6 flex items-end gap-5">
+              <div>
+                <p className="font-display text-[10px] font-bold tracking-[0.18em] text-[#C9A227] uppercase">
+                  Solve time
+                </p>
+                <p className="mt-1 font-display text-[2.4rem] font-bold leading-none tracking-tight text-[#F2F0EA]">
+                  {formatElapsed(verdict.elapsedMs)}
+                </p>
+              </div>
+              <div className="h-14 w-px bg-[#C9A227]/50" />
+              <div className="flex flex-col items-center">
+                <div className="grid size-12 place-items-center rounded-full border-2 border-[#C9A227] bg-[radial-gradient(circle_at_35%_30%,#E8C75A,#8A6E2F)] text-[#1A1408] shadow">
+                  <Trophy className="size-5" />
+                </div>
+                <p className="mt-1.5 font-display text-[9px] font-bold tracking-[0.14em] text-[#C9A227] uppercase">
+                  {cleanSolve ? "Clean solve" : "Solved"}
+                </p>
+                <p className="text-[8px] tracking-[0.12em] text-[#B7B1A4] uppercase">
+                  {cleanSolve ? "No misses · No hints" : `${alias} · closed`}
+                </p>
+              </div>
+            </div>
           </div>
+
+          <div className="relative flex items-center justify-center">
+            <div className="relative grid size-40 place-items-center">
+              <div className="absolute inset-0 rounded-full border border-[#C9A227]/35" />
+              <div className="absolute inset-3 rounded-full border border-[#C9A227]/25" />
+              <div className="absolute inset-x-0 top-1/2 h-px bg-[#C9A227]/25" />
+              <div className="absolute inset-y-0 left-1/2 w-px bg-[#C9A227]/25" />
+              <CaseClosedSeal className="size-28" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto flex items-end justify-between gap-3 border-t border-[#C9A227]/40 pt-3">
+          <p className="max-w-[18rem] truncate font-serif text-sm text-[#F2F0EA]/90 italic">
+            “{epigraph}”
+          </p>
+          <p className="shrink-0 font-display text-[9px] font-bold tracking-[0.16em] text-[#C9A227] uppercase">
+            Street Heists · Keyhole case
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-/** Evidence strip — stills/docs as atmosphere, never the solution triad. */
 export function ShareCardC({
   caseFile,
   verdict,
