@@ -46,6 +46,8 @@ export type Evidence = {
   whereHint?: string;
   hotspots?: EvidenceHotspot[];
   analysis?: EvidenceAnalysis;
+  /** Buried detail — player taps to reveal. */
+  conceal?: EvidenceConceal;
 };
 
 export type Suspect = {
@@ -122,6 +124,26 @@ export type SceneReconstruction = {
   slots: ReconstructionSlot[];
 };
 
+
+/** Optional flap on an exhibit — tap to reveal a buried detail. */
+export type EvidenceConceal = {
+  label: string;
+  text: string;
+};
+
+/** Link inspected (and often cork-tagged) clues to unlock a chain insight. */
+export type DeductionChain = {
+  id: string;
+  title: string;
+  /** Clue ids that must be inspected. */
+  requiredEvidenceIds: string[];
+  /** Optional sound cork links required to unlock. */
+  requiredCorkLinks?: { evidenceId: string; suspectId: string }[];
+  /** Optional contradiction that must be spotted. */
+  unlockOnContradictionId?: string;
+  insight: string;
+};
+
 export type CaseFile = {
   id: string;
   number: number;
@@ -143,6 +165,8 @@ export type CaseFile = {
   contradictions?: Contradiction[];
   confrontations?: Confrontation[];
   reconstruction: SceneReconstruction;
+  /** Corkboard-driven investigation chains (not a checklist). */
+  deductionChains?: DeductionChain[];
 };
 
 export type VerdictAxis = {
@@ -202,4 +226,12 @@ export type CaseProgress = {
   confrontAttempts: number;
   /** slotId → chosen optionId for the scene desk */
   reconstructionPicks: Record<string, string>;
+  /** Proof picks on Decide — survives wrong accuse remounts. */
+  accusationDraft: {
+    whoEvidenceId: string;
+    howEvidenceId: string;
+    whereEvidenceId: string;
+  };
+  /** Evidence conceal flaps the player has lifted. */
+  revealedConcealIds: string[];
 };
