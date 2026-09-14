@@ -2,10 +2,14 @@
 
 import { CaseChrome } from "@/components/case-chrome";
 import { EvidenceArt } from "@/components/evidence-art";
+import { ContradictionSpotter } from "@/components/contradiction-spotter";
+import { CorkboardConnect } from "@/components/corkboard";
+import { DeductionChainsPanel } from "@/components/deduction-chains";
 import { EvidenceInspectDialog } from "@/components/evidence-inspect-dialog";
 import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { evidenceKindLabel } from "@/lib/case-journey";
+import { isDeductionUnlocked } from "@/lib/deduction";
 import { isCaseUnlocked } from "@/lib/investigation";
 import { getCase, playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
@@ -24,6 +28,9 @@ export default function GatherPage() {
     inspectEvidence,
     discoverHotspot,
     queueAnalysis,
+    setCorkLink,
+    markContradiction,
+    revealConceal,
   } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const progressMap = useMemo(
@@ -138,7 +145,7 @@ export default function GatherPage() {
                     {item.title}
                   </h2>
                   <p className="mt-1 truncate text-base text-muted">
-                    {filed ? item.deduction : "Tap to inspect"}
+                    {filed ? (isDeductionUnlocked(caseFile, progress, item) ? item.deduction : "Takeaway locked — string the corkboard") : "Tap to inspect"}
                   </p>
                 </div>
               </button>
@@ -146,6 +153,23 @@ export default function GatherPage() {
           );
         })}
       </ul>
+
+      <div className="mt-6 space-y-4">
+        <CorkboardConnect
+          caseFile={caseFile}
+          evidence={clues.filter((item) => inspectedIds.includes(item.id))}
+          suspects={caseFile.suspects}
+          links={progress.corkLinks}
+          onLink={(evidenceId, suspectId) => setCorkLink(caseFile.id, evidenceId, suspectId)}
+        />
+        <ContradictionSpotter
+          caseFile={caseFile}
+          inspectedIds={inspectedIds}
+          foundIds={progress.foundContradictionIds}
+          onFound={(id) => markContradiction(caseFile.id, id)}
+        />
+        <DeductionChainsPanel caseFile={caseFile} progress={progress} />
+      </div>
 
       <Button
         asChild
@@ -187,6 +211,7 @@ export default function GatherPage() {
           }}
           discoverHotspot={discoverHotspot}
           queueAnalysis={queueAnalysis}
+          revealConceal={revealConceal}
         />
       ) : null}
     </CaseChrome>
