@@ -1,1 +1,1 @@
-PROBE_SIZE_TEST_IGNORE
+__LOAD_FROM_FILE__:/workspace/src/components/corkboard.tsx
