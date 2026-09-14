@@ -3,6 +3,7 @@ import { compareLinks, linksForEvidence, suspectDossiers } from "./case-file";
 import {
   dessertTrolleyCase,
   lateFeeCase,
+  lastToastCase,
   pigeonCase,
   playableCases,
   velvetTeaspoonCase,
@@ -17,7 +18,8 @@ describe("case progression metadata", () => {
     }
     expect(pigeonCase.difficulty).toBe("tutorial");
     expect(lateFeeCase.difficulty).toBe("standard");
-    expect(lateFeeCase.unlockAfterCaseId).toBe("pigeon-job");
+    expect(lastToastCase.unlockAfterCaseId).toBe("pigeon-job");
+    expect(lateFeeCase.unlockAfterCaseId).toBe("last-toast");
     expect(velvetTeaspoonCase.unlockAfterCaseId).toBe("late-fee");
     expect(dessertTrolleyCase.unlockAfterCaseId).toBe("velvet-teaspoon");
   });

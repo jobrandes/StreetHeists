@@ -12,15 +12,10 @@ import { formatElapsed } from "@/lib/utils";
 
 export function ShareCardA({ caseFile, verdict, alias }: { caseFile: CaseFile; verdict: Verdict; alias: string }) {
   const cleanSolve = verdict.wrongAttempts === 0;
-  const solution = {
-    who: caseFile.suspects.find((item) => item.id === caseFile.solution.who)?.name,
-    how: caseFile.howChoices.find((item) => item.id === caseFile.solution.how)?.label,
-    where: caseFile.whereChoices.find((item) => item.id === caseFile.solution.where)?.label,
-  };
 
   return (
     <div className="relative h-[540px] w-[360px] overflow-hidden border border-[#C9A227]/60 bg-[#0B0B0C] text-[#F2F0EA]">
-      <EvidenceArt evidence={caseFile.evidence[3]} className="absolute inset-0 h-full w-full opacity-55" />
+      <EvidenceArt evidence={caseFile.evidence[3] ?? caseFile.evidence[0]} className="absolute inset-0 h-full w-full opacity-55" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-[#0B0B0C]/65 to-[#161618]/30" />
       <div className="relative flex h-full flex-col justify-between p-6">
         <div className="flex items-center justify-between border-b border-[#C9A227]/45 pb-3">
@@ -33,15 +28,27 @@ export function ShareCardA({ caseFile, verdict, alias }: { caseFile: CaseFile; v
         <div>
           <p className="font-display text-lg font-bold tracking-[0.2em] text-[#C9A227] uppercase">{cleanSolve ? "Clean solve" : "Case closed"}</p>
           <h2 className="mt-2 font-serif text-6xl font-bold leading-[0.8]">{caseFile.title}</h2>
+          <p className="mt-5 max-w-[16rem] text-sm leading-snug text-[#F2F0EA]/90">
+            Spoiler-safe Midnight share — time and clean-solve only. Who / How / Where stay off the public print.
+          </p>
           <dl className="mt-5 space-y-1.5 border-l-2 border-[#C9A227] pl-3 text-xs">
-            <div><dt className="inline text-[#C9A227]">Who: </dt><dd className="inline">{solution.who}</dd></div>
-            <div><dt className="inline text-[#C9A227]">How: </dt><dd className="inline">{solution.how}</dd></div>
-            <div><dt className="inline text-[#C9A227]">Where: </dt><dd className="inline">{solution.where}</dd></div>
+            <div>
+              <dt className="inline text-[#C9A227]">Time: </dt>
+              <dd className="inline">{formatElapsed(verdict.elapsedMs)}</dd>
+            </div>
+            <div>
+              <dt className="inline text-[#C9A227]">Mark: </dt>
+              <dd className="inline">{cleanSolve ? "Clean solve" : "Solved on retry"}</dd>
+            </div>
+            <div>
+              <dt className="inline text-[#C9A227]">Case: </dt>
+              <dd className="inline">{String(caseFile.number).padStart(2, "0")}</dd>
+            </div>
           </dl>
         </div>
         <div className="flex items-end justify-between border-t border-[#C9A227]/45 pt-3 text-xs">
           <p>Investigator {alias}</p>
-          <p className="text-[#C9A227]">{formatElapsed(verdict.elapsedMs)} · Case {String(caseFile.number).padStart(2, "0")}</p>
+          <p className="text-[#C9A227]">Midnight share · no spoilers</p>
         </div>
       </div>
     </div>
