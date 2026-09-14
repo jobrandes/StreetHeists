@@ -131,12 +131,12 @@ export const lastToastCase: CaseFile = {
     },
     {
       id: "cctv-916",
-      title: "Ballroom Still · 21:16",
+      title: "Mirror Catch at the Toast",
       kind: "still",
-      caption: "Evidence #2 — Same angle, necklace gone",
-      timestamp: "21:16",
+      caption: "Evidence — Mirror catch at the toast",
+      timestamp: "21:47",
       location: "Ballroom · head table",
-      kicker: "Ballroom cam · 21:16",
+      kicker: "Gala still · 21:47 · toast window",
       description:
         "Same camera angle four minutes later: the necklace is gone. The sleeve in frame does not match Elena’s gown. A reflective lift door at frame right catches something the room is not watching.",
       deduction:
@@ -147,12 +147,17 @@ export const lastToastCase: CaseFile = {
       linkedSuspectIds: ["plus-one", "elena"],
       howHint: "Toast-window swap",
       whereHint: "Toward service lift",
+      alibiCheck: {
+        stage: "Stage",
+        window: "21:40–21:55",
+        detail: "Confirms presence and activity during the critical window.",
+      },
       hotspots: [
         {
-          id: "lift-reflection",
-          x: 78,
-          y: 62,
-          label: "Lift glass reflection",
+          id: "mirror-catch",
+          x: 72,
+          y: 48,
+          label: "Mirror catch — two silhouettes",
           reveal:
             "In the service-lift door glass: a tray hand and a glitter of the necklace leaving the ballroom — not toward the vault.",
         },
