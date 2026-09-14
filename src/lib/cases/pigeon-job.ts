@@ -1,1 +1,1 @@
-LOAD_FROM:/tmp/pf/06.content
+LOAD_FROM_DISK:/workspace/src/lib/cases/pigeon-job.ts
