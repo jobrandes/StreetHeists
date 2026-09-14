@@ -14,17 +14,20 @@ import {
   isSoundCorkLink,
   scoreAxis,
 } from "./investigation";
+import { clueLinkExists, gradeClueLink, pairKey } from "./deduction";
 import { getCase, PLAYER_DEFAULT_ALIAS, pigeonCase } from "./seed";
 import type {
   Accusation,
   CaseProgress,
+  ClueLink,
   CorkLink,
   CustodyEntry,
   PendingAnalysis,
   Verdict,
 } from "./types";
 
-const STORAGE_KEY = "street-heists.couch-case.v4";
+const STORAGE_KEY = "street-heists.couch-case.v5";
+const LEGACY_V4_KEY = "street-heists.couch-case.v4";
 const LEGACY_V3_KEY = "street-heists.couch-case.v3";
 const LEGACY_V2_KEY = "street-heists.couch-case.v2";
 
@@ -45,6 +48,7 @@ const defaultProgress: CaseProgress = {
   completedAnalysisIds: [],
   foundContradictionIds: [],
   corkLinks: [],
+  clueLinks: [],
   crackedConfrontationIds: [],
   confrontAttempts: 0,
   reconstructionPicks: {},
@@ -102,6 +106,17 @@ function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
       ? raw.foundContradictionIds
       : [],
     corkLinks: Array.isArray(raw?.corkLinks) ? raw.corkLinks : [],
+    clueLinks: Array.isArray(raw?.clueLinks)
+      ? raw.clueLinks.filter(
+          (link): link is ClueLink =>
+            Boolean(link) &&
+            typeof link === "object" &&
+            typeof (link as ClueLink).id === "string" &&
+            typeof (link as ClueLink).a === "string" &&
+            typeof (link as ClueLink).b === "string" &&
+            typeof (link as ClueLink).createdAt === "number",
+        )
+      : [],
     crackedConfrontationIds: Array.isArray(raw?.crackedConfrontationIds)
       ? raw.crackedConfrontationIds
       : [],
@@ -214,6 +229,13 @@ type Store = {
     evidenceId: string,
     suspectId: string | null,
   ) => CorkLink | null;
+  /** String two filed clues. Invalid = miss feedback; board is never wiped. */
+  addClueLink: (
+    caseId: string,
+    a: string,
+    b: string,
+  ) => { link: ClueLink | null; sound: boolean; message: string; unlockedChainIds: string[] };
+  removeClueLink: (caseId: string, linkId: string) => void;
   confrontSuspect: (
     caseId: string,
     confrontationId: string,
@@ -238,7 +260,25 @@ const StoreContext = createContext<Store | null>(null);
 function load(): Persisted {
   if (typeof window === "undefined") return defaults;
   try {
-    const rawV4 = window.localStorage.getItem(STORAGE_KEY);
+    const rawV5 = window.localStorage.getItem(STORAGE_KEY);
+    if (rawV5) {
+      const parsed = JSON.parse(rawV5) as Partial<Persisted> | null;
+      const map =
+        parsed?.progressByCase && typeof parsed.progressByCase === "object"
+          ? Object.fromEntries(
+              Object.entries(parsed.progressByCase).map(([id, value]) => [
+                id,
+                normalizeProgress(value),
+              ]),
+            )
+          : {};
+      return {
+        alias: parsed?.alias || defaults.alias,
+        progressByCase: map,
+      };
+    }
+
+    const rawV4 = window.localStorage.getItem(LEGACY_V4_KEY);
     if (rawV4) {
       const parsed = JSON.parse(rawV4) as Partial<Persisted> | null;
       const map =
@@ -503,6 +543,62 @@ export function HeistProvider({ children }: { children: ReactNode }) {
         }));
         return saved;
       },
+      addClueLink(caseId, a, b) {
+        const caseFile = getCase(caseId);
+        if (!caseFile) {
+          return {
+            link: null,
+            sound: false,
+            message: "Case not filed.",
+            unlockedChainIds: [] as string[],
+          };
+        }
+        const progress = progressFor(state.progressByCase, caseId);
+        if (clueLinkExists(progress.clueLinks ?? [], a, b)) {
+          return {
+            link: null,
+            sound: true,
+            message: "That string is already on the board.",
+            unlockedChainIds: [] as string[],
+          };
+        }
+        const grade = gradeClueLink(caseFile, progress, a, b);
+        if (
+          a === b ||
+          !progress.inspectedEvidenceIds.includes(a) ||
+          !progress.inspectedEvidenceIds.includes(b)
+        ) {
+          return { link: null, ...grade };
+        }
+
+        const saved: ClueLink = {
+          id: `${pairKey(a, b)}-${Date.now()}`,
+          a,
+          b,
+          createdAt: Date.now(),
+        };
+
+        // Sound and miss pairs both stay — miss never wipes the board.
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (p) => {
+            if (clueLinkExists(p.clueLinks ?? [], a, b)) return p;
+            return { ...p, clueLinks: [...(p.clueLinks ?? []), saved] };
+          }),
+        }));
+
+        return { link: saved, ...grade };
+      },
+      removeClueLink(caseId, linkId) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            clueLinks: (progress.clueLinks ?? []).filter((link) => link.id !== linkId),
+          })),
+        }));
+      },
       confrontSuspect(caseId, confrontationId, evidenceId) {
         const caseFile = getCase(caseId);
         const confrontation = caseFile?.confrontations?.find(
@@ -571,12 +667,25 @@ export function HeistProvider({ children }: { children: ReactNode }) {
           currentProgress.startedAt,
           wrongAttempts,
         );
+        // Wrong accuse must NOT wipe pins, cork/clue links, reconstruction, or proof draft.
         setState((current) => ({
           ...current,
           progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
             ...progress,
             wrongAttempts,
             lastVerdict: verdict,
+            pinnedEvidenceIds: progress.pinnedEvidenceIds,
+            corkLinks: progress.corkLinks,
+            clueLinks: progress.clueLinks ?? [],
+            reconstructionPicks: progress.reconstructionPicks,
+            accusationDraft: {
+              whoEvidenceId:
+                accusation.whoEvidenceId || progress.accusationDraft.whoEvidenceId,
+              howEvidenceId:
+                accusation.howEvidenceId || progress.accusationDraft.howEvidenceId,
+              whereEvidenceId:
+                accusation.whereEvidenceId || progress.accusationDraft.whereEvidenceId,
+            },
           })),
         }));
         return verdict;
