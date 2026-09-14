@@ -29,6 +29,7 @@ const empty: Accusation = {
 export default function DecidePage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const caseFile = getCase(id);
   const { submitAccusation, progressFor, setReconstructionPick, setAccusationDraft } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const desk = progress.reconstructionPicks;
