@@ -34,6 +34,20 @@ CI runs `npm ci` only (full `package-lock.json` required — no `npm install` fa
 - Prefer complete files on disk (jpg/png/svg). Do not leave partial/chunked WIP assets on `main`.
 - `prebuild` (`scripts/assemble-evidence.mjs`) validates every `imageSrc` and **fails** if missing, tiny, placeholder, or reused.
 
+## Versioning
+
+Bump both when shipping player-visible work:
+
+1. `src/lib/version.ts` — `APP_VERSION` + a short entry at the top of `VERSION_UPDATES`
+2. `package.json` `"version"` — keep in sync (`MAJOR.MINOR.PATCH`)
+
+Rules of thumb:
+- **MAJOR** — big product reset / incompatible flow
+- **MINOR** — new cases or meaningful features
+- **PATCH** — copy, bugs, polish
+
+The tiny `v0.2.0 · Sep 14` stamp on splash + case board is the player-facing label (tap for dated notes).
+
 ## Judgment calls
 
 Flag in the commit message when you invent comedy, difficulty curve, or a new puzzle hook Jo should review.

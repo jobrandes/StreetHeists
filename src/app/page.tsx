@@ -4,6 +4,7 @@ import { KeyholeLogo } from "@/components/keyhole-logo";
 import { TextScaleToggle } from "@/components/text-scale";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { VersionStamp } from "@/components/version-stamp";
 import { playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import Image from "next/image";
@@ -148,9 +149,12 @@ export default function HomeSplashPage() {
           </div>
         </section>
 
-        <p className="text-center font-display text-[10px] tracking-[0.2em] text-white/55 uppercase">
-          Phone mystery · 5–10 min cases
-        </p>
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-center font-display text-[10px] tracking-[0.2em] text-white/55 uppercase">
+            Phone mystery · 5–10 min cases
+          </p>
+          <VersionStamp tone="light" />
+        </div>
       </div>
     </main>
   );

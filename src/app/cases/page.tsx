@@ -7,6 +7,7 @@ import { KeyholeLogo } from "@/components/keyhole-logo";
 import { TextScaleToggle } from "@/components/text-scale";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { VersionStamp } from "@/components/version-stamp";
 import { difficultyLabel, isCaseUnlocked } from "@/lib/investigation";
 import { moreCases, playableCases, pigeonCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
@@ -187,6 +188,10 @@ export default function CaseBoardPage() {
           Reset tutorial case progress
         </button>
       ) : null}
+
+      <div className="mt-8 flex justify-center">
+        <VersionStamp />
+      </div>
     </main>
   );
 }
