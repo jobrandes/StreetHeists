@@ -9,13 +9,14 @@ import {
 } from "@/lib/case-journey";
 import type { CaseFile, CaseProgress } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { FolderSearch, Scale } from "lucide-react";
+import { Archive, Pin, Scale } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 const NAV_ICONS = {
-  gather: FolderSearch,
-  decide: Scale,
+  locker: Archive,
+  corkboard: Pin,
+  accuse: Scale,
 } as const;
 
 export function CaseChrome({
@@ -34,11 +35,12 @@ export function CaseChrome({
   backLabel?: string;
 }) {
   const strip = progressStripCopy(step, caseFile, progress);
-  const room = step === "briefing" ? "gather" : step;
+  const room: Exclude<CaseStep, "briefing"> =
+    step === "briefing" ? "locker" : step;
 
   return (
     <div className="play-day flex min-h-dvh flex-col">
-      <div className="sticky top-0 z-30 border-b border-hairline bg-[#EEF2F6]/95 px-4 pb-3 pt-3 backdrop-blur">
+      <div className="sticky top-0 z-30 border-b border-hairline bg-[#F3EEE4]/95 px-4 pb-3 pt-3 backdrop-blur">
         <div className="mx-auto flex max-w-[430px] items-center justify-between gap-2">
           {backHref ? (
             <Link
@@ -52,15 +54,20 @@ export function CaseChrome({
               Case {String(caseFile.number).padStart(2, "0")}
             </span>
           )}
-          <p className="truncate font-serif text-lg font-semibold text-ink">
-            {caseFile.title}
-          </p>
+          <div className="min-w-0 text-center">
+            <p className="truncate font-serif text-lg font-semibold text-ink">
+              Street Heists
+            </p>
+            <p className="truncate font-display text-[10px] font-bold tracking-[0.16em] text-muted uppercase">
+              ● {strip.stepLabel} ● {caseFile.title}
+            </p>
+          </div>
           <CaseNotebookButton caseFile={caseFile} progress={progress} />
         </div>
 
-        {/* Direction C — two huge room pills */}
+        {/* Mosaic v0.2 — Locker | Corkboard | Accuse (no Map) */}
         <div
-          className="mx-auto mt-3 grid max-w-[430px] grid-cols-2 gap-2 rounded-2xl border border-hairline bg-card p-1.5"
+          className="mx-auto mt-3 grid max-w-[430px] grid-cols-3 gap-1.5 rounded-2xl border border-[#C4A574]/50 bg-[#F7F1E6] p-1.5 shadow-[0_2px_0_rgba(27,36,48,0.08)]"
           role="tablist"
           aria-label="Case rooms"
         >
@@ -74,21 +81,21 @@ export function CaseChrome({
                 role="tab"
                 aria-selected={active}
                 className={cn(
-                  "flex min-h-14 items-center justify-center gap-2 rounded-xl font-display text-base font-bold tracking-[0.1em] uppercase transition-colors",
+                  "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl font-display text-[11px] font-bold tracking-[0.12em] uppercase transition-colors",
                   active
-                    ? "bg-[#2F5BFF] text-white shadow-[0_4px_0_#2549d6]"
-                    : "text-ink hover:bg-[#E8EEF8]",
+                    ? "border border-[#B8893D] bg-[#E8D4B0] text-ink shadow-[0_3px_0_rgba(120,80,30,0.25)]"
+                    : "text-ink/70 hover:bg-[#EFE6D6]",
                 )}
               >
-                <Icon className="size-5" />
+                <Icon className="size-4" />
                 {item.label}
               </Link>
             );
           })}
         </div>
 
-        <div className="mx-auto mt-3 max-w-[430px] rounded-lg border border-[#2F5BFF]/25 bg-[#DCE6FF]/70 px-3 py-2.5">
-          <p className="font-display text-xs font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
+        <div className="mx-auto mt-3 max-w-[430px] rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE]/90 px-3 py-2.5">
+          <p className="font-display text-xs font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
             {strip.stepLabel}
           </p>
           <p className="mt-1 text-base font-medium leading-snug text-ink">
@@ -96,11 +103,13 @@ export function CaseChrome({
           </p>
         </div>
 
-        <FirstUseTip
-          tipId="two-rooms"
-          className="mx-auto mt-2 max-w-[430px]"
-          text="Only two rooms: Gather (clues we give you) and Decide (Who / How / Where + proof). Case file remembers the rest."
-        />
+        {step === "briefing" || step === "locker" ? (
+          <FirstUseTip
+            tipId="mosaic-three-rooms"
+            className="mx-auto mt-2 max-w-[430px]"
+            text="Three rooms: Locker (clues), Corkboard (string yarn → deductions), Accuse (Who / How / Where). No map in v0.2."
+          />
+        ) : null}
       </div>
 
       <div className="mx-auto w-full max-w-[430px] flex-1 px-4 pb-10 pt-4 text-base leading-snug">
