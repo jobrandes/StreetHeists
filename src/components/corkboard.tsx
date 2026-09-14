@@ -204,7 +204,8 @@ export function MosaicCorkboard({
   }
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-3 min-[900px]:grid min-[900px]:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)] min-[900px]:items-start min-[900px]:gap-6 min-[900px]:space-y-0">
+      <div className="space-y-3 min-[900px]:sticky min-[900px]:top-28">
       <header>
         <h1 className="font-serif text-4xl font-bold leading-none text-ink">Corkboard</h1>
         <p className="mt-2 text-base leading-snug text-ink">
@@ -338,8 +339,165 @@ export function MosaicCorkboard({
         />
       ) : null}
 
+      {step === "locker" ? (
+        <Button
+          asChild
+          size="xl"
+          className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.12em] text-[#F2F0EA] uppercase"
+        >
+          <Link href={`/case/${caseFile.id}/evidence`}>
+            Open Locker <ArrowRight className="size-5" />
+          </Link>
+        </Button>
+      ) : null}
+
+      {step === "pin" ? (
+        <div className="space-y-2">
+          {examplePair && exampleFiled && !examplePinned ? (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-lg font-bold tracking-[0.1em] text-white uppercase hover:bg-[#B71C1C]"
+              onClick={hangExampleClues}
+            >
+              <Pin className="size-5" /> Hang the example clues
+            </Button>
+          ) : examplePair && !exampleFiled ? (
+            <Button
+              asChild
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.1em] text-[#F2F0EA] uppercase"
+            >
+              <Link href={`/case/${caseFile.id}/evidence`}>
+                Open Locker · find the example clues
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
+              onClick={() => setAddOpen(true)}
+            >
+              <Pin className="size-5" /> Add clue to board
+            </Button>
+          )}
+        </div>
+      ) : null}
+
+      {step === "connect" ? (
+        <div className="space-y-2">
+          {examplePair && !exampleLinked && exampleFiled ? (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-base font-bold tracking-[0.08em] text-white uppercase hover:bg-[#B71C1C]"
+              onClick={connectExampleClues}
+            >
+              <Link2 className="size-5" />{" "}
+              {examplePinned
+                ? "Connect the example for me"
+                : "Hang & connect the example"}
+            </Button>
+          ) : null}
+          {examplePair && !exampleLinked && !exampleFiled ? (
+            <Button
+              asChild
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-base font-bold tracking-[0.08em] text-[#F2F0EA] uppercase"
+            >
+              <Link href={`/case/${caseFile.id}/evidence`}>
+                Open Locker · inspect the example clues
+              </Link>
+            </Button>
+          ) : null}
+          <div className="flex h-14 items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#C62828]/50 bg-[#F8D7D7]/45 font-display text-sm font-bold tracking-[0.1em] text-ink uppercase">
+            <Link2 className="size-5 text-[#C62828]" />
+            {linkPick.length === 0
+              ? examplePair
+                ? "Or tap the two Example-tagged photos"
+                : "Tap two clues that belong together"
+              : "Tap the second clue"}
+          </div>
+          {linkPick.length > 0 ? (
+            <button
+              type="button"
+              className="flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-muted underline"
+              onClick={() => {
+                setLinkPick([]);
+                setToast(null);
+              }}
+            >
+              Cancel selection
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="inline-flex w-full items-center justify-center gap-1.5 text-xs text-muted"
+            onClick={() => {
+              if (pinned[0]) setSelectedId(pinned[0].id);
+            }}
+          >
+            <Info className="size-3.5" /> Need a closer look? Open clue details
+          </button>
+        </div>
+      ) : null}
+
+      {step === "done" ? (
+        <Button
+          asChild
+          size="xl"
+          className="h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
+        >
+          <Link href={`/case/${caseFile.id}/accuse`}>
+            Open Accuse <ArrowRight className="size-5" />
+          </Link>
+        </Button>
+      ) : null}
+
+      {toast ? (
+        <p
+          className="rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE] px-3 py-2 text-sm font-semibold text-ink"
+          role="status"
+        >
+          {toast}
+        </p>
+      ) : null}
+
+      {step !== "locker" && pinned.length > 0 ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+          {step !== "pin" ? (
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
+              onClick={() => setAddOpen(true)}
+            >
+              Add another clue
+            </button>
+          ) : (
+            <span />
+          )}
+          {links.length > 0 ? (
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
+              onClick={() => {
+                onClearChain();
+                setToast("Connections cleared — pins stay.");
+                setLinkPick([]);
+              }}
+            >
+              Clear connections
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      </div>
+
+      <div className="space-y-3 min-[900px]:min-h-0">
       <div className="cork-frame relative overflow-hidden rounded-md p-2 shadow-[0_8px_0_rgba(80,50,20,0.18)]">
-        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm min-[600px]:min-h-[28rem] min-[900px]:min-h-[36rem]">
+        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm min-[600px]:min-h-[min(62dvh,36rem)] min-[900px]:min-h-[min(72dvh,44rem)]">
           <svg
             className="pointer-events-none absolute inset-0 z-10 h-full w-full"
             viewBox="0 0 100 100"
@@ -495,159 +653,7 @@ export function MosaicCorkboard({
         </div>
       </div>
 
-      {step === "locker" ? (
-        <Button
-          asChild
-          size="xl"
-          className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.12em] text-[#F2F0EA] uppercase"
-        >
-          <Link href={`/case/${caseFile.id}/evidence`}>
-            Open Locker <ArrowRight className="size-5" />
-          </Link>
-        </Button>
-      ) : null}
-
-      {step === "pin" ? (
-        <div className="space-y-2">
-          {examplePair && exampleFiled && !examplePinned ? (
-            <Button
-              type="button"
-              size="xl"
-              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-lg font-bold tracking-[0.1em] text-white uppercase hover:bg-[#B71C1C]"
-              onClick={hangExampleClues}
-            >
-              <Pin className="size-5" /> Hang the example clues
-            </Button>
-          ) : examplePair && !exampleFiled ? (
-            <Button
-              asChild
-              size="xl"
-              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.1em] text-[#F2F0EA] uppercase"
-            >
-              <Link href={`/case/${caseFile.id}/evidence`}>
-                Open Locker · find the example clues
-              </Link>
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              size="xl"
-              className="h-14 w-full rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
-              onClick={() => setAddOpen(true)}
-            >
-              <Pin className="size-5" /> Add clue to board
-            </Button>
-          )}
-        </div>
-      ) : null}
-
-      {step === "connect" ? (
-        <div className="space-y-2">
-          {examplePair && !exampleLinked && exampleFiled ? (
-            <Button
-              type="button"
-              size="xl"
-              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-base font-bold tracking-[0.08em] text-white uppercase hover:bg-[#B71C1C]"
-              onClick={connectExampleClues}
-            >
-              <Link2 className="size-5" />{" "}
-              {examplePinned
-                ? "Connect the example for me"
-                : "Hang & connect the example"}
-            </Button>
-          ) : null}
-          {examplePair && !exampleLinked && !exampleFiled ? (
-            <Button
-              asChild
-              size="xl"
-              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-base font-bold tracking-[0.08em] text-[#F2F0EA] uppercase"
-            >
-              <Link href={`/case/${caseFile.id}/evidence`}>
-                Open Locker · inspect the example clues
-              </Link>
-            </Button>
-          ) : null}
-          <div className="flex h-14 items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#C62828]/50 bg-[#F8D7D7]/45 font-display text-sm font-bold tracking-[0.1em] text-ink uppercase">
-            <Link2 className="size-5 text-[#C62828]" />
-            {linkPick.length === 0
-              ? examplePair
-                ? "Or tap the two Example-tagged photos"
-                : "Tap two clues that belong together"
-              : "Tap the second clue"}
-          </div>
-          {linkPick.length > 0 ? (
-            <button
-              type="button"
-              className="flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-muted underline"
-              onClick={() => {
-                setLinkPick([]);
-                setToast(null);
-              }}
-            >
-              Cancel selection
-            </button>
-          ) : null}
-          <button
-            type="button"
-            className="inline-flex w-full items-center justify-center gap-1.5 text-xs text-muted"
-            onClick={() => {
-              if (pinned[0]) setSelectedId(pinned[0].id);
-            }}
-          >
-            <Info className="size-3.5" /> Need a closer look? Open clue details
-          </button>
-        </div>
-      ) : null}
-
-      {step === "done" ? (
-        <Button
-          asChild
-          size="xl"
-          className="h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
-        >
-          <Link href={`/case/${caseFile.id}/accuse`}>
-            Open Accuse <ArrowRight className="size-5" />
-          </Link>
-        </Button>
-      ) : null}
-
-      {toast ? (
-        <p
-          className="rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE] px-3 py-2 text-sm font-semibold text-ink"
-          role="status"
-        >
-          {toast}
-        </p>
-      ) : null}
-
-      {step !== "locker" && pinned.length > 0 ? (
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
-          {step !== "pin" ? (
-            <button
-              type="button"
-              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
-              onClick={() => setAddOpen(true)}
-            >
-              Add another clue
-            </button>
-          ) : (
-            <span />
-          )}
-          {links.length > 0 ? (
-            <button
-              type="button"
-              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
-              onClick={() => {
-                onClearChain();
-                setToast("Connections cleared — pins stay.");
-                setLinkPick([]);
-              }}
-            >
-              Clear connections
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      </div>
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent title="Add clue" className="border-[#C4A574]/50 bg-[#F7F1E6]">
