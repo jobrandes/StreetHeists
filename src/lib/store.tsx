@@ -1,1 +1,1 @@
-LOAD_FROM:/tmp/pf/09.content
+LOAD_FROM_DISK:/workspace/src/lib/store.tsx

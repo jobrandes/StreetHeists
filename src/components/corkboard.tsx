@@ -1,1 +1,1 @@
-__LOAD_FROM_FILE__:/workspace/src/components/corkboard.tsx
+LOAD_FROM_DISK:/workspace/src/components/corkboard.tsx
