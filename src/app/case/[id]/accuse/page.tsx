@@ -29,14 +29,18 @@ export default function DecidePage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const caseFile = getCase(id);
-  const { submitAccusation, progressFor, setReconstructionPick } = useHeists();
+  const { submitAccusation, progressFor, setReconstructionPick, setAccusationDraft } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const desk = progress.reconstructionPicks;
+  const draft = progress.accusationDraft;
   const [local, setLocal] = useState<Accusation>({
     ...empty,
     who: desk.who ?? "",
     how: desk.how ?? "",
     where: desk.where ?? "",
+    whoEvidenceId: draft.whoEvidenceId ?? "",
+    howEvidenceId: draft.howEvidenceId ?? "",
+    whereEvidenceId: draft.whereEvidenceId ?? "",
   });
   const [panel, setPanel] = useState<Panel>("home");
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -313,25 +317,28 @@ export default function DecidePage() {
                 label="Proof of who"
                 evidence={bagged}
                 selectedId={accusation.whoEvidenceId}
-                onSelect={(whoEvidenceId) =>
-                  setLocal((value) => ({ ...value, whoEvidenceId }))
-                }
+                onSelect={(whoEvidenceId) => {
+                  setLocal((value) => ({ ...value, whoEvidenceId }));
+                  setAccusationDraft(caseFile!.id, { whoEvidenceId });
+                }}
               />
               <ProofPicker
                 label="Proof of how"
                 evidence={bagged}
                 selectedId={accusation.howEvidenceId}
-                onSelect={(howEvidenceId) =>
-                  setLocal((value) => ({ ...value, howEvidenceId }))
-                }
+                onSelect={(howEvidenceId) => {
+                  setLocal((value) => ({ ...value, howEvidenceId }));
+                  setAccusationDraft(caseFile!.id, { howEvidenceId });
+                }}
               />
               <ProofPicker
                 label="Proof of where"
                 evidence={bagged}
                 selectedId={accusation.whereEvidenceId}
-                onSelect={(whereEvidenceId) =>
-                  setLocal((value) => ({ ...value, whereEvidenceId }))
-                }
+                onSelect={(whereEvidenceId) => {
+                  setLocal((value) => ({ ...value, whereEvidenceId }));
+                  setAccusationDraft(caseFile!.id, { whereEvidenceId });
+                }}
               />
             </div>
           )}
