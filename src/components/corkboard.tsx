@@ -5,14 +5,14 @@ import { FirstUseTip } from "@/components/first-use-tip";
 import { PinClueSheet } from "@/components/pin-clue-sheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { chainsRequiredToAccuse, isCorrectPairForChain } from "@/lib/deduction";
+import { chainsRequiredToAccuse } from "@/lib/deduction";
 import type { CaseFile, ClueLink, DeductionChain, Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Link2, Pin, RefreshCw } from "lucide-react";
+import { ArrowRight, Info, Link2, Pin } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-/** Deterministic polaroid slots — leaves center free for sticky deductions. */
+/** Polaroid slots — center stays open for yellow sticky notes. */
 const PIN_SLOTS: { left: string; top: string; rotate: string }[] = [
   { left: "4%", top: "6%", rotate: "-3deg" },
   { left: "58%", top: "8%", rotate: "2.5deg" },
@@ -26,10 +26,13 @@ const PIN_COLORS = ["#C62828", "#1B2430", "#C62828", "#1B2430", "#8A5A22", "#1B2
 
 function pinAnchor(index: number): { x: number; y: number } {
   const slot = PIN_SLOTS[index % PIN_SLOTS.length]!;
-  const left = Number.parseFloat(slot.left);
-  const top = Number.parseFloat(slot.top);
-  return { x: left + 18, y: top + 4 };
+  return {
+    x: Number.parseFloat(slot.left) + 18,
+    y: Number.parseFloat(slot.top) + 4,
+  };
 }
+
+type BoardStep = "locker" | "pin" | "connect" | "done";
 
 export function MosaicCorkboard({
   caseFile,
@@ -59,12 +62,12 @@ export function MosaicCorkboard({
 }) {
   const [addOpen, setAddOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [compareIds, setCompareIds] = useState<[string, string] | null>(null);
   const [linkPick, setLinkPick] = useState<string[]>([]);
-  const [yarnMode, setYarnMode] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
   const stickiesNeeded = chainsRequiredToAccuse(caseFile);
   const stickiesHave = unlockedChains.length;
+  const ready = stickiesNeeded === 0 || stickiesHave >= stickiesNeeded;
 
   const pinned = useMemo(
     () =>
@@ -93,26 +96,47 @@ export function MosaicCorkboard({
     return map;
   }, [pinned]);
 
+  const step: BoardStep = ready
+    ? "done"
+    : filedEvidence.length === 0
+      ? "locker"
+      : pinned.length < 2
+        ? "pin"
+        : "connect";
+
+  /** In connect step, every pin tap is for pairing — no mode button. */
+  const connectMode = step === "connect";
+
+  useEffect(() => {
+    if (step === "pin" && unpinnedFiled.length > 0 && pinned.length === 0) {
+      setAddOpen(true);
+    }
+  }, [step, unpinnedFiled.length, pinned.length]);
+
+  useEffect(() => {
+    if (step !== "connect") setLinkPick([]);
+  }, [step]);
+
   function tryLink(a: string, b: string) {
     const result = onLink(a, b);
     setToast(result.message);
     setLinkPick([]);
-    setYarnMode(false);
     return result;
   }
 
   function onPinClick(id: string) {
-    if (yarnMode || linkPick.length === 1) {
+    if (connectMode) {
       if (linkPick.length === 0) {
         setLinkPick([id]);
+        setToast("Now tap a second clue that goes with this one.");
         return;
       }
       if (linkPick[0] === id) {
         setLinkPick([]);
+        setToast("Cleared — tap a clue to start again.");
         return;
       }
       tryLink(linkPick[0]!, id);
-      setYarnMode(false);
       return;
     }
     setSelectedId(id);
@@ -123,51 +147,101 @@ export function MosaicCorkboard({
       <header>
         <h1 className="font-serif text-4xl font-bold leading-none text-ink">Corkboard</h1>
         <p className="mt-2 text-base leading-snug text-ink">
-          This is your wall of clues. Red dots are pushpins. Red lines are yarn you string
-          between two clues. Matching pairs unlock yellow sticky notes — Accuse opens when those
-          stickies unlock.
+          Your wall of clues. Hang photos, connect related ones, unlock a yellow note — then Accuse.
         </p>
-        <ol className="mt-3 space-y-1.5 rounded-xl border border-[#C4A574]/45 bg-[#FFF8EE] px-3 py-3 text-sm leading-snug text-ink">
-          <li>
-            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
-              1 · Pin
-            </span>{" "}
-            Hang filed stills with Add pin.
-          </li>
-          <li>
-            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
-              2 · String yarn
-            </span>{" "}
-            Connect two related clues (tap String yarn, then two pins — or open a pin → String yarn).
-          </li>
-          <li>
-            <span className="font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22] uppercase">
-              3 · Unlock stickies
-            </span>{" "}
-            Sound pairs light a yellow sticky. Get {stickiesNeeded || "the"} sticky
-            {stickiesNeeded === 1 ? "" : "s"}, then Accuse opens.
-          </li>
-        </ol>
-        <p
-          className={cn(
-            "mt-3 rounded-lg border px-3 py-2 text-sm font-semibold",
-            stickiesNeeded > 0 && stickiesHave >= stickiesNeeded
-              ? "border-[#2F5BFF]/35 bg-[#DCE6FF]/70 text-ink"
-              : "border-[#C4A574]/40 bg-[#F7F1E6] text-ink",
-          )}
-        >
-          {stickiesNeeded === 0
-            ? "No stickies required on this case — Accuse is open when you’re ready."
-            : stickiesHave >= stickiesNeeded
-              ? `Stickies unlocked ${stickiesHave}/${stickiesNeeded} · Accuse is open`
-              : `Stickies unlocked ${stickiesHave}/${stickiesNeeded} · keep stringing sound pairs`}
-        </p>
-        <FirstUseTip
-          tipId="mosaic-corkboard-howto-v2"
-          className="mt-2"
-          text="Red dots = pushpins. Red lines = yarn between two clues. Yellow stickies = deductions. Accuse unlocks when enough stickies open."
-        />
       </header>
+
+      <nav
+        aria-label="Corkboard steps"
+        className="grid grid-cols-3 gap-1 rounded-xl border border-[#C4A574]/45 bg-[#FFF8EE] p-1.5"
+      >
+        {(
+          [
+            { id: "pin", label: "1 · Hang clues" },
+            { id: "connect", label: "2 · Connect two" },
+            { id: "done", label: "3 · Accuse" },
+          ] as const
+        ).map((item) => {
+          const active =
+            (item.id === "pin" && (step === "locker" || step === "pin")) ||
+            (item.id === "connect" && step === "connect") ||
+            (item.id === "done" && step === "done");
+          const complete =
+            (item.id === "pin" && (step === "connect" || step === "done")) ||
+            (item.id === "connect" && step === "done");
+          return (
+            <div
+              key={item.id}
+              className={cn(
+                "rounded-lg px-2 py-2 text-center font-display text-[10px] font-bold tracking-[0.08em] uppercase",
+                active && "bg-[#1B2430] text-[#F2F0EA]",
+                complete && !active && "bg-[#E8D4B0] text-ink",
+                !active && !complete && "text-muted",
+              )}
+            >
+              {item.label}
+            </div>
+          );
+        })}
+      </nav>
+
+      <div className="rounded-xl border-2 border-[#1B2430]/15 bg-white px-4 py-3 shadow-[0_2px_0_rgba(27,36,48,0.06)]">
+        {step === "locker" ? (
+          <>
+            <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
+              Do this now
+            </p>
+            <p className="mt-1 text-base font-semibold leading-snug text-ink">
+              Open clues in the Locker first. Come back when you have photos to hang.
+            </p>
+          </>
+        ) : null}
+        {step === "pin" ? (
+          <>
+            <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
+              Do this now
+            </p>
+            <p className="mt-1 text-base font-semibold leading-snug text-ink">
+              Hang at least two clues. Use the big{" "}
+              <span className="underline">Add clue to board</span> button.
+            </p>
+          </>
+        ) : null}
+        {step === "connect" ? (
+          <>
+            <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#C62828] uppercase">
+              Do this now
+            </p>
+            <p className="mt-1 text-base font-semibold leading-snug text-ink">
+              {linkPick.length === 0
+                ? "Tap one clue photo, then tap another that belongs with it."
+                : "Good — now tap the second clue."}
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              Right pair → yellow sticky appears. Wrong pair → nothing sticks. Try again.
+            </p>
+          </>
+        ) : null}
+        {step === "done" ? (
+          <>
+            <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
+              Ready
+            </p>
+            <p className="mt-1 text-base font-semibold leading-snug text-ink">
+              Yellow sticky unlocked. Open Accuse when you&apos;re ready.
+            </p>
+          </>
+        ) : null}
+        <p className="mt-3 text-sm font-semibold text-ink">
+          Yellow notes {stickiesHave}/{stickiesNeeded || Math.max(stickiesHave, 1)}
+          {ready ? " · Accuse is open" : " · keep connecting"}
+        </p>
+      </div>
+
+      <FirstUseTip
+        tipId="corkboard-guided-v3"
+        text="You’re matching two related clues — not decorating. Right match unlocks a yellow note, then Accuse."
+      />
 
       <div className="cork-frame relative overflow-hidden rounded-md p-2 shadow-[0_8px_0_rgba(80,50,20,0.18)]">
         <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm sm:min-h-[26rem]">
@@ -183,9 +257,6 @@ export function MosaicCorkboard({
               if (ia === undefined || ib === undefined) return null;
               const a = pinAnchor(ia);
               const b = pinAnchor(ib);
-              const sound = (caseFile.deductionChains ?? []).some((chain) =>
-                isCorrectPairForChain(chain, link.a, link.b),
-              );
               return (
                 <line
                   key={link.id}
@@ -194,8 +265,8 @@ export function MosaicCorkboard({
                   x2={b.x}
                   y2={b.y}
                   stroke="#C62828"
-                  strokeWidth={sound ? 0.7 : 0.45}
-                  strokeOpacity={sound ? 0.95 : 0.55}
+                  strokeWidth={0.7}
+                  strokeOpacity={0.95}
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                 />
@@ -208,7 +279,7 @@ export function MosaicCorkboard({
                 .map((i) => pinAnchor(i));
               return centers.map((pt, idx) => (
                 <line
-                  key={`${chain.id}-sticky-${idx}`}
+                  key={`${chain.id}-hub-${idx}`}
                   x1={pt.x}
                   y1={pt.y}
                   x2={50}
@@ -221,10 +292,19 @@ export function MosaicCorkboard({
                 />
               ));
             })}
+            {linkPick.length === 1 && indexById.has(linkPick[0]!) ? (
+              <circle
+                cx={pinAnchor(indexById.get(linkPick[0]!)!).x}
+                cy={pinAnchor(indexById.get(linkPick[0]!)!).y}
+                r={1.8}
+                fill="#C62828"
+                opacity={0.9}
+              />
+            ) : null}
           </svg>
 
           {unlockedChains.length > 0 ? (
-            <div className="absolute left-1/2 top-[34%] z-20 w-[44%] -translate-x-1/2 space-y-2">
+            <div className="absolute left-1/2 top-[34%] z-20 w-[48%] -translate-x-1/2 space-y-2">
               {unlockedChains.map((chain) => (
                 <div
                   key={chain.id}
@@ -241,29 +321,28 @@ export function MosaicCorkboard({
                 </div>
               ))}
             </div>
-          ) : pinned.length >= 2 ? (
-            <p className="absolute left-1/2 top-1/2 z-0 w-[70%] -translate-x-1/2 -translate-y-1/2 text-center font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22]/70 uppercase">
-              Open a pin → String yarn — sticky unlocks here
+          ) : connectMode ? (
+            <p className="absolute left-1/2 top-1/2 z-0 w-[72%] -translate-x-1/2 -translate-y-1/2 text-center font-display text-[10px] font-bold tracking-[0.12em] text-[#8A5A22]/75 uppercase">
+              Yellow note appears here when two clues match
             </p>
           ) : null}
 
           {pinned.length === 0 ? (
             <div className="absolute inset-0 z-20 grid place-items-center p-6 text-center">
               <div>
-                <p className="font-serif text-xl font-bold text-ink">Empty board</p>
+                <p className="font-serif text-xl font-bold text-ink">Nothing pinned yet</p>
                 <p className="mt-1 text-sm text-ink/80">
-                  Open clues in the Locker, then Add pin to hang them here.
+                  {filedEvidence.length === 0
+                    ? "Open clues in the Locker, then hang them here."
+                    : "Add at least two clues to start connecting."}
                 </p>
-                <Button asChild className="mt-4 h-11 rounded-xl bg-[#1B2430] font-display text-xs font-bold tracking-[0.12em] text-[#F2F0EA] uppercase">
-                  <Link href={`/case/${caseFile.id}/evidence`}>Open Locker</Link>
-                </Button>
               </div>
             </div>
           ) : (
             pinned.map((item, index) => {
               const slot = PIN_SLOTS[index % PIN_SLOTS.length]!;
               const pinColor = PIN_COLORS[index % PIN_COLORS.length]!;
-              const active = linkPick.includes(item.id) || selectedId === item.id;
+              const active = linkPick.includes(item.id);
               return (
                 <button
                   key={item.id}
@@ -271,14 +350,20 @@ export function MosaicCorkboard({
                   onClick={() => onPinClick(item.id)}
                   className={cn(
                     "absolute z-20 w-[38%] text-left transition-transform",
-                    active && "z-30 scale-[1.03]",
+                    active && "z-30 scale-[1.04]",
                   )}
                   style={{
                     left: slot.left,
                     top: slot.top,
                     transform: `rotate(${slot.rotate})`,
                   }}
-                  aria-label={`Open pin ${item.title}`}
+                  aria-label={
+                    connectMode
+                      ? linkPick.length === 0
+                        ? `Select ${item.title} as first clue`
+                        : `Connect to ${item.title}`
+                      : `Details for ${item.title}`
+                  }
                 >
                   <span
                     className="absolute -top-1 left-1/2 z-10 size-3.5 -translate-x-1/2 rounded-full shadow"
@@ -288,7 +373,8 @@ export function MosaicCorkboard({
                   <div
                     className={cn(
                       "rounded-sm border border-white bg-white p-1.5 shadow-[0_4px_10px_rgba(40,20,10,0.28)]",
-                      active && "ring-2 ring-[#C62828]/70",
+                      active && "ring-2 ring-[#C62828]",
+                      connectMode && !active && "ring-1 ring-[#C62828]/30",
                     )}
                   >
                     <EvidenceArt evidence={item} className="aspect-[4/3] w-full" />
@@ -303,118 +389,124 @@ export function MosaicCorkboard({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      {step === "locker" ? (
+        <Button
+          asChild
+          size="xl"
+          className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.12em] text-[#F2F0EA] uppercase"
+        >
+          <Link href={`/case/${caseFile.id}/evidence`}>
+            Open Locker <ArrowRight className="size-5" />
+          </Link>
+        </Button>
+      ) : null}
+
+      {step === "pin" ? (
         <Button
           type="button"
-          className="h-12 rounded-xl bg-[#D4B483] font-display text-[11px] font-bold tracking-[0.1em] text-ink uppercase hover:bg-[#C9A574]"
+          size="xl"
+          className="h-14 w-full rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
           onClick={() => setAddOpen(true)}
         >
-          <Pin className="size-4" /> Add pin
+          <Pin className="size-5" /> Add clue to board
         </Button>
-        <Button
-          type="button"
-          className={cn(
-            "h-12 rounded-xl font-display text-[11px] font-bold tracking-[0.1em] uppercase",
-            yarnMode
-              ? "bg-[#C62828] text-white hover:bg-[#B71C1C]"
-              : "border border-[#C62828]/40 bg-[#F8D7D7]/50 text-ink hover:bg-[#F8D7D7]/80",
-          )}
-          disabled={pinned.length < 2}
-          onClick={() => {
-            setSelectedId(null);
-            setLinkPick([]);
-            setYarnMode((on) => !on);
-            setToast(
-              yarnMode
-                ? null
-                : "Yarn mode on — tap two pins to connect them.",
-            );
-          }}
-        >
-          <Link2 className="size-4" /> {yarnMode ? "Cancel yarn" : "String yarn"}
-        </Button>
-        <Button
-          type="button"
-          variant="bronze"
-          className="h-12 rounded-xl border border-[#C4A574]/50 bg-[#F7F1E6] font-display text-[11px] font-bold tracking-[0.1em] uppercase"
-          disabled={links.length === 0}
-          onClick={() => {
-            onClearChain();
-            setToast("Yarn cleared — pins stay.");
-            setLinkPick([]);
-            setYarnMode(false);
-          }}
-        >
-          <RefreshCw className="size-4" /> Clear yarn
-        </Button>
-      </div>
+      ) : null}
 
-      {yarnMode || linkPick.length === 1 ? (
-        <p className="rounded-lg border border-[#C62828]/30 bg-[#F8D7D7]/35 px-3 py-2 text-sm font-semibold text-ink">
-          {linkPick.length === 0
-            ? "Yarn mode · tap the first pin, then the second."
-            : "Yarn mode · tap a second pin to finish the string."}{" "}
+      {step === "connect" ? (
+        <div className="space-y-2">
+          <div className="flex h-14 items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#C62828]/50 bg-[#F8D7D7]/45 font-display text-sm font-bold tracking-[0.1em] text-ink uppercase">
+            <Link2 className="size-5 text-[#C62828]" />
+            {linkPick.length === 0 ? "Tap two clue photos" : "Tap the second clue"}
+          </div>
+          {linkPick.length > 0 ? (
+            <button
+              type="button"
+              className="w-full text-center text-sm font-semibold text-muted underline"
+              onClick={() => {
+                setLinkPick([]);
+                setToast(null);
+              }}
+            >
+              Cancel selection
+            </button>
+          ) : null}
           <button
             type="button"
-            className="underline"
+            className="inline-flex w-full items-center justify-center gap-1.5 text-xs text-muted"
             onClick={() => {
-              setLinkPick([]);
-              setYarnMode(false);
+              if (pinned[0]) setSelectedId(pinned[0].id);
             }}
           >
-            Cancel
+            <Info className="size-3.5" /> Need a closer look? Open clue details
           </button>
-        </p>
+        </div>
+      ) : null}
+
+      {step === "done" ? (
+        <Button
+          asChild
+          size="xl"
+          className="h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
+        >
+          <Link href={`/case/${caseFile.id}/accuse`}>
+            Open Accuse <ArrowRight className="size-5" />
+          </Link>
+        </Button>
       ) : null}
 
       {toast ? (
-        <p className="text-sm font-semibold text-ink" role="status">
+        <p
+          className="rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE] px-3 py-2 text-sm font-semibold text-ink"
+          role="status"
+        >
           {toast}
         </p>
       ) : null}
 
-      {links.length > 0 ? (
-        <ul className="space-y-1.5 rounded-xl border border-[#C4A574]/40 bg-[#FFF8EE]/80 p-3">
-          <li className="list-none space-y-1">
-            <p className="font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
-              Yarn on board
-            </p>
-            <p className="text-[11px] font-normal normal-case tracking-normal text-muted">
-              <span className="font-semibold text-ink">Fits a sticky</span> = helps unlock a yellow
-              note. <span className="font-semibold text-ink">Not yet</span> = stays on the board, does
-              not unlock Accuse.
-            </p>
-          </li>
-          {links.map((link) => {
-            const a =
-              caseFile.evidence.find((item) => item.id === link.a)?.title ?? link.a;
-            const b =
-              caseFile.evidence.find((item) => item.id === link.b)?.title ?? link.b;
-            const sound = (caseFile.deductionChains ?? []).some((chain) =>
-              isCorrectPairForChain(chain, link.a, link.b),
-            );
-            return (
-              <li key={link.id} className="text-sm text-ink">
-                <span className="font-semibold">{a}</span>
-                <span className="mx-1 text-[#C62828]">∿</span>
-                <span className="font-semibold">{b}</span>
-                <span className="ml-1 text-[11px] text-muted">
-                  {sound ? "· fits a sticky" : "· not yet"}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+      {step !== "locker" && pinned.length > 0 ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+          {step !== "pin" ? (
+            <button
+              type="button"
+              className="font-semibold underline underline-offset-2"
+              onClick={() => setAddOpen(true)}
+            >
+              Add another clue
+            </button>
+          ) : (
+            <span />
+          )}
+          {links.length > 0 ? (
+            <button
+              type="button"
+              className="font-semibold underline underline-offset-2"
+              onClick={() => {
+                onClearChain();
+                setToast("Connections cleared — pins stay.");
+                setLinkPick([]);
+              }}
+            >
+              Clear connections
+            </button>
+          ) : null}
+        </div>
       ) : null}
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
-        <DialogContent title="Add pin" className="border-[#C4A574]/50 bg-[#F7F1E6]">
+        <DialogContent title="Add clue" className="border-[#C4A574]/50 bg-[#F7F1E6]">
           {unpinnedFiled.length === 0 ? (
-            <p className="text-sm text-ink">
-              {filedEvidence.length === 0
-                ? "Open clues in the Locker first — then pin them here."
-                : "Every filed clue is already on the board."}
-            </p>
+            <div className="space-y-3">
+              <p className="text-sm text-ink">
+                {filedEvidence.length === 0
+                  ? "No clues filed yet. Open the Locker and inspect photos first."
+                  : "Every filed clue is already on the board."}
+              </p>
+              {filedEvidence.length === 0 ? (
+                <Button asChild className="w-full">
+                  <Link href={`/case/${caseFile.id}/evidence`}>Open Locker</Link>
+                </Button>
+              ) : null}
+            </div>
           ) : (
             <ul className="max-h-[50vh] space-y-2 overflow-y-auto">
               {unpinnedFiled.map((item) => (
@@ -425,7 +517,7 @@ export function MosaicCorkboard({
                     onClick={() => {
                       onTogglePin(item.id);
                       setAddOpen(false);
-                      setToast(`Pinned · ${item.title}`);
+                      setToast(`On the board · ${item.title}`);
                     }}
                   >
                     <EvidenceArt evidence={item} className="size-14 shrink-0 rounded-sm" />
@@ -455,50 +547,14 @@ export function MosaicCorkboard({
           if (selected) onSaveNote(selected.id, note);
         }}
         onLink={(a, b) => tryLink(a, b)}
-        onCompare={(otherId) => {
-          if (!selected) return;
-          setCompareIds([selected.id, otherId]);
-          setSelectedId(null);
-        }}
+        onCompare={() => undefined}
         onUnpin={() => {
           if (!selected) return;
           onTogglePin(selected.id);
           setSelectedId(null);
-          setToast("Pin pulled.");
+          setToast("Clue removed from board.");
         }}
       />
-
-      <Dialog open={Boolean(compareIds)} onOpenChange={(open) => !open && setCompareIds(null)}>
-        <DialogContent title="Compare" className="border-[#C4A574]/50 bg-[#F7F1E6]">
-          {compareIds ? (
-            <div className="grid grid-cols-2 gap-2">
-              {compareIds.map((id) => {
-                const item = caseFile.evidence.find((ev) => ev.id === id);
-                if (!item) return null;
-                return (
-                  <div key={id} className="rounded-sm border border-white bg-white p-1.5 shadow">
-                    <EvidenceArt evidence={item} className="aspect-square w-full" />
-                    <p className="mt-1 text-xs font-semibold text-ink">{item.title}</p>
-                    <p className="mt-0.5 line-clamp-3 text-[11px] text-muted">{item.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          ) : null}
-          {compareIds ? (
-            <Button
-              type="button"
-              className="mt-3 h-11 w-full rounded-xl bg-[#D4B483] font-display text-xs font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
-              onClick={() => {
-                tryLink(compareIds[0], compareIds[1]);
-                setCompareIds(null);
-              }}
-            >
-              Link these two
-            </Button>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

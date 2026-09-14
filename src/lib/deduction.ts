@@ -160,7 +160,7 @@ export function gradeClueLink(
     return {
       sound: false,
       unlockedChainIds: [],
-      message: "Not a match — that yarn stays, but it won’t unlock a sticky. Try another pair.",
+      message: "Not a match — try two different clues.",
     };
   }
 
@@ -179,13 +179,13 @@ export function gradeClueLink(
     return {
       sound: true,
       unlockedChainIds: newlyUnlocked.map((c) => c.id),
-      message: `Sticky unlocked: ${newlyUnlocked.map((c) => c.title).join(" · ")}`,
+      message: `Yellow note unlocked: ${newlyUnlocked.map((c) => c.title).join(" · ")}`,
     };
   }
 
   return {
     sound: true,
     unlockedChainIds: [],
-    message: "Good pair — that yarn fits a sticky.",
+    message: "Nice — those clues go together.",
   };
 }

@@ -3,13 +3,13 @@
 import {
   canAccuse,
   chainsRequiredToAccuse,
-  isDeductionChainUnlocked,
   unlockedDeductionChains,
 } from "@/lib/deduction";
 import type { CaseFile, CaseProgress } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { GitBranch, Lock, Unlock } from "lucide-react";
+import { StickyNote } from "lucide-react";
 
+/** Shows unlocked yellow notes only — no locked checklist spoiling the board. */
 export function DeductionChainsPanel({
   caseFile,
   progress,
@@ -25,80 +25,42 @@ export function DeductionChainsPanel({
   const accuseReady = canAccuse(caseFile, progress);
 
   return (
-    <section className="rounded-xl border-2 border-gold bg-[#DCE6FF]/35 p-4">
+    <section className="rounded-xl border border-[#C4A574]/45 bg-[#FFF8EE] p-4">
       <div className="flex items-center gap-2">
-        <GitBranch className="size-4 text-gold" />
-        <p className="font-display text-[10px] font-bold tracking-[0.16em] text-gold uppercase">
-          Sticky deductions
+        <StickyNote className="size-4 text-[#C9A227]" />
+        <p className="font-display text-[10px] font-bold tracking-[0.16em] text-[#8A5A22] uppercase">
+          Yellow notes
         </p>
       </div>
-      <h2 className="mt-1 font-serif text-2xl font-bold text-ink">
-        Connect clues — unlock the yellow stickies
-      </h2>
-      <p className="mt-1 text-sm leading-snug text-ink">
-        String related pins with yarn. When a pair fits, a sticky unlocks. Accuse stays locked
-        until {need === 1 ? "that sticky" : `${need} stickies`} open.
-      </p>
       <p
         className={cn(
-          "mt-3 rounded-lg border px-3 py-2 text-sm font-semibold",
+          "mt-2 rounded-lg border px-3 py-2 text-sm font-semibold",
           accuseReady
-            ? "border-gold/40 bg-[#DCE6FF]/80 text-ink"
-            : "border-hairline bg-card text-muted",
+            ? "border-[#2F5BFF]/30 bg-[#DCE6FF]/70 text-ink"
+            : "border-[#C4A574]/40 bg-white text-ink",
         )}
       >
         {accuseReady
-          ? `Accuse unlocked · ${unlocked.length}/${need} stickies`
-          : `Accuse locked · ${unlocked.length}/${need} stickies`}
+          ? `Notes unlocked ${unlocked.length}/${need || unlocked.length} · Accuse is open`
+          : `Notes unlocked ${unlocked.length}/${need} · connect matching clues on the board`}
       </p>
-      <ul className="mt-4 space-y-3">
-        {chains.map((chain) => {
-          const open = isDeductionChainUnlocked(caseFile, progress, chain);
-          const filed = chain.requiredEvidenceIds.filter((id) =>
-            progress.inspectedEvidenceIds.includes(id),
-          ).length;
-          const pairs = chain.correctPairs ?? [];
-          const linkedPairs = pairs.filter(([a, b]) =>
-            (progress.clueLinks ?? []).some(
-              (link) =>
-                (link.a === a && link.b === b) || (link.a === b && link.b === a),
-            ),
-          ).length;
-          return (
+      {unlocked.length === 0 ? (
+        <p className="mt-3 text-sm leading-snug text-muted">
+          No yellow notes yet. On the corkboard, tap two related clue photos.
+        </p>
+      ) : (
+        <ul className="mt-3 space-y-2">
+          {unlocked.map((chain) => (
             <li
               key={chain.id}
-              className={cn(
-                "rounded-xl border p-3",
-                open ? "border-gold/40 bg-[#DCE6FF]/70" : "border-hairline bg-card",
-              )}
+              className="rounded-lg border border-[#C9A227]/40 bg-[#F7E27A]/55 px-3 py-2"
             >
-              <div className="flex items-start gap-2">
-                {open ? (
-                  <Unlock className="mt-0.5 size-4 shrink-0 text-gold" />
-                ) : (
-                  <Lock className="mt-0.5 size-4 shrink-0 text-muted" />
-                )}
-                <div className="min-w-0">
-                  <p className="font-serif text-lg font-bold text-ink">{chain.title}</p>
-                  {open ? (
-                    <p className="mt-1 text-sm font-semibold leading-snug text-ink">
-                      {chain.insight}
-                    </p>
-                  ) : (
-                    <p className="mt-1 text-xs text-muted">
-                      Filed {filed}/{chain.requiredEvidenceIds.length}
-                      {pairs.length
-                        ? ` · matching pairs ${linkedPairs}/${chain.pairsRequired ?? pairs.length}`
-                        : ""}
-                      {chain.unlockOnContradictionId ? " · spot the contradiction" : ""}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <p className="font-serif text-base font-bold text-ink">{chain.title}</p>
+              <p className="mt-1 text-sm leading-snug text-ink/85">{chain.insight}</p>
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

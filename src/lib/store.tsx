@@ -612,7 +612,11 @@ export function HeistProvider({ children }: { children: ReactNode }) {
           createdAt: Date.now(),
         };
 
-        // Sound and miss pairs both stay — miss never wipes the board.
+        // Only keep matching pairs on the board — misses confuse more than they teach.
+        if (!grade.sound) {
+          return { link: null, ...grade };
+        }
+
         setState((current) => ({
           ...current,
           progressByCase: patchCase(current.progressByCase, caseId, (p) => {

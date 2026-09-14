@@ -105,8 +105,8 @@ export default function CorkboardPage() {
             <Lock className="size-3.5" /> Accuse locked
           </p>
           <p className="mt-2 text-sm leading-snug text-ink">
-            Unlock {need === 1 ? "the required sticky" : `${need} sticky deductions`} (
-            {unlocked.length}/{need}), then Accuse opens.
+            Connect matching clues on the board until a yellow note unlocks (
+            {unlocked.length}/{need}). Then Accuse opens.
           </p>
           <Button
             size="xl"
