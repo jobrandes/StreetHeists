@@ -1,15 +1,17 @@
 import { dessertTrolleyCase } from "@/lib/cases/dessert-trolley";
 import { lateFeeCase } from "@/lib/cases/late-fee";
+import { lastToastCase } from "@/lib/cases/last-toast";
 import { pigeonCase } from "@/lib/cases/pigeon-job";
 import { velvetTeaspoonCase } from "@/lib/cases/velvet-teaspoon";
 import type { CaseFile } from "./types";
 
-export { dessertTrolleyCase, lateFeeCase, pigeonCase, velvetTeaspoonCase };
+export { dessertTrolleyCase, lateFeeCase, lastToastCase, pigeonCase, velvetTeaspoonCase };
 
 export const PLAYER_DEFAULT_ALIAS = "Detective";
 
 export const playableCases: CaseFile[] = [
   pigeonCase,
+  lastToastCase,
   lateFeeCase,
   velvetTeaspoonCase,
   dessertTrolleyCase,
