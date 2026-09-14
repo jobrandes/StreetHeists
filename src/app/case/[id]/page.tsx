@@ -71,12 +71,12 @@ export default function BriefingPage() {
         </h1>
         <p className="mt-3 text-lg leading-snug text-ink">{caseFile.subtitle}</p>
         <FirstUseTip
-          tipId="briefing-two-rooms"
+          tipId="briefing-three-rooms"
           className="mt-3"
-          text="Only two rooms after this: Gather (clues we give you) and Decide (Who / How / Where + proof). Case file remembers everything."
+          text="Three rooms after this: Locker (clues), Corkboard (yarn + stickies), Accuse (Who / How / Where + proof). Case file remembers everything."
         />
         <p className="mt-4 inline-block border-l-4 border-gold bg-card px-3 py-2 text-base font-semibold text-ink">
-          Read the beats, then Gather clues before you Decide.
+          Read the beats, then Locker → Corkboard → Accuse.
         </p>
       </header>
 
@@ -103,7 +103,7 @@ export default function BriefingPage() {
           className="h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
         >
           <Link href={`/case/${caseFile.id}/evidence`} onClick={() => openCase(caseFile.id)}>
-            Start Gather
+            Open Locker
           </Link>
         </Button>
         <Button
@@ -113,7 +113,7 @@ export default function BriefingPage() {
           className="h-12 w-full rounded-xl font-display text-sm font-bold tracking-[0.1em] uppercase"
         >
           <Link href={`/case/${caseFile.id}/accuse`} onClick={() => openCase(caseFile.id)}>
-            Jump to Decide
+            Jump to Accuse
           </Link>
         </Button>
       </div>
