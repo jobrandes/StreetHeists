@@ -96,16 +96,22 @@ export default function VerdictPage() {
             verdict.correct ? "text-gold" : "text-fail"
           }`}
         >
-          {verdict.correct ? "Case closed" : "Incorrect"}
+          {verdict.correct
+            ? verdict.wrongAttempts === 0
+              ? "Clean solve"
+              : "Case closed"
+            : "Not yet"}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-ink">
           {verdict.correct
-            ? "Marcel offers no comment, then eats part of Exhibit A."
+            ? verdict.wrongAttempts === 0
+              ? "One accusation. The file held. Export the poster — you earned the clean solve."
+              : "The first theory wobbled. The final one held. Case closed — share it."
             : axis.who && (!axis.whoEvidence || !axis.howEvidence || !axis.whereEvidence)
-              ? "Names can be right and the case still fails — attach the exhibits that prove each part."
+              ? "Names can be right and the case still fails — attach the exhibits that prove each part. Your Who / How / Where picks and proof clues stay on the Decide desk."
               : axis.who
-                ? "Right suspect, shaky paperwork. Method or hiding place contradicts the file."
-                : `${chosen.who} is cleared. Re-check who the sill, crumbs, and nest actually name.`}
+                ? "Right suspect, shaky paperwork. Method or hiding place contradicts the file. Proof selections are preserved — adjust and retry."
+                : `${chosen.who} is cleared. Re-check the file. Your proof attachments are still on Decide when you retry.`}
         </p>
       </header>
 
@@ -209,7 +215,7 @@ export default function VerdictPage() {
             <Link href={`/case/${caseFile.id}/evidence`}>Review clues</Link>
           </Button>
           <p className="mt-3 text-center text-xs text-muted">
-            All opened and pinned evidence is preserved.
+            Opened clues, corkboard links, and Decide proof attachments are preserved.
           </p>
         </>
       )}
