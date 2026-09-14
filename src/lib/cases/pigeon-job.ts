@@ -5,7 +5,7 @@ export const pigeonCase: CaseFile = {
   id: "pigeon-job",
   number: 7,
   title: "The Pigeon Job",
-  subtitle: "A ceremonial baguette. A plaza full of excuses. One bird with a résumé.",
+  subtitle: "~4 min tutorial — inspect, link one pair, accuse.",
   premise:
     "At 12:07, Café Paloma’s ceremonial baguette did what baguettes should never do: it left. Not with dignity — with crumbs, a cord, and a pigeon who treats open windows like a career ladder. Name who took it, how, and where the loaf is moonlighting now.",
 
@@ -21,7 +21,7 @@ export const pigeonCase: CaseFile = {
     },
     {
       title: "YOUR JOB",
-      copy: "Gather every clue we give you — photos, docs, notes. Practice the corkboard (string a clue to a suspect). Then Decide: Who took it, How they moved it, Where it landed. Attach proof to each answer. Case file remembers so you don’t have to.",
+      copy: "~4 minutes. Inspect a few clues, string ONE sound pair on the corkboard to unlock the deduction card, then Accuse. This is the tutorial — not the forever hero case.",
     },
   ],
   reconstruction: {
@@ -356,13 +356,13 @@ export const pigeonCase: CaseFile = {
       id: "trail-to-nest",
       title: "Trail to the nest",
       requiredEvidenceIds: ["crumb-trail", "statue-nest"],
-      requiredCorkLinks: [
-        { evidenceId: "statue-nest", suspectId: "marcel" },
-      ],
+      correctPairs: [["crumb-trail", "statue-nest"]],
+      pairsRequired: 1,
       insight:
         "Crumbs run fountainward and the nest holds the loaf beside Marcel’s red band — the trail ends on the statue.",
     },
   ],
+  chainsRequiredToAccuse: 1,
   explanation: [
     "The feather and red awning thread place a bird at the open service window using the cord.",
     "The crumb trail runs from that sill to the north fountain statue.",
