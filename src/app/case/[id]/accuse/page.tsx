@@ -29,7 +29,6 @@ const empty: Accusation = {
 export default function DecidePage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const caseFile = getCase(id);
   const { submitAccusation, progressFor, setReconstructionPick, setAccusationDraft } = useHeists();
   const progress = caseFile ? progressFor(caseFile.id) : progressFor("missing");
   const desk = progress.reconstructionPicks;
@@ -130,15 +129,15 @@ export default function DecidePage() {
       <CaseChrome
         caseFile={caseFile}
         progress={progress}
-        step="decide"
-        backHref={`/case/${caseFile.id}/evidence`}
-        backLabel="Gather"
+        step="accuse"
+        backHref={`/case/${caseFile.id}/corkboard`}
+        backLabel="Locker"
       >
         <header className="border-b border-hairline pb-4">
           <p className="inline-flex rounded-md bg-[#2F5BFF] px-2.5 py-1 font-display text-[10px] font-bold tracking-[0.16em] text-white uppercase">
             Accuse locked
           </p>
-          <h1 className="mt-2 font-serif text-4xl font-bold leading-none text-ink">Decide</h1>
+          <h1 className="mt-2 font-serif text-4xl font-bold leading-none text-ink">Accuse</h1>
           <p className="mt-3 text-base leading-snug text-ink">
             String sound clue pairs on the corkboard until{" "}
             {need === 1 ? "your deduction card" : `${need} deduction cards`} unlock ({have}/{need}).
@@ -146,7 +145,7 @@ export default function DecidePage() {
           </p>
         </header>
         <Button asChild className="mt-6 h-12 w-full rounded-xl">
-          <Link href={`/case/${caseFile.id}/evidence`}>Back to Gather · corkboard</Link>
+          <Link href={`/case/${caseFile.id}/corkboard`}>Back to Corkboard</Link>
         </Button>
       </CaseChrome>
     );
@@ -156,9 +155,9 @@ export default function DecidePage() {
     <CaseChrome
       caseFile={caseFile}
       progress={progress}
-      step="decide"
-      backHref={`/case/${caseFile.id}/evidence`}
-      backLabel="Gather"
+      step="accuse"
+      backHref={`/case/${caseFile.id}/corkboard`}
+      backLabel="Locker"
     >
       {panel === "home" ? (
         <>
@@ -167,12 +166,12 @@ export default function DecidePage() {
               Final call · counts
             </p>
             <h1 className="mt-2 font-serif text-4xl font-bold leading-none text-ink">
-              Decide
+              Accuse
             </h1>
             <FirstUseTip
-              tipId="decide-room"
+              tipId="accuse-room"
               className="mt-3"
-              text="Fill Who / How / Where, then attach a filed clue as proof for each. This is the real call — Gather never locks the case."
+              text="Fill Who / How / Where, then attach a filed clue as proof for each. This is the real call — The Locker never locks the case — Accuse does."
             />
           </header>
 
@@ -183,7 +182,7 @@ export default function DecidePage() {
                 href={`/case/${caseFile.id}/evidence`}
                 className="font-semibold text-[#2F5BFF] underline"
               >
-                Gather clues first
+                File clues in the Locker first
               </Link>
               — or fill a draft theory anyway.
             </div>
@@ -333,12 +332,12 @@ export default function DecidePage() {
         <PickPanel title="Attach proof" onBack={() => setPanel("home")}>
           {bagged.length === 0 ? (
             <p className="text-lg text-ink">
-              File clues in Gather before attaching proof.{" "}
+              File clues in the Locker before attaching proof.{" "}
               <Link
                 href={`/case/${caseFile.id}/evidence`}
                 className="font-semibold text-[#2F5BFF] underline"
               >
-                Open Gather
+                Open Locker
               </Link>
             </p>
           ) : (
@@ -399,7 +398,7 @@ export default function DecidePage() {
               className="h-12 w-full rounded-xl"
               onClick={() => setConfirmOpen(false)}
             >
-              <Link href={`/case/${caseFile.id}/evidence`}>Back to Gather</Link>
+              <Link href={`/case/${caseFile.id}/corkboard`}>Back to Corkboard</Link>
             </Button>
           </div>
         </DialogContent>
