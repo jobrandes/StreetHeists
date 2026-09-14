@@ -43,7 +43,7 @@ export function useTextScale() {
   if (!ctx) {
     return {
       scale: "large" as TextScale,
-      setScale: (_scale: TextScale) => undefined,
+      setScale: () => undefined,
     };
   }
   return ctx;

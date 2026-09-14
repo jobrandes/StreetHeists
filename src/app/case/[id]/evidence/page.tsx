@@ -21,11 +21,12 @@ import type { Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Check, FileText, ImageIcon, Lock, Pin, StickyNote } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 export default function LockerPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const caseFile = getCase(id);
   const {
     progressFor,
@@ -273,7 +274,7 @@ export default function LockerPage() {
             if (!pinnedIds.includes(openEvidence.id)) {
               togglePin(caseFile.id, openEvidence.id);
             }
-            window.location.href = `/case/${caseFile.id}/corkboard`;
+            router.push(`/case/${caseFile.id}/corkboard`);
           }}
         />
       ) : null}

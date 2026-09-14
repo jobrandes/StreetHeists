@@ -15,13 +15,6 @@ import { Button } from "@/components/ui/button";
 import type { CaseFile, Verdict } from "@/lib/types";
 import { formatElapsed } from "@/lib/utils";
 
-/** Decorative corkboard pins — mood only, never the solution triad. */
-const YARN_PINS = [
-  { x: 18, y: 22, rotate: -8, label: "Still" },
-  { x: 58, y: 18, rotate: 6, label: "Note" },
-  { x: 28, y: 58, rotate: 4, label: "Clip" },
-  { x: 68, y: 62, rotate: -5, label: "Tag" },
-] as const;
 
 function CaseClosedSeal({ className = "" }: { className?: string }) {
   return (
@@ -42,88 +35,6 @@ function CaseClosedSeal({ className = "" }: { className?: string }) {
           </span>
         ))}
       </div>
-    </div>
-  );
-}
-
-function CorkYarnBoard({ caseFile }: { caseFile: CaseFile }) {
-  const still =
-    caseFile.evidence.find((item) => item.kind === "still") ?? caseFile.evidence[0];
-
-  return (
-    <div className="relative h-full min-h-[200px] overflow-hidden rounded-md border border-[#5F522C] bg-[#2A2118] shadow-[inset_0_0_40px_rgba(0,0,0,0.35)]">
-      <div
-        className="absolute inset-0 opacity-80"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 20% 30%, rgba(120,90,50,0.35), transparent 45%), radial-gradient(circle at 80% 70%, rgba(90,60,30,0.4), transparent 40%), repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 3px)",
-        }}
-      />
-      {still ? (
-        <div className="absolute top-[14%] left-[10%] w-[38%] rotate-[-6deg] border border-[#F2F0EA]/80 bg-[#F2F0EA] p-1 shadow-md">
-          <EvidenceArt evidence={still} className="aspect-[4/3] w-full grayscale" />
-          <p className="mt-1 truncate px-0.5 font-display text-[8px] font-bold tracking-[0.12em] text-[#1A1408] uppercase">
-            Filed still
-          </p>
-        </div>
-      ) : null}
-      <svg
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden
-      >
-        <line
-          x1="22"
-          y1="28"
-          x2="50"
-          y2="48"
-          stroke="#7A1F1F"
-          strokeWidth="1.1"
-          strokeOpacity="0.9"
-        />
-        <line
-          x1="62"
-          y1="24"
-          x2="50"
-          y2="48"
-          stroke="#7A1F1F"
-          strokeWidth="1.1"
-          strokeOpacity="0.85"
-        />
-        <line
-          x1="32"
-          y1="64"
-          x2="50"
-          y2="48"
-          stroke="#7A1F1F"
-          strokeWidth="0.9"
-          strokeOpacity="0.75"
-        />
-        <line
-          x1="72"
-          y1="68"
-          x2="50"
-          y2="48"
-          stroke="#7A1F1F"
-          strokeWidth="0.9"
-          strokeOpacity="0.75"
-        />
-      </svg>
-      {YARN_PINS.map((pin) => (
-        <div
-          key={pin.label}
-          className="absolute size-7 rounded-[2px] border border-[#F2F0EA]/70 bg-[#E8DFC8] shadow"
-          style={{
-            left: `${pin.x}%`,
-            top: `${pin.y}%`,
-            transform: `translate(-50%, -50%) rotate(${pin.rotate}deg)`,
-          }}
-        >
-          <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-[#C43C3C] shadow" />
-        </div>
-      ))}
-      <CaseClosedSeal className="absolute top-[28%] right-[6%] size-[7.5rem]" />
     </div>
   );
 }
