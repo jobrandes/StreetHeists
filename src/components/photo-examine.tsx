@@ -103,7 +103,7 @@ export function PhotoExamine({
               onDiscoverHotspot(hotspot.id);
             }}
             className={cn(
-              "absolute z-10 size-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors",
+              "absolute z-10 size-11 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors",
               found
                 ? "border-gold bg-gold/90 shadow-[0_0_0_3px_rgba(47,91,255,0.25)]"
                 : "border-white/90 bg-white/25 hover:bg-gold/70",

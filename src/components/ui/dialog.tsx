@@ -23,7 +23,7 @@ export function DialogContent({
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px]" />
       <DialogPrimitive.Content
         className={cn(
-          "play-day fixed left-1/2 top-1/2 z-50 w-[min(92vw,420px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-hairline bg-card p-5 text-ink shadow-2xl",
+          "play-day fixed left-1/2 top-1/2 z-50 w-[min(92vw,420px)] md:w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-hairline bg-card p-5 text-ink shadow-2xl md:w-[min(92vw,560px)]",
           className,
         )}
       >
@@ -32,7 +32,7 @@ export function DialogContent({
             {title}
           </DialogPrimitive.Title>
           <DialogPrimitive.Close
-            className="rounded-full p-1 text-muted hover:bg-black/5 hover:text-ink"
+            className="grid min-h-11 min-w-11 place-items-center rounded-full text-muted hover:bg-black/5 hover:text-ink"
             aria-label="Close dialog"
           >
             <X className="size-5" />

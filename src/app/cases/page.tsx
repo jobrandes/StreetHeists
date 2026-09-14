@@ -123,13 +123,13 @@ export default function CaseBoardPage() {
           <span className="absolute top-0 left-0 z-10 inline-flex items-center gap-1 bg-[#1B2430] px-3 py-1.5 font-display text-[10px] font-bold tracking-[0.14em] text-[#F2F0EA] uppercase shadow">
             <Star className="size-3 fill-current text-[#C9A227]" /> Featured
           </span>
-          <div className="grid gap-0 sm:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-0 md:grid-cols-[1.1fr_0.9fr]">
             <EvidenceArt
               evidence={lastToastBoardStill}
-              className="h-40 w-full sm:h-full sm:min-h-[11rem]"
+              className="h-40 w-full md:h-full md:min-h-[14rem]"
               priority
             />
-            <div className="relative border-t border-[#1B2430]/10 p-4 sm:border-t-0 sm:border-l">
+            <div className="relative border-t border-[#1B2430]/10 p-4 md:border-t-0 md:border-l">
               <p className="font-display text-[10px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
                 Charity gala · $2M necklace
               </p>

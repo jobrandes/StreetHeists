@@ -14,12 +14,12 @@ import { useEffect, useMemo, useState } from "react";
 
 /** Polaroid slots — center stays open for yellow sticky notes. */
 const PIN_SLOTS: { left: string; top: string; rotate: string }[] = [
-  { left: "4%", top: "6%", rotate: "-3deg" },
-  { left: "58%", top: "8%", rotate: "2.5deg" },
-  { left: "6%", top: "52%", rotate: "2deg" },
-  { left: "56%", top: "54%", rotate: "-2deg" },
-  { left: "30%", top: "4%", rotate: "1deg" },
-  { left: "32%", top: "58%", rotate: "-1.5deg" },
+  { left: "3%", top: "5%", rotate: "-3deg" },
+  { left: "62%", top: "6%", rotate: "2.5deg" },
+  { left: "4%", top: "52%", rotate: "2deg" },
+  { left: "61%", top: "53%", rotate: "-2deg" },
+  { left: "33%", top: "3%", rotate: "1deg" },
+  { left: "34%", top: "58%", rotate: "-1.5deg" },
 ];
 
 const PIN_COLORS = ["#C62828", "#1B2430", "#C62828", "#1B2430", "#8A5A22", "#1B2430"];
@@ -244,7 +244,7 @@ export function MosaicCorkboard({
       />
 
       <div className="cork-frame relative overflow-hidden rounded-md p-2 shadow-[0_8px_0_rgba(80,50,20,0.18)]">
-        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm sm:min-h-[26rem]">
+        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm sm:min-h-[26rem] md:min-h-[32rem]">
           <svg
             className="pointer-events-none absolute inset-0 z-10 h-full w-full"
             viewBox="0 0 100 100"
@@ -304,7 +304,7 @@ export function MosaicCorkboard({
           </svg>
 
           {unlockedChains.length > 0 ? (
-            <div className="absolute left-1/2 top-[34%] z-20 w-[48%] -translate-x-1/2 space-y-2">
+            <div className="absolute left-1/2 top-[34%] z-20 w-[48%] -translate-x-1/2 space-y-2 md:w-[36%]">
               {unlockedChains.map((chain) => (
                 <div
                   key={chain.id}
@@ -349,7 +349,7 @@ export function MosaicCorkboard({
                   type="button"
                   onClick={() => onPinClick(item.id)}
                   className={cn(
-                    "absolute z-20 w-[38%] text-left transition-transform",
+                    "absolute z-20 w-[38%] text-left transition-transform md:w-[28%]",
                     active && "z-30 scale-[1.04]",
                   )}
                   style={{
@@ -421,7 +421,7 @@ export function MosaicCorkboard({
           {linkPick.length > 0 ? (
             <button
               type="button"
-              className="w-full text-center text-sm font-semibold text-muted underline"
+              className="flex min-h-11 w-full items-center justify-center text-center text-sm font-semibold text-muted underline"
               onClick={() => {
                 setLinkPick([]);
                 setToast(null);
@@ -468,7 +468,7 @@ export function MosaicCorkboard({
           {step !== "pin" ? (
             <button
               type="button"
-              className="font-semibold underline underline-offset-2"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
               onClick={() => setAddOpen(true)}
             >
               Add another clue
@@ -479,7 +479,7 @@ export function MosaicCorkboard({
           {links.length > 0 ? (
             <button
               type="button"
-              className="font-semibold underline underline-offset-2"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2"
               onClick={() => {
                 onClearChain();
                 setToast("Connections cleared — pins stay.");

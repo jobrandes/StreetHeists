@@ -33,7 +33,7 @@ export default function HomeSplashPage() {
           alt=""
           fill
           priority
-          sizes="430px"
+          sizes="(max-width: 430px) 100vw, (max-width: 860px) 720px, 860px"
           className="object-cover object-[center_35%]"
         />
         <div
@@ -73,7 +73,7 @@ export default function HomeSplashPage() {
             Inspect the evidence we give you. One accusation. No walking required.
           </p>
 
-          <div className="mt-10 flex w-full max-w-sm flex-col gap-3">
+          <div className="mt-10 flex w-full max-w-sm flex-col gap-3 md:max-w-md">
             <Button
               asChild
               size="xl"

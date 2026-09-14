@@ -23,7 +23,7 @@ export function EvidenceArt({
         fill
         unoptimized
         className="object-cover"
-        sizes="(max-width: 430px) 100vw, 430px"
+        sizes="(max-width: 430px) 100vw, (max-width: 860px) 720px, 860px"
         priority={priority}
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8">
