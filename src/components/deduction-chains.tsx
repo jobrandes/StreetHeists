@@ -1,61 +1,66 @@
 "use client";
 
-import type { CasePack, DeductionChain } from "@/lib/types";
-import { CHAIN_TIER_LABEL } from "@/lib/types";
+import {
+  canAccuse,
+  chainsRequiredToAccuse,
+  unlockedDeductionChains,
+} from "@/lib/deduction";
+import type { CaseFile, CaseProgress } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { StickyNote } from "lucide-react";
 
+/** Shows unlocked yellow notes only — no locked checklist spoiling the board. */
 export function DeductionChainsPanel({
-  casePack,
-  completedChains,
+  caseFile,
+  progress,
 }: {
-  casePack: CasePack;
-  completedChains: string[];
+  caseFile: CaseFile;
+  progress: CaseProgress;
 }) {
-  const chains = casePack.deductionChains ?? [];
+  const chains = caseFile.deductionChains ?? [];
   if (chains.length === 0) return null;
 
-  const done = new Set(completedChains);
+  const unlocked = unlockedDeductionChains(caseFile, progress);
+  const need = chainsRequiredToAccuse(caseFile);
+  const accuseReady = canAccuse(caseFile, progress);
 
   return (
-    <section className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-      <div>
-        <h2 className="font-display text-lg tracking-wide text-amber-200">Deduction chains</h2>
-        <p className="mt-1 text-xs text-zinc-500">
-          Link clues on the corkboard in order. Completing a chain unlocks a case insight — and may
-          open more yarn.
+    <section className="rounded-xl border border-[#C4A574]/45 bg-[#FFF8EE] p-4">
+      <div className="flex items-center gap-2">
+        <StickyNote className="size-4 text-[#C9A227]" />
+        <p className="font-display text-[10px] font-bold tracking-[0.16em] text-[#8A5A22] uppercase">
+          Chains
         </p>
       </div>
-      <ul className="space-y-2">
-        {chains.map((chain) => (
-          <ChainRow key={chain.id} chain={chain} complete={done.has(chain.id)} />
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function ChainRow({ chain, complete }: { chain: DeductionChain; complete: boolean }) {
-  return (
-    <li
-      className={`rounded-lg border px-3 py-2 ${
-        complete
-          ? "border-emerald-800/60 bg-emerald-950/30"
-          : "border-zinc-800 bg-zinc-900/50"
-      }`}
-    >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-sm font-medium text-zinc-100">{chain.title}</span>
-        <span className="text-[10px] uppercase tracking-wide text-zinc-500">
-          {CHAIN_TIER_LABEL[chain.tier]}
-          {complete ? " · secured" : ""}
-        </span>
-      </div>
-      {complete ? (
-        <p className="mt-1 text-xs text-emerald-200/90">{chain.rewardInsight}</p>
+      <p
+        className={cn(
+          "mt-2 rounded-lg border px-3 py-2 text-sm font-semibold",
+          accuseReady
+            ? "border-[#2F5BFF]/30 bg-[#DCE6FF]/70 text-ink"
+            : "border-[#C4A574]/40 bg-white text-ink",
+        )}
+      >
+        {accuseReady
+          ? `Chains ${unlocked.length}/${need || unlocked.length} · Accuse is open`
+          : `Chains ${unlocked.length}/${need} · connect matching clues on the board`}
+      </p>
+      {unlocked.length === 0 ? (
+        <p className="mt-3 text-sm leading-snug text-muted">
+          No yellow notes yet. On the corkboard, tap two related clue photos.
+        </p>
       ) : (
-        <p className="mt-1 text-xs text-zinc-500">
-          {chain.orderedClueIds.length} pins · follow the yarn order on the board
-        </p>
+        <ul className="mt-3 space-y-2">
+          {unlocked.map((chain) => (
+            <li
+              key={chain.id}
+              className="rounded-lg border border-[#C9A227]/40 bg-[#F7E27A]/55 px-3 py-2"
+            >
+              <p className="font-serif text-base font-bold text-ink">{chain.title}</p>
+              <p className="mt-1 text-sm leading-snug text-ink/85">{chain.insight}</p>
+            </li>
+          ))}
+        </ul>
       )}
-    </li>
+    </section>
   );
 }
