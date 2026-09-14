@@ -40,8 +40,8 @@ export function CaseChrome({
 
   return (
     <div className="play-day flex min-h-dvh flex-col">
-      <div className="sticky top-0 z-30 border-b border-hairline bg-[#F3EEE4]/95 px-4 pb-3 pt-3 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[430px] md:max-w-[720px] lg:max-w-[860px] items-center justify-between gap-2 md:max-w-[720px] lg:max-w-[860px]">
+      <div className="sticky top-0 z-30 border-b border-hairline bg-[#F3EEE4]/95 px-4 pb-3 pt-3 backdrop-blur min-[600px]:px-8">
+        <div className="mx-auto flex w-full max-w-[430px] min-[600px]:max-w-5xl min-[900px]:max-w-6xl xl:max-w-7xl items-center justify-between gap-2">
           {backHref ? (
             <Link
               href={backHref}
@@ -67,7 +67,7 @@ export function CaseChrome({
 
         {/* Mosaic v0.2 — Locker | Corkboard | Accuse (no Map) */}
         <div
-          className="mx-auto mt-3 grid w-full max-w-[430px] md:max-w-[720px] lg:max-w-[860px] grid-cols-3 gap-1.5 rounded-2xl border border-[#C4A574]/50 bg-[#F7F1E6] p-1.5 shadow-[0_2px_0_rgba(27,36,48,0.08)] md:max-w-[720px] lg:max-w-[860px]"
+          className="mx-auto mt-3 grid w-full max-w-[430px] min-[600px]:max-w-5xl min-[900px]:max-w-6xl xl:max-w-7xl grid-cols-3 gap-1.5 rounded-2xl border border-[#C4A574]/50 bg-[#F7F1E6] p-1.5 shadow-[0_2px_0_rgba(27,36,48,0.08)]"
           role="tablist"
           aria-label="Case rooms"
         >
@@ -81,20 +81,20 @@ export function CaseChrome({
                 role="tab"
                 aria-selected={active}
                 className={cn(
-                  "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl font-display text-[11px] font-bold tracking-[0.12em] uppercase transition-colors",
+                  "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl font-display text-[11px] font-bold tracking-[0.12em] uppercase transition-colors min-[600px]:min-h-14 min-[600px]:text-xs",
                   active
                     ? "border border-[#B8893D] bg-[#E8D4B0] text-ink shadow-[0_3px_0_rgba(120,80,30,0.25)]"
                     : "text-ink/70 hover:bg-[#EFE6D6]",
                 )}
               >
-                <Icon className="size-4" />
+                <Icon className="size-4 min-[600px]:size-5" />
                 {item.label}
               </Link>
             );
           })}
         </div>
 
-        <div className="mx-auto mt-3 w-full max-w-[430px] md:max-w-[720px] lg:max-w-[860px] rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE]/90 px-3 py-2.5 md:max-w-[720px] lg:max-w-[860px]">
+        <div className="mx-auto mt-3 w-full max-w-[430px] min-[600px]:max-w-5xl min-[900px]:max-w-6xl xl:max-w-7xl rounded-lg border border-[#C4A574]/40 bg-[#FFF8EE]/90 px-3 py-2.5">
           <p className="font-display text-xs font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
             {strip.stepLabel}
           </p>
@@ -106,13 +106,13 @@ export function CaseChrome({
         {step === "briefing" || step === "locker" ? (
           <FirstUseTip
             tipId="mosaic-three-rooms"
-            className="mx-auto mt-2 w-full max-w-[430px] md:max-w-[720px] lg:max-w-[860px]"
+            className="mx-auto mt-2 w-full max-w-[430px] min-[600px]:max-w-5xl min-[900px]:max-w-6xl xl:max-w-7xl"
             text="Three rooms: Locker (clues), Corkboard (string yarn → deductions), Accuse (Who / How / Where). No map in v0.2."
           />
         ) : null}
       </div>
 
-      <div className="mx-auto w-full max-w-[430px] md:max-w-[720px] lg:max-w-[860px] flex-1 px-4 pb-10 pt-4 text-base leading-snug md:px-6 lg:max-w-[860px]">
+      <div className="mx-auto w-full max-w-[430px] min-[600px]:max-w-5xl min-[900px]:max-w-6xl xl:max-w-7xl flex-1 px-4 pb-10 pt-4 text-base leading-snug min-[600px]:px-8 min-[600px]:pb-12">
         {children}
       </div>
     </div>

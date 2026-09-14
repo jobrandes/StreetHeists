@@ -339,7 +339,7 @@ export function MosaicCorkboard({
       ) : null}
 
       <div className="cork-frame relative overflow-hidden rounded-md p-2 shadow-[0_8px_0_rgba(80,50,20,0.18)]">
-        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm sm:min-h-[26rem] md:min-h-[32rem]">
+        <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm min-[600px]:min-h-[28rem] min-[900px]:min-h-[36rem]">
           <svg
             className="pointer-events-none absolute inset-0 z-10 h-full w-full"
             viewBox="0 0 100 100"
@@ -399,7 +399,7 @@ export function MosaicCorkboard({
           </svg>
 
           {unlockedChains.length > 0 ? (
-            <div className="absolute left-1/2 top-[34%] z-20 w-[48%] -translate-x-1/2 space-y-2 md:w-[36%]">
+            <div className="absolute left-1/2 top-[34%] z-20 w-[48%] -translate-x-1/2 space-y-2 min-[600px]:w-[34%] min-[900px]:w-[28%]">
               {unlockedChains.map((chain) => (
                 <div
                   key={chain.id}
@@ -448,7 +448,7 @@ export function MosaicCorkboard({
                   type="button"
                   onClick={() => onPinClick(item.id)}
                   className={cn(
-                    "absolute z-20 w-[38%] text-left transition-transform md:w-[28%]",
+                    "absolute z-20 w-[38%] text-left transition-transform min-[600px]:w-[26%] min-[900px]:w-[22%]",
                     active && "z-30 scale-[1.04]",
                     isExample && "z-30",
                   )}
