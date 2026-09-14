@@ -139,4 +139,4 @@ function formatShortDate(iso: string): string {
   return `${months[month - 1]} ${day}`;
 }
 
-/** Synced teaching pass v0.5.11 → GitHub main (all 12). */
+/** Synced teaching pass v0.5.11 → GitHub main via push_files (12 files). */
