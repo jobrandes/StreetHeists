@@ -29,6 +29,7 @@ const emptyProgress = (): CaseProgress => ({
     whereEvidenceId: "",
   },
   revealedConcealIds: [],
+  playerNotes: {},
 });
 
 describe("deduction unlock", () => {
