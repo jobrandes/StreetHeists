@@ -69,6 +69,36 @@ export function MosaicCorkboard({
   const stickiesHave = unlockedChains.length;
   const ready = stickiesNeeded === 0 || stickiesHave >= stickiesNeeded;
 
+  /** Tutorial only — show the exact pair so first-timers are not guessing. */
+  const isTutorial = caseFile.difficulty === "tutorial";
+  const examplePair = useMemo(() => {
+    if (!isTutorial) return null;
+    const chain = (caseFile.deductionChains ?? [])[0];
+    const pair = chain?.correctPairs?.[0];
+    if (!chain || !pair) return null;
+    const [idA, idB] = pair;
+    const a = caseFile.evidence.find((item) => item.id === idA) ?? null;
+    const b = caseFile.evidence.find((item) => item.id === idB) ?? null;
+    if (!a || !b) return null;
+    return { chain, a, b };
+  }, [isTutorial, caseFile]);
+
+  const exampleFiled =
+    Boolean(examplePair) &&
+    filedEvidence.some((item) => item.id === examplePair!.a.id) &&
+    filedEvidence.some((item) => item.id === examplePair!.b.id);
+  const examplePinned =
+    Boolean(examplePair) &&
+    pinnedIds.includes(examplePair!.a.id) &&
+    pinnedIds.includes(examplePair!.b.id);
+  const exampleLinked =
+    Boolean(examplePair) &&
+    links.some(
+      (link) =>
+        (link.a === examplePair!.a.id && link.b === examplePair!.b.id) ||
+        (link.a === examplePair!.b.id && link.b === examplePair!.a.id),
+    );
+
   const pinned = useMemo(
     () =>
       pinnedIds
@@ -122,6 +152,37 @@ export function MosaicCorkboard({
     setToast(result.message);
     setLinkPick([]);
     return result;
+  }
+
+  function hangExampleClues() {
+    if (!examplePair) return;
+    if (!pinnedIds.includes(examplePair.a.id)) onTogglePin(examplePair.a.id);
+    if (!pinnedIds.includes(examplePair.b.id)) onTogglePin(examplePair.b.id);
+    setAddOpen(false);
+    setToast(
+      `Example hung · ${examplePair.a.title} + ${examplePair.b.title}. Tap Connect, or tap both photos.`,
+    );
+  }
+
+  /** One-tap tutorial: hang the named pair (if needed) and string them. */
+  function connectExampleClues() {
+    if (!examplePair) return;
+    if (!exampleFiled) {
+      setToast("Open the Locker and inspect both example clues first.");
+      return;
+    }
+    if (!pinnedIds.includes(examplePair.a.id)) onTogglePin(examplePair.a.id);
+    if (!pinnedIds.includes(examplePair.b.id)) onTogglePin(examplePair.b.id);
+    setAddOpen(false);
+    const result = tryLink(examplePair.a.id, examplePair.b.id);
+    if (result.sound) {
+      setToast(
+        result.message ||
+          `Connected · ${examplePair.chain.title} unlocked. Open Accuse.`,
+      );
+    } else {
+      setToast(result.message);
+    }
   }
 
   function onPinClick(id: string) {
@@ -201,10 +262,18 @@ export function MosaicCorkboard({
             <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#8A5A22] uppercase">
               Do this now
             </p>
-            <p className="mt-1 text-base font-semibold leading-snug text-ink">
-              Hang at least two clues. Use the big{" "}
-              <span className="underline">Add clue to board</span> button.
-            </p>
+            {examplePair ? (
+              <p className="mt-1 text-base font-semibold leading-snug text-ink">
+                Hang the tutorial pair:{" "}
+                <span className="underline">{examplePair.a.title}</span> and{" "}
+                <span className="underline">{examplePair.b.title}</span>.
+              </p>
+            ) : (
+              <p className="mt-1 text-base font-semibold leading-snug text-ink">
+                Hang at least two clues. Use the big{" "}
+                <span className="underline">Add clue to board</span> button.
+              </p>
+            )}
           </>
         ) : null}
         {step === "connect" ? (
@@ -212,14 +281,38 @@ export function MosaicCorkboard({
             <p className="font-display text-[11px] font-bold tracking-[0.14em] text-[#C62828] uppercase">
               Do this now
             </p>
-            <p className="mt-1 text-base font-semibold leading-snug text-ink">
-              {linkPick.length === 0
-                ? "Tap one clue photo, then tap another that belongs with it."
-                : "Good — now tap the second clue."}
-            </p>
-            <p className="mt-1 text-sm text-muted">
-              Right pair → yellow sticky appears. Wrong pair → nothing sticks. Try again.
-            </p>
+            {examplePair && !exampleLinked ? (
+              <>
+                <p className="mt-1 text-base font-semibold leading-snug text-ink">
+                  Tutorial example — connect these two clues:
+                </p>
+                <div className="mt-3 rounded-lg border-2 border-dashed border-[#C62828]/45 bg-[#FFF5F5] px-3 py-3">
+                  <p className="font-serif text-lg font-bold leading-snug text-ink">
+                    {examplePair.a.title}
+                  </p>
+                  <p className="my-1 font-display text-xs font-bold tracking-[0.14em] text-[#C62828] uppercase">
+                    connects to
+                  </p>
+                  <p className="font-serif text-lg font-bold leading-snug text-ink">
+                    {examplePair.b.title}
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Tap those two photos on the board — or use the button below.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="mt-1 text-base font-semibold leading-snug text-ink">
+                  {linkPick.length === 0
+                    ? "Tap one clue photo, then tap another that belongs with it."
+                    : "Good — now tap the second clue."}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  Right pair → yellow sticky appears. Wrong pair → nothing sticks.
+                </p>
+              </>
+            )}
           </>
         ) : null}
         {step === "done" ? (
@@ -238,10 +331,12 @@ export function MosaicCorkboard({
         </p>
       </div>
 
-      <FirstUseTip
-        tipId="corkboard-guided-v3"
-        text="You’re matching two related clues — not decorating. Right match unlocks a yellow note, then Accuse."
-      />
+      {examplePair ? (
+        <FirstUseTip
+          tipId="corkboard-example-v5"
+          text={`Tutorial tip: hang ${examplePair.a.title} + ${examplePair.b.title}, then tap “Connect the example for me.” A yellow note unlocks Accuse.`}
+        />
+      ) : null}
 
       <div className="cork-frame relative overflow-hidden rounded-md p-2 shadow-[0_8px_0_rgba(80,50,20,0.18)]">
         <div className="cork-surface relative min-h-[22rem] w-full overflow-hidden rounded-sm sm:min-h-[26rem] md:min-h-[32rem]">
@@ -343,6 +438,10 @@ export function MosaicCorkboard({
               const slot = PIN_SLOTS[index % PIN_SLOTS.length]!;
               const pinColor = PIN_COLORS[index % PIN_COLORS.length]!;
               const active = linkPick.includes(item.id);
+              const isExample =
+                Boolean(examplePair) &&
+                (item.id === examplePair!.a.id || item.id === examplePair!.b.id) &&
+                !exampleLinked;
               return (
                 <button
                   key={item.id}
@@ -351,6 +450,7 @@ export function MosaicCorkboard({
                   className={cn(
                     "absolute z-20 w-[38%] text-left transition-transform md:w-[28%]",
                     active && "z-30 scale-[1.04]",
+                    isExample && "z-30",
                   )}
                   style={{
                     left: slot.left,
@@ -370,11 +470,17 @@ export function MosaicCorkboard({
                     style={{ backgroundColor: pinColor }}
                     aria-hidden
                   />
+                  {isExample ? (
+                    <span className="absolute -top-3 left-1 z-20 rounded-sm bg-[#C62828] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-[0.12em] text-white uppercase shadow">
+                      Example
+                    </span>
+                  ) : null}
                   <div
                     className={cn(
                       "rounded-sm border border-white bg-white p-1.5 shadow-[0_4px_10px_rgba(40,20,10,0.28)]",
                       active && "ring-2 ring-[#C62828]",
-                      connectMode && !active && "ring-1 ring-[#C62828]/30",
+                      isExample && !active && "ring-2 ring-[#C62828]/70 ring-offset-1",
+                      connectMode && !active && !isExample && "ring-1 ring-[#C62828]/30",
                     )}
                   >
                     <EvidenceArt evidence={item} className="aspect-[4/3] w-full" />
@@ -402,21 +508,72 @@ export function MosaicCorkboard({
       ) : null}
 
       {step === "pin" ? (
-        <Button
-          type="button"
-          size="xl"
-          className="h-14 w-full rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
-          onClick={() => setAddOpen(true)}
-        >
-          <Pin className="size-5" /> Add clue to board
-        </Button>
+        <div className="space-y-2">
+          {examplePair && exampleFiled && !examplePinned ? (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-lg font-bold tracking-[0.1em] text-white uppercase hover:bg-[#B71C1C]"
+              onClick={hangExampleClues}
+            >
+              <Pin className="size-5" /> Hang the example clues
+            </Button>
+          ) : examplePair && !exampleFiled ? (
+            <Button
+              asChild
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-lg font-bold tracking-[0.1em] text-[#F2F0EA] uppercase"
+            >
+              <Link href={`/case/${caseFile.id}/evidence`}>
+                Open Locker · find the example clues
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#D4B483] font-display text-lg font-bold tracking-[0.12em] text-ink uppercase hover:bg-[#C9A574]"
+              onClick={() => setAddOpen(true)}
+            >
+              <Pin className="size-5" /> Add clue to board
+            </Button>
+          )}
+        </div>
       ) : null}
 
       {step === "connect" ? (
         <div className="space-y-2">
+          {examplePair && !exampleLinked && exampleFiled ? (
+            <Button
+              type="button"
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#C62828] font-display text-base font-bold tracking-[0.08em] text-white uppercase hover:bg-[#B71C1C]"
+              onClick={connectExampleClues}
+            >
+              <Link2 className="size-5" />{" "}
+              {examplePinned
+                ? "Connect the example for me"
+                : "Hang & connect the example"}
+            </Button>
+          ) : null}
+          {examplePair && !exampleLinked && !exampleFiled ? (
+            <Button
+              asChild
+              size="xl"
+              className="h-14 w-full rounded-xl bg-[#1B2430] font-display text-base font-bold tracking-[0.08em] text-[#F2F0EA] uppercase"
+            >
+              <Link href={`/case/${caseFile.id}/evidence`}>
+                Open Locker · inspect the example clues
+              </Link>
+            </Button>
+          ) : null}
           <div className="flex h-14 items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#C62828]/50 bg-[#F8D7D7]/45 font-display text-sm font-bold tracking-[0.1em] text-ink uppercase">
             <Link2 className="size-5 text-[#C62828]" />
-            {linkPick.length === 0 ? "Tap two clue photos" : "Tap the second clue"}
+            {linkPick.length === 0
+              ? examplePair
+                ? "Or tap the two Example-tagged photos"
+                : "Tap two clues that belong together"
+              : "Tap the second clue"}
           </div>
           {linkPick.length > 0 ? (
             <button

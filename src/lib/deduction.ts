@@ -150,7 +150,7 @@ export function gradeClueLink(
     return {
       sound: false,
       unlockedChainIds: [],
-      message: "File both clues before you string them.",
+      message: "Inspect both clues in the Locker before you connect them.",
     };
   }
 
