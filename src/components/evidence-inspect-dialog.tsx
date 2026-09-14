@@ -5,6 +5,7 @@ import { PhotoExamine } from "@/components/photo-examine";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { linksForEvidence } from "@/lib/case-file";
+import { isDeductionUnlocked } from "@/lib/deduction";
 import type { CaseFile, CaseProgress, Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -39,6 +40,7 @@ export function EvidenceInspectDialog({
   goNext,
   discoverHotspot,
   queueAnalysis,
+  revealConceal,
 }: {
   caseFile: CaseFile;
   openEvidence: Evidence;
@@ -67,6 +69,7 @@ export function EvidenceInspectDialog({
     evidenceId: string,
     sampleId: string,
   ) => { ok: boolean; reason?: string };
+  revealConceal?: (caseId: string, evidenceId: string) => void;
 }) {
   const [sampleState, setSampleState] = useState<{
     evidenceId: string;
@@ -76,6 +79,12 @@ export function EvidenceInspectDialog({
     sampleState.evidenceId === openEvidence.id ? sampleState.sampleId : null;
   const isFirst = openIndex <= 0;
   const isLast = openIndex >= totalClues - 1;
+  const deductionUnlocked = isDeductionUnlocked(caseFile, progress, openEvidence);
+  const concealRevealed = progress.revealedConcealIds.includes(openEvidence.id);
+  const relatedContradictions = (caseFile.contradictions ?? []).filter(
+    (item) =>
+      item.evidenceIdA === openEvidence.id || item.evidenceIdB === openEvidence.id,
+  );
 
   return (
       <Dialog
@@ -336,12 +345,65 @@ export function EvidenceInspectDialog({
               />
             </div>
 
+            {openEvidence.conceal ? (
+              <div className="mt-3 rounded-lg border border-dashed border-gold/50 bg-card p-3">
+                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                  Buried detail
+                </p>
+                {concealRevealed ? (
+                  <p className="mt-1 text-sm font-semibold text-ink">{openEvidence.conceal.text}</p>
+                ) : (
+                  <button
+                    type="button"
+                    className="mt-2 w-full rounded-lg border border-hairline bg-[#E8EEF8] px-3 py-2 text-left text-sm font-semibold text-ink hover:border-gold"
+                    onClick={() => revealConceal?.(caseFile.id, openEvidence.id)}
+                  >
+                    {openEvidence.conceal.label}
+                  </button>
+                )}
+              </div>
+            ) : null}
+
+            {relatedContradictions.length > 0 ? (
+              <div className="mt-3 rounded-lg border border-fail/30 bg-[#F8D7D7]/35 p-3">
+                <p className="font-display text-[10px] font-bold tracking-[0.14em] text-fail uppercase">
+                  Possible contradiction
+                </p>
+                <p className="mt-1 text-sm text-ink">
+                  This clue may clash with another filed statement. Use Contradiction desk on Gather to pin it.
+                </p>
+                {relatedContradictions.map((item) => {
+                  const found = progress.foundContradictionIds.includes(item.id);
+                  return (
+                    <p key={item.id} className="mt-2 text-xs font-semibold text-ink">
+                      {found ? `Logged: ${item.insight}` : "Not spotted yet — compare the conflicting phrases."}
+                    </p>
+                  );
+                })}
+              </div>
+            ) : null}
+
+            <div className="mt-3 rounded-lg border-2 border-gold bg-[#DCE6FF]/55 p-3">
+              <p className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase">
+                Case takeaway
+              </p>
+              {deductionUnlocked ? (
+                <p className="mt-1 text-sm font-semibold leading-snug text-ink">
+                  {openEvidence.deduction}
+                </p>
+              ) : (
+                <p className="mt-1 text-sm text-ink">
+                  Takeaway locked. Inspect is not enough — string this clue to the right suspect on the corkboard to unlock what it means.
+                </p>
+              )}
+            </div>
+
             <div className="mt-4 border-l-4 border-gold bg-[#E8EEF8] p-3">
               <label
                 className="font-display text-[10px] font-bold tracking-[0.14em] text-gold uppercase"
                 htmlFor="inspect-note"
               >
-                Your deduction note
+                Your working note
               </label>
               <textarea
                 id="inspect-note"
