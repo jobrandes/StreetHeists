@@ -1,1 +1,1 @@
-LOAD_FROM_DISK:/workspace/src/lib/version.ts
+LOAD_PROBE_ONLY
