@@ -81,6 +81,7 @@ export default function CorkboardPage() {
         pinnedIds={progress.pinnedEvidenceIds}
         links={progress.clueLinks ?? []}
         unlockedChains={unlocked}
+        foundContradictionIds={progress.foundContradictionIds ?? []}
         playerNotes={progress.playerNotes ?? {}}
         onTogglePin={(evidenceId) => togglePin(caseFile.id, evidenceId)}
         onLink={(a, b) => {
