@@ -1,1 +1,1 @@
-file:///workspace/src/components/corkboard.tsx
+http://127.0.0.1:9999/corkboard.tsx
