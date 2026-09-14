@@ -109,24 +109,23 @@ export default function HomeSplashPage() {
                   </li>
                   <li>
                     <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
-                      3 · Gather
+                      3 · Locker
                     </span>
                     <p className="mt-1">
-                      Clues we give you (photos, docs, notes). Open each one — takeaways auto-file.
+                      Clues we give you (photos, docs, notes). Open each one in the Locker — takeaways auto-file.
                     </p>
                   </li>
                   <li>
                     <span className="font-display text-xs font-bold tracking-[0.14em] text-gold uppercase">
-                      4 · Decide
+                      4 · Corkboard
                     </span>
                     <p className="mt-1">
-                      Fill Who / How / Where, attach proof from filed clues, then Accuse. That locks
-                      the case.
+                      Pin clues, string yarn, unlock stickies — then Accuse with Who / How / Where + proof.
                     </p>
                   </li>
                 </ol>
                 <p className="mt-3 text-base leading-snug text-muted">
-                  Only two rooms: Gather and Decide. Tap{" "}
+                  Three rooms: Locker, Corkboard, Accuse. Tap{" "}
                   <strong className="font-semibold text-ink">Case file</strong> anytime — it
                   remembers so you don’t have to.
                 </p>
