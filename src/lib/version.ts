@@ -1,1 +1,1 @@
-LOAD_PROBE_ONLY
+file:///workspace/src/lib/version.ts
