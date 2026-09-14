@@ -1,1 +1,1 @@
-file:///workspace/src/app/case/[id]/corkboard/page.tsx
+PLACEHOLDER_WILL_USE_SHELL
