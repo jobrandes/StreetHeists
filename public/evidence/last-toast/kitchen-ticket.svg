@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#1A1F28"/>
+  <rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  
+  <rect x="160" y="60" width="400" height="340" fill="#F2F0EA"/>
+  <text x="190" y="110" fill="#1B2430" font-size="22" font-family="ui-monospace, monospace">SERVICE TICKET</text>
+  <text x="190" y="160" fill="#1B2430" font-size="16" font-family="ui-monospace, monospace">Toast call: 21:12</text>
+  <text x="190" y="200" fill="#1B2430" font-size="16" font-family="ui-monospace, monospace">Service lift run: 21:15</text>
+  <text x="190" y="250" fill="#8B3A4A" font-size="15" font-family="ui-monospace, monospace">Runner: house captain lane</text>
+  <text x="190" y="300" fill="#1B2430" font-size="14" font-family="ui-monospace, monospace">Champagne tray · table 1</text>
+  
+  <text x="48" y="460" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="16">TELL: toast time vs service-line run do not match</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="2">21:14 · KITCHEN · SERVICE TICKET</text>
+</svg>

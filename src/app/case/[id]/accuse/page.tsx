@@ -5,6 +5,7 @@ import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { accuseLooksThin } from "@/lib/case-journey";
+import { canAccuse, chainsRequiredToAccuse, unlockedDeductionChains } from "@/lib/deduction";
 import { getCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Accusation, Choice, Suspect } from "@/lib/types";
@@ -120,6 +121,35 @@ export default function DecidePage() {
       return;
     }
     lockVerdict();
+  }
+
+  if (!canAccuse(caseFile, progress)) {
+    const need = chainsRequiredToAccuse(caseFile);
+    const have = unlockedDeductionChains(caseFile, progress).length;
+    return (
+      <CaseChrome
+        caseFile={caseFile}
+        progress={progress}
+        step="decide"
+        backHref={`/case/${caseFile.id}/evidence`}
+        backLabel="Gather"
+      >
+        <header className="border-b border-hairline pb-4">
+          <p className="inline-flex rounded-md bg-[#2F5BFF] px-2.5 py-1 font-display text-[10px] font-bold tracking-[0.16em] text-white uppercase">
+            Accuse locked
+          </p>
+          <h1 className="mt-2 font-serif text-4xl font-bold leading-none text-ink">Decide</h1>
+          <p className="mt-3 text-base leading-snug text-ink">
+            String sound clue pairs on the corkboard until{" "}
+            {need === 1 ? "your deduction card" : `${need} deduction cards`} unlock ({have}/{need}).
+            Who / How / Where opens after the chains hold.
+          </p>
+        </header>
+        <Button asChild className="mt-6 h-12 w-full rounded-xl">
+          <Link href={`/case/${caseFile.id}/evidence`}>Back to Gather · corkboard</Link>
+        </Button>
+      </CaseChrome>
+    );
   }
 
   return (

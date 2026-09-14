@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540" viewBox="0 0 720 540" role="img">
+  <rect width="720" height="540" fill="#1A1F28"/>
+  <rect x="24" y="24" width="672" height="420" fill="#1B2430" stroke="#C9A227" stroke-width="2"/>
+  
+  <rect x="100" y="60" width="520" height="340" fill="#0E141C" stroke="#C9A227"/>
+  <text x="130" y="120" fill="#C9A227" font-size="20" font-family="ui-monospace, monospace">VAULT ACCESS LOG</text>
+  <text x="130" y="180" fill="#F2F0EA" font-size="15" font-family="ui-monospace, monospace">20:40 OUT — necklace to chair dressing</text>
+  <text x="130" y="220" fill="#F2F0EA" font-size="15" font-family="ui-monospace, monospace">21:12 — no vault movement</text>
+  <text x="130" y="260" fill="#F2F0EA" font-size="15" font-family="ui-monospace, monospace">21:20 — alarm after toast</text>
+  <text x="130" y="320" fill="#8B3A4A" font-size="14" font-family="ui-monospace, monospace">No inbound return recorded</text>
+  
+  <text x="48" y="460" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="16">TELL: necklace never cleared vault outbound before 21:12</text>
+  <rect x="0" y="484" width="720" height="56" fill="#0B0B0C" fill-opacity="0.72"/>
+  <text x="24" y="520" fill="#F2F0EA" font-family="ui-monospace, monospace" font-size="20" letter-spacing="2">DONOR VAULT · ACCESS LOG</text>
+</svg>
