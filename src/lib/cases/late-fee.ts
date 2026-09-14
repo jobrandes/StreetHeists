@@ -8,7 +8,7 @@ export const lateFeeCase: CaseFile = {
   premise:
     "Harbor Street fair. Jules clipped his rent float — three days of courier tips — to meter #441 for a taco run. By 15:07 the pouch was gone, Paz already had a novel blaming attendant Rita Toll, and Harbor Meter’s supervisor is drafting her suspension. Clocks don’t do fanfiction. Name who took it, how, and where the rent money is sweating now — before Rita’s badge goes with it.",
   difficulty: "standard",
-  unlockAfterCaseId: "pigeon-job",
+  unlockAfterCaseId: "last-toast",
     briefing: [
     {
       title: "THE STAKES",
@@ -329,10 +329,8 @@ export const lateFeeCase: CaseFile = {
       id: "false-lead-collapses",
       title: "The false lead collapses",
       requiredEvidenceIds: ["paz-statement", "rita-timecard"],
-      requiredCorkLinks: [
-        { evidenceId: "paz-statement", suspectId: "paz" },
-        { evidenceId: "rita-timecard", suspectId: "rita" },
-      ],
+      correctPairs: [["paz-statement", "rita-timecard"]],
+      pairsRequired: 1,
       unlockOnContradictionId: "paz-vs-rita-clock",
       insight:
         "Paz’s Rita story cannot survive the depot clock. Rita is being framed — and her job is the collateral.",
@@ -341,14 +339,13 @@ export const lateFeeCase: CaseFile = {
       id: "rent-recovery",
       title: "Rent recovery path",
       requiredEvidenceIds: ["tip-jar-video", "grease-bin"],
-      requiredCorkLinks: [
-        { evidenceId: "tip-jar-video", suspectId: "paz" },
-        { evidenceId: "grease-bin", suspectId: "paz" },
-      ],
+      correctPairs: [["tip-jar-video", "grease-bin"]],
+      pairsRequired: 1,
       insight:
         "Paz took Jules’s rent float in attendant gear and parked it in the grease bin. Clear Rita. Recover the pouch.",
     },
   ],
+  chainsRequiredToAccuse: 2,
   explanation: [
     "Rita’s depot punch card clears her for the whole theft window — Paz’s blame was a frame that nearly cost her the badge.",
     "Paz’s own tip-jar still shows attendant vest + meter key, with his blue accordion strap on the thief.",
