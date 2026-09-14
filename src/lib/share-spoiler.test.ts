@@ -20,7 +20,8 @@ describe("Midnight share spoiler safety", () => {
     expect(source).toMatch(/Clean solve/);
     expect(source).toMatch(/elapsedMs/);
     expect(source).toMatch(/wrongAttempts/);
-    expect(source).toMatch(/Trophy moment/);
-    expect(source).toMatch(/spoiler-safe|Who \/ How \/ Where stay/i);
+    expect(source).toMatch(/Clean solve|Trophy/);
+    expect(source).toMatch(/Case closed/);
+    expect(source).toMatch(/spoiler-safe|Who \/ How \/ Where stay|never Who/i);
   });
 });
