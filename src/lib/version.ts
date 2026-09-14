@@ -13,7 +13,7 @@
 export const APP_VERSION = {
   major: 0,
   minor: 5,
-  patch: 1,
+  patch: 2,
   /** ISO date of this release */
   updatedOn: "2026-09-14",
 } as const;
@@ -26,6 +26,11 @@ export type VersionNote = {
 
 /** Newest first — keep this short; the stamp only shows the tip. */
 export const VERSION_UPDATES: VersionNote[] = [
+  {
+    version: "0.5.2",
+    date: "2026-09-14",
+    note: "Mosaic Last Toast case board + inspect alibi chrome; public share SoT (CASE CLOSED / time / Clean Solve / seal, no triad).",
+  },
   {
     version: "0.5.1",
     date: "2026-09-14",
