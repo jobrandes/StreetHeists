@@ -1,1 +1,1 @@
-file:///workspace/src/lib/version.ts
+LOAD_PLACEHOLDER
