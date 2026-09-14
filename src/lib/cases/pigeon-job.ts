@@ -21,7 +21,7 @@ export const pigeonCase: CaseFile = {
     },
     {
       title: "YOUR JOB",
-      copy: "Gather every clue we give you — photos, docs, notes — then Decide: Who took it, How they moved it, Where it landed. Attach proof to each answer. Case file remembers so you don’t have to.",
+      copy: "Gather every clue we give you — photos, docs, notes. Practice the corkboard (string a clue to a suspect). Then Decide: Who took it, How they moved it, Where it landed. Attach proof to each answer. Case file remembers so you don’t have to.",
     },
   ],
   reconstruction: {
@@ -350,6 +350,19 @@ export const pigeonCase: CaseFile = {
     },
   ],
 
+
+  deductionChains: [
+    {
+      id: "trail-to-nest",
+      title: "Trail to the nest",
+      requiredEvidenceIds: ["crumb-trail", "statue-nest"],
+      requiredCorkLinks: [
+        { evidenceId: "statue-nest", suspectId: "marcel" },
+      ],
+      insight:
+        "Crumbs run fountainward and the nest holds the loaf beside Marcel’s red band — the trail ends on the statue.",
+    },
+  ],
   explanation: [
     "The feather and red awning thread place a bird at the open service window using the cord.",
     "The crumb trail runs from that sill to the north fountain statue.",
