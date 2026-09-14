@@ -1,22 +1,25 @@
 import type { CaseFile, CaseProgress } from "@/lib/types";
+import { canAccuse, chainsRequiredToAccuse, unlockedDeductionChains } from "@/lib/deduction";
 
-/** Direction C — two rooms only (briefing is entry, not a room tab). */
-export type CaseStep = "briefing" | "gather" | "decide";
+/** Briefing is entry; Mosaic v0.2 rooms are Locker · Corkboard · Accuse. */
+export type CaseStep = "briefing" | "locker" | "corkboard" | "accuse";
 
 export const CASE_STEPS: { id: CaseStep; label: string }[] = [
   { id: "briefing", label: "Briefing" },
-  { id: "gather", label: "Gather" },
-  { id: "decide", label: "Decide" },
+  { id: "locker", label: "Locker" },
+  { id: "corkboard", label: "Corkboard" },
+  { id: "accuse", label: "Accuse" },
 ];
 
-/** Top-room switcher destinations. */
+/** Mosaic v0.2 top tabs — Map chrome intentionally dropped. */
 export const CASE_NAV: {
   id: Exclude<CaseStep, "briefing">;
   label: string;
   href: (caseId: string) => string;
 }[] = [
-  { id: "gather", label: "Gather", href: (caseId) => `/case/${caseId}/evidence` },
-  { id: "decide", label: "Decide", href: (caseId) => `/case/${caseId}/accuse` },
+  { id: "locker", label: "Locker", href: (caseId) => `/case/${caseId}/evidence` },
+  { id: "corkboard", label: "Corkboard", href: (caseId) => `/case/${caseId}/corkboard` },
+  { id: "accuse", label: "Accuse", href: (caseId) => `/case/${caseId}/accuse` },
 ];
 
 export function stepIndex(step: CaseStep): number {
@@ -29,14 +32,16 @@ export function caseJourneyStats(caseFile: CaseFile, progress: CaseProgress) {
   const decideFilled = ["who", "how", "where"].filter((slot) =>
     Boolean(progress.reconstructionPicks[slot] || false),
   ).length;
-  // Prefer reconstruction picks; accuse page also tracks local picks.
-  const corkLinks = progress.corkLinks.length;
+  const pins = progress.pinnedEvidenceIds.length;
+  const chains = unlockedDeductionChains(caseFile, progress).length;
 
   return {
     clueTotal,
     cluesOpened,
     decideFilled,
-    corkLinks,
+    pins,
+    chains,
+    clueLinks: progress.clueLinks?.length ?? 0,
   };
 }
 
@@ -46,27 +51,38 @@ export function progressStripCopy(
   progress: CaseProgress,
 ): { stepLabel: string; detail: string } {
   const stats = caseJourneyStats(caseFile, progress);
+  const need = chainsRequiredToAccuse(caseFile);
+  const ready = canAccuse(caseFile, progress);
 
   switch (step) {
     case "briefing":
       return {
         stepLabel: "Briefing",
-        detail: "Read the beats, then Gather clues we give you.",
+        detail: "Read the beats, then open the Locker for clues we give you.",
       };
-    case "gather":
+    case "locker":
       return {
-        stepLabel: "Gather",
-        detail: `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · then Decide`,
+        stepLabel: "Locker",
+        detail: `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · pin them on the Corkboard`,
       };
-    case "decide":
+    case "corkboard":
       return {
-        stepLabel: "Decide",
-        detail: `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · fill Who / How / Where + proof`,
+        stepLabel: "Corkboard",
+        detail: ready
+          ? `Chains open ${stats.chains}/${need || stats.chains} · Accuse unlocked`
+          : `Pins ${stats.pins} · yarn ${stats.clueLinks} · Accuse needs ${need} chain${need === 1 ? "" : "s"}`,
+      };
+    case "accuse":
+      return {
+        stepLabel: "Accuse",
+        detail: ready
+          ? `Clues filed ${stats.cluesOpened}/${stats.clueTotal} · fill Who / How / Where + proof`
+          : `Locked until corkboard chains unlock (${stats.chains}/${need})`,
       };
   }
 }
 
-/** Soft-gate: thin if few clues opened (confront is optional in Direction C). */
+/** Soft-gate: thin if few clues opened. */
 export function accuseLooksThin(caseFile: CaseFile, progress: CaseProgress): boolean {
   const stats = caseJourneyStats(caseFile, progress);
   return stats.cluesOpened < Math.max(2, Math.ceil(stats.clueTotal / 2));
