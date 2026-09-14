@@ -264,6 +264,17 @@ export default function LockerPage() {
           discoverHotspot={discoverHotspot}
           queueAnalysis={queueAnalysis}
           revealConceal={revealConceal}
+          isPinned={pinnedIds.includes(openEvidence.id)}
+          onPinNote={() => {
+            togglePin(caseFile.id, openEvidence.id);
+          }}
+          onCompare={() => {
+            // Ensure clue is pinned, then jump to corkboard compare energy.
+            if (!pinnedIds.includes(openEvidence.id)) {
+              togglePin(caseFile.id, openEvidence.id);
+            }
+            window.location.href = `/case/${caseFile.id}/corkboard`;
+          }}
         />
       ) : null}
     </CaseChrome>
