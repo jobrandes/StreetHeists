@@ -9,13 +9,18 @@ import { EvidenceInspectDialog } from "@/components/evidence-inspect-dialog";
 import { FirstUseTip } from "@/components/first-use-tip";
 import { Button } from "@/components/ui/button";
 import { evidenceKindLabel } from "@/lib/case-journey";
-import { isDeductionUnlocked } from "@/lib/deduction";
+import {
+  canAccuse,
+  chainsRequiredToAccuse,
+  isDeductionUnlocked,
+  unlockedDeductionChains,
+} from "@/lib/deduction";
 import { isCaseUnlocked } from "@/lib/investigation";
 import { getCase, playableCases } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import type { Evidence } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Check, FileText, ImageIcon, StickyNote } from "lucide-react";
+import { Check, FileText, ImageIcon, Lock, StickyNote } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -28,7 +33,8 @@ export default function GatherPage() {
     inspectEvidence,
     discoverHotspot,
     queueAnalysis,
-    setCorkLink,
+    addClueLink,
+    removeClueLink,
     markContradiction,
     revealConceal,
   } = useHeists();
@@ -145,7 +151,7 @@ export default function GatherPage() {
                     {item.title}
                   </h2>
                   <p className="mt-1 truncate text-base text-muted">
-                    {filed ? (isDeductionUnlocked(caseFile, progress, item) ? item.deduction : "Takeaway locked — string the corkboard") : "Tap to inspect"}
+                    {filed ? (isDeductionUnlocked(caseFile, progress, item) ? item.deduction : "Filed — string clue pairs on the corkboard to unlock deductions") : "Tap to inspect"}
                   </p>
                 </div>
               </button>
@@ -158,9 +164,16 @@ export default function GatherPage() {
         <CorkboardConnect
           caseFile={caseFile}
           evidence={clues.filter((item) => inspectedIds.includes(item.id))}
-          suspects={caseFile.suspects}
-          links={progress.corkLinks}
-          onLink={(evidenceId, suspectId) => setCorkLink(caseFile.id, evidenceId, suspectId)}
+          links={progress.clueLinks ?? []}
+          onLink={(a, b) => {
+            const result = addClueLink(caseFile.id, a, b);
+            return {
+              sound: result.sound,
+              message: result.message,
+              unlockedChainIds: result.unlockedChainIds,
+            };
+          }}
+          onRemove={(linkId) => removeClueLink(caseFile.id, linkId)}
         />
         <ContradictionSpotter
           caseFile={caseFile}
@@ -171,15 +184,43 @@ export default function GatherPage() {
         <DeductionChainsPanel caseFile={caseFile} progress={progress} />
       </div>
 
-      <Button
-        asChild
-        size="xl"
-        className="mt-6 h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
-      >
-        <Link href={`/case/${caseFile.id}/accuse`}>
-          {filedCount === 0 ? "Skip to Decide" : "Review case notes → Decide"}
-        </Link>
-      </Button>
+      {(() => {
+        const ready = canAccuse(caseFile, progress);
+        const need = chainsRequiredToAccuse(caseFile);
+        const have = unlockedDeductionChains(caseFile, progress).length;
+        if (!ready && need > 0) {
+          return (
+            <div className="mt-6 rounded-xl border border-hairline bg-card p-4">
+              <p className="inline-flex items-center gap-2 font-display text-xs font-bold tracking-[0.14em] text-muted uppercase">
+                <Lock className="size-3.5" /> Accuse locked
+              </p>
+              <p className="mt-2 text-sm leading-snug text-ink">
+                String sound clue pairs until{" "}
+                {need === 1 ? "your deduction card" : `${need} deduction cards`} unlock ({have}/
+                {need}). Then Who / How / Where opens.
+              </p>
+              <Button
+                size="xl"
+                disabled
+                className="mt-4 h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase opacity-60"
+              >
+                Decide locked
+              </Button>
+            </div>
+          );
+        }
+        return (
+          <Button
+            asChild
+            size="xl"
+            className="mt-6 h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase"
+          >
+            <Link href={`/case/${caseFile.id}/accuse`}>
+              {filedCount === 0 ? "Skip to Decide" : "Review case notes → Decide"}
+            </Link>
+          </Button>
+        );
+      })()}
 
       {openEvidence && openIndex !== null ? (
         <EvidenceInspectDialog

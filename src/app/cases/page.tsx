@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { VersionStamp } from "@/components/version-stamp";
 import { difficultyLabel, isCaseUnlocked } from "@/lib/investigation";
-import { moreCases, playableCases, pigeonCase } from "@/lib/seed";
+import { lastToastCase, moreCases, playableCases, pigeonCase } from "@/lib/seed";
 import { useHeists } from "@/lib/store";
 import { Lock } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +18,7 @@ import { useMemo, useState } from "react";
 export default function CaseBoardPage() {
   const { alias, setAlias, progressFor, resetCase } = useHeists();
   const [nextAlias, setNextAlias] = useState(alias);
-  const featuredProgress = progressFor(pigeonCase.id);
+  const featuredProgress = progressFor(lastToastCase.id);
   const resume = Boolean(featuredProgress.startedAt);
 
   const progressMap = useMemo(
@@ -67,28 +67,38 @@ export default function CaseBoardPage() {
         <TextScaleToggle />
       </div>
 
-      <div className="relative z-10 mx-2 mb-[-0.65rem] mt-5 w-fit -rotate-1 border border-[#2F5BFF] bg-[#DCE6FF] px-5 py-3 shadow-[4px_5px_0_rgba(27,36,48,0.14)]">
+      <Link
+        href={`/case/${pigeonCase.id}`}
+        className="relative z-10 mx-2 mb-3 mt-5 flex w-fit items-center gap-3 -rotate-1 border border-hairline bg-card px-4 py-2 shadow-[3px_3px_0_rgba(27,36,48,0.1)]"
+      >
+        <p className="font-display text-xs font-bold tracking-[0.14em] text-[#2F5BFF] uppercase">
+          Tutorial · ~4 min
+        </p>
+        <p className="font-serif text-base font-semibold text-ink">{pigeonCase.title}</p>
+      </Link>
+
+      <div className="relative z-10 mx-2 mb-[-0.65rem] mt-2 w-fit -rotate-1 border border-[#2F5BFF] bg-[#DCE6FF] px-5 py-3 shadow-[4px_5px_0_rgba(27,36,48,0.14)]">
         <p className="font-display text-lg font-bold tracking-[0.14em] text-ink uppercase">
-          Start here
+          Flagship case
         </p>
         <p className="text-xs font-medium text-ink">
-          Case {String(pigeonCase.number).padStart(2, "0")} · {difficultyLabel(pigeonCase.difficulty)} · 5–10 min
+          Case {String(lastToastCase.number).padStart(2, "0")} · {difficultyLabel(lastToastCase.difficulty)} · after tutorial
         </p>
       </div>
 
       <Link
-        href={`/case/${pigeonCase.id}`}
+        href={`/case/${lastToastCase.id}`}
         className="block overflow-hidden rounded-2xl border border-hairline bg-card shadow-[0_18px_45px_rgba(27,36,48,0.14)]"
       >
-        <EvidenceArt evidence={pigeonCase.evidence[3]} className="h-40" />
+        <EvidenceArt evidence={lastToastCase.evidence[1]} className="h-40" />
         <div className="p-5">
           <p className="font-display text-[11px] font-bold tracking-[0.2em] text-gold uppercase">
             Featured investigation
           </p>
           <h1 className="mt-1 font-serif text-[2.9rem] font-bold leading-[0.86] text-ink">
-            {pigeonCase.title}
+            {lastToastCase.title}
           </h1>
-          <p className="mt-3 text-[15px] leading-snug text-ink">{pigeonCase.subtitle}</p>
+          <p className="mt-3 text-[15px] leading-snug text-ink">{lastToastCase.subtitle}</p>
           <div className="mt-5 flex h-16 items-center justify-center rounded-lg bg-gold text-white shadow-[0_5px_0_#2549d6]">
             <span className="font-display text-xl font-bold tracking-[0.13em] uppercase">
               {resume ? "Resume this case" : "Start this case"}
