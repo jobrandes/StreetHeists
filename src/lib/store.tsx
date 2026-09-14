@@ -48,6 +48,12 @@ const defaultProgress: CaseProgress = {
   crackedConfrontationIds: [],
   confrontAttempts: 0,
   reconstructionPicks: {},
+  accusationDraft: {
+    whoEvidenceId: "",
+    howEvidenceId: "",
+    whereEvidenceId: "",
+  },
+  revealedConcealIds: [],
 };
 
 const defaults: Persisted = {
@@ -112,6 +118,23 @@ function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
             ),
           )
         : {},
+    accusationDraft: {
+      whoEvidenceId:
+        typeof raw?.accusationDraft?.whoEvidenceId === "string"
+          ? raw.accusationDraft.whoEvidenceId
+          : "",
+      howEvidenceId:
+        typeof raw?.accusationDraft?.howEvidenceId === "string"
+          ? raw.accusationDraft.howEvidenceId
+          : "",
+      whereEvidenceId:
+        typeof raw?.accusationDraft?.whereEvidenceId === "string"
+          ? raw.accusationDraft.whereEvidenceId
+          : "",
+    },
+    revealedConcealIds: Array.isArray(raw?.revealedConcealIds)
+      ? raw.revealedConcealIds.filter((id): id is string => typeof id === "string")
+      : [],
   };
 }
 
@@ -202,6 +225,11 @@ type Store = {
     slotId: string,
     optionId: string | null,
   ) => void;
+  setAccusationDraft: (
+    caseId: string,
+    draft: Partial<CaseProgress["accusationDraft"]>,
+  ) => void;
+  revealConceal: (caseId: string, evidenceId: string) => void;
   resetCase: (caseId: string) => void;
 };
 
@@ -565,6 +593,33 @@ export function HeistProvider({ children }: { children: ReactNode }) {
               next[slotId] = optionId;
             }
             return { ...progress, reconstructionPicks: next };
+          }),
+        }));
+      },
+
+      setAccusationDraft(caseId, draft) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            accusationDraft: {
+              ...progress.accusationDraft,
+              ...draft,
+            },
+          })),
+        }));
+      },
+      revealConceal(caseId, evidenceId) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => {
+            if (progress.revealedConcealIds.includes(evidenceId)) return progress;
+            return {
+              ...progress,
+              revealedConcealIds: [...progress.revealedConcealIds, evidenceId],
+            };
           }),
         }));
       },
