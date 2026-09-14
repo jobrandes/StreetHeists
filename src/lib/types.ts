@@ -48,6 +48,12 @@ export type Evidence = {
   analysis?: EvidenceAnalysis;
   /** Buried detail — player taps to reveal. */
   conceal?: EvidenceConceal;
+  /** Optional inspect chrome — alibi window for stills (Mosaic Last Toast). */
+  alibiCheck?: {
+    stage: string;
+    window: string;
+    detail: string;
+  };
 };
 
 export type Suspect = {
