@@ -7,7 +7,7 @@ import {
   sceneLinesForPicks,
   scoreAxis,
 } from "./investigation";
-import { lateFeeCase, pigeonCase } from "./seed";
+import { lateFeeCase, lastToastCase, pigeonCase } from "./seed";
 
 describe("evidence-backed accusation scoring", () => {
   it("accepts the full correct accusation with proving exhibits", () => {
@@ -80,16 +80,31 @@ describe("difficulty unlocks", () => {
     expect(isCaseUnlocked(pigeonCase, {})).toBe(true);
   });
 
-  it("locks The Late Fee until The Pigeon Job is solved correctly", () => {
+  it("locks The Last Toast until The Pigeon Job is solved correctly", () => {
+    expect(isCaseUnlocked(lastToastCase, {})).toBe(false);
+    expect(
+      isCaseUnlocked(lastToastCase, {
+        "pigeon-job": { lastVerdict: { correct: false } },
+      }),
+    ).toBe(false);
+    expect(
+      isCaseUnlocked(lastToastCase, {
+        "pigeon-job": { lastVerdict: { correct: true } },
+      }),
+    ).toBe(true);
+  });
+
+  it("locks The Late Fee until The Last Toast is solved correctly", () => {
     expect(isCaseUnlocked(lateFeeCase, {})).toBe(false);
     expect(
       isCaseUnlocked(lateFeeCase, {
-        "pigeon-job": { lastVerdict: { correct: false } },
+        "pigeon-job": { lastVerdict: { correct: true } },
       }),
     ).toBe(false);
     expect(
       isCaseUnlocked(lateFeeCase, {
         "pigeon-job": { lastVerdict: { correct: true } },
+        "last-toast": { lastVerdict: { correct: true } },
       }),
     ).toBe(true);
   });
