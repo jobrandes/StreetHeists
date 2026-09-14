@@ -132,15 +132,32 @@ export type EvidenceConceal = {
 };
 
 /** Link inspected (and often cork-tagged) clues to unlock a chain insight. */
+/** Player-strung pair of filed clues on the corkboard. */
+export type ClueLink = {
+  id: string;
+  a: string;
+  b: string;
+  createdAt: number;
+};
+
+/** Link ≥2 clues to unlock a deduction card. Accuse stays locked until required chains open. */
 export type DeductionChain = {
   id: string;
   title: string;
   /** Clue ids that must be inspected. */
   requiredEvidenceIds: string[];
-  /** Optional sound cork links required to unlock. */
+  /**
+   * Correct clue pairs that grade this chain.
+   * Player strings two pins; matching a pair unlocks toward the card.
+   */
+  correctPairs?: Array<[string, string]>;
+  /** How many correct pairs required (default: all listed pairs, or 1). */
+  pairsRequired?: number;
+  /** Optional legacy cork-to-suspect links (still honored if present). */
   requiredCorkLinks?: { evidenceId: string; suspectId: string }[];
   /** Optional contradiction that must be spotted. */
   unlockOnContradictionId?: string;
+  /** Deduction card copy shown when the chain unlocks. */
   insight: string;
 };
 
@@ -165,8 +182,13 @@ export type CaseFile = {
   contradictions?: Contradiction[];
   confrontations?: Confrontation[];
   reconstruction: SceneReconstruction;
-  /** Corkboard-driven investigation chains (not a checklist). */
+  /** Corkboard clue-link chains — grade these, not naked dropdowns. */
   deductionChains?: DeductionChain[];
+  /**
+   * Accuse stays locked until this many chains are unlocked.
+   * Defaults to all defined chains when omitted.
+   */
+  chainsRequiredToAccuse?: number;
 };
 
 export type VerdictAxis = {
@@ -222,6 +244,8 @@ export type CaseProgress = {
   completedAnalysisIds: string[];
   foundContradictionIds: string[];
   corkLinks: CorkLink[];
+  /** Clue↔clue strings on the corkboard — wrong accuse must not wipe these. */
+  clueLinks: ClueLink[];
   crackedConfrontationIds: string[];
   confrontAttempts: number;
   /** slotId → chosen optionId for the scene desk */
