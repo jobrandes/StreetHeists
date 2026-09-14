@@ -13,6 +13,17 @@ Open [http://127.0.0.1:43198](http://127.0.0.1:43198).
 
 Blessed production: [https://streetheists.netlify.app](https://streetheists.netlify.app)
 
+## Netlify builds (quota)
+
+Every push to GitHub `main` can burn a Netlify build. We burned a lot of quota with chunked agent syncs — **batch into one GitHub push**, then deploy.
+
+- Prefer **one** commit/push per shippable slice (not per file).
+- Mark non-prod syncs with `[skip netlify]` in the commit message (ignored by Netlify).
+- `netlify.toml` also skips docs/probe-only diffs via `scripts/netlify-ignore.sh`.
+- To pause burning quota immediately: Netlify → Site configuration → Build & deploy → **Stop builds** (or lock deploys to manual) until the next intentional ship.
+
+Local play (`npm run dev`) never uses Netlify quota.
+
 ## Cases
 
 1. **The Pigeon Job** — ~4 min tutorial (inspect → one clue link → accuse)

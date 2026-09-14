@@ -1,6 +1,8 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  # Exit 0 = skip (saves monthly build quota). See scripts/netlify-ignore.sh
+  ignore = "bash scripts/netlify-ignore.sh"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

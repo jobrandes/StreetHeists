@@ -88,7 +88,7 @@ export default function VerdictPage() {
               verdict.correct ? "text-gold" : "text-fail"
             }`}
           >
-            Verdict
+            {verdict.correct ? "Case closed" : "Verdict"}
           </p>
         </div>
         <h1
@@ -105,8 +105,8 @@ export default function VerdictPage() {
         <p className="mt-3 text-sm leading-relaxed text-ink">
           {verdict.correct
             ? verdict.wrongAttempts === 0
-              ? "One accusation. The file held. Export the poster — you earned the clean solve."
-              : "The first theory wobbled. The final one held. Case closed — share it."
+              ? "One accusation. The file held. Share the Midnight seal — the triad stays private."
+              : "The first theory wobbled. The final one held. Share the seal — Who / How / Where stay off the public print."
             : axis.who && (!axis.whoEvidence || !axis.howEvidence || !axis.whereEvidence)
               ? "Names can be right and the case still fails — attach the exhibits that prove each part. Your Who / How / Where picks and proof clues stay on the Decide desk."
               : axis.who
@@ -118,7 +118,7 @@ export default function VerdictPage() {
       <section className="mt-5 rounded-xl border border-hairline bg-card p-4">
         <p className="font-display text-[10px] font-bold tracking-[0.18em] text-gold uppercase">
           {verdict.correct
-            ? "Who / How / Where — confirmed with proof"
+            ? "Private verdict · Who / How / Where (not on share cards)"
             : "Your accusation — scored with exhibits"}
         </p>
         <ul className="mt-3 space-y-2.5">
