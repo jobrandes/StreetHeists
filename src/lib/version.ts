@@ -13,7 +13,7 @@
 export const APP_VERSION = {
   major: 0,
   minor: 5,
-  patch: 11,
+  patch: 12,
   /** ISO date of this release */
   updatedOn: "2026-09-14",
 } as const;
@@ -26,6 +26,11 @@ export type VersionNote = {
 
 /** Newest first — keep this short; the stamp only shows the tip. */
 export const VERSION_UPDATES: VersionNote[] = [
+  {
+    version: "0.5.12",
+    date: "2026-09-14",
+    note: "PRISM formal teaching: Compare gate visible; miss copy (time/person/route); sticky notes stay visible; Case Board New?/Full case hierarchy; Clear yarn; Accuse route lock.",
+  },
   {
     version: "0.5.11",
     date: "2026-09-14",
@@ -139,4 +144,4 @@ function formatShortDate(iso: string): string {
   return `${months[month - 1]} ${day}`;
 }
 
-/** Synced teaching pass v0.5.11 → GitHub main via one push_files call with all 12 full file contents. */
+/** PRISM formal teaching pass v0.5.12 — Compare gate, miss copy, sticky visibility, Case Board hierarchy. */
