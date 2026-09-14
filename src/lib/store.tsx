@@ -26,7 +26,8 @@ import type {
   Verdict,
 } from "./types";
 
-const STORAGE_KEY = "street-heists.couch-case.v5";
+const STORAGE_KEY = "street-heists.couch-case.v6";
+const LEGACY_V5_KEY = "street-heists.couch-case.v5";
 const LEGACY_V4_KEY = "street-heists.couch-case.v4";
 const LEGACY_V3_KEY = "street-heists.couch-case.v3";
 const LEGACY_V2_KEY = "street-heists.couch-case.v2";
@@ -58,6 +59,7 @@ const defaultProgress: CaseProgress = {
     whereEvidenceId: "",
   },
   revealedConcealIds: [],
+  playerNotes: {},
 };
 
 const defaults: Persisted = {
@@ -150,6 +152,17 @@ function normalizeProgress(raw?: Partial<CaseProgress> | null): CaseProgress {
     revealedConcealIds: Array.isArray(raw?.revealedConcealIds)
       ? raw.revealedConcealIds.filter((id): id is string => typeof id === "string")
       : [],
+    playerNotes:
+      raw?.playerNotes &&
+      typeof raw.playerNotes === "object" &&
+      !Array.isArray(raw.playerNotes)
+        ? Object.fromEntries(
+            Object.entries(raw.playerNotes).filter(
+              (entry): entry is [string, string] =>
+                typeof entry[0] === "string" && typeof entry[1] === "string",
+            ),
+          )
+        : {},
   };
 }
 
@@ -236,6 +249,9 @@ type Store = {
     b: string,
   ) => { link: ClueLink | null; sound: boolean; message: string; unlockedChainIds: string[] };
   removeClueLink: (caseId: string, linkId: string) => void;
+  /** Pull all yarn — pins and notes stay. */
+  clearClueChain: (caseId: string) => void;
+  setPlayerNote: (caseId: string, evidenceId: string, note: string) => void;
   confrontSuspect: (
     caseId: string,
     confrontationId: string,
@@ -260,7 +276,25 @@ const StoreContext = createContext<Store | null>(null);
 function load(): Persisted {
   if (typeof window === "undefined") return defaults;
   try {
-    const rawV5 = window.localStorage.getItem(STORAGE_KEY);
+    const rawV6 = window.localStorage.getItem(STORAGE_KEY);
+    if (rawV6) {
+      const parsed = JSON.parse(rawV6) as Partial<Persisted> | null;
+      const map =
+        parsed?.progressByCase && typeof parsed.progressByCase === "object"
+          ? Object.fromEntries(
+              Object.entries(parsed.progressByCase).map(([id, value]) => [
+                id,
+                normalizeProgress(value),
+              ]),
+            )
+          : {};
+      return {
+        alias: parsed?.alias || defaults.alias,
+        progressByCase: map,
+      };
+    }
+
+    const rawV5 = window.localStorage.getItem(LEGACY_V5_KEY);
     if (rawV5) {
       const parsed = JSON.parse(rawV5) as Partial<Persisted> | null;
       const map =
@@ -599,6 +633,29 @@ export function HeistProvider({ children }: { children: ReactNode }) {
           })),
         }));
       },
+      clearClueChain(caseId) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            clueLinks: [],
+          })),
+        }));
+      },
+      setPlayerNote(caseId, evidenceId, note) {
+        if (!getCase(caseId)) return;
+        setState((current) => ({
+          ...current,
+          progressByCase: patchCase(current.progressByCase, caseId, (progress) => ({
+            ...progress,
+            playerNotes: {
+              ...(progress.playerNotes ?? {}),
+              [evidenceId]: note,
+            },
+          })),
+        }));
+      },
       confrontSuspect(caseId, confrontationId, evidenceId) {
         const caseFile = getCase(caseId);
         const confrontation = caseFile?.confrontations?.find(
@@ -677,6 +734,7 @@ export function HeistProvider({ children }: { children: ReactNode }) {
             pinnedEvidenceIds: progress.pinnedEvidenceIds,
             corkLinks: progress.corkLinks,
             clueLinks: progress.clueLinks ?? [],
+            playerNotes: progress.playerNotes ?? {},
             reconstructionPicks: progress.reconstructionPicks,
             accusationDraft: {
               whoEvidenceId:
