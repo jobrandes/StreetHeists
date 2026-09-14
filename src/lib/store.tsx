@@ -444,7 +444,7 @@ export function HeistProvider({ children }: { children: ReactNode }) {
       },
       discoverHotspot(caseId, evidenceId, hotspotId) {
         const caseFile = getCase(caseId);
-        const evidence = caseFile?.evidence.find((item) => item.id === hotspotId);
+        const evidence = caseFile?.evidence.find((item) => item.id === evidenceId);
         const hotspot = evidence?.hotspots?.find((item) => item.id === hotspotId);
         if (!hotspot) return null;
         const key = hotspotKey(evidenceId, hotspotId);
