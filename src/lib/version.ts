@@ -138,3 +138,5 @@ function formatShortDate(iso: string): string {
   ];
   return `${months[month - 1]} ${day}`;
 }
+
+/** Synced teaching pass v0.5.11 to GitHub main. */
