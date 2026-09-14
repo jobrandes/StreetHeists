@@ -26,7 +26,7 @@ Local play (`npm run dev`) never uses Netlify quota.
 
 ## Cases
 
-1. **The Pigeon Job** — ~4 min tutorial (inspect → one clue link → accuse)
+1. **The Pigeon Job** — ~4 min tutorial (inspect → hang **Crumb Trail Still** + **Fountain Telephoto Still** → connect that pair → accuse). Corkboard shows an on-rails example with Hang / Connect-for-me buttons.
 2. **The Last Toast** — flagship gala necklace theft
 3. **The Late Fee** — meter pouch frame-job
 4. Velvet Teaspoon / Dessert Trolley — harder unlocks
