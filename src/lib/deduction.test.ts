@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  canAccuse,
   isDeductionChainUnlocked,
   isDeductionUnlocked,
 } from "@/lib/deduction";
-import { lateFeeCase, pigeonCase } from "@/lib/seed";
+import { lateFeeCase, lastToastCase, pigeonCase } from "@/lib/seed";
 import type { CaseProgress } from "@/lib/types";
 
 const emptyProgress = (): CaseProgress => ({
@@ -18,6 +19,7 @@ const emptyProgress = (): CaseProgress => ({
   completedAnalysisIds: [],
   foundContradictionIds: [],
   corkLinks: [],
+  clueLinks: [],
   crackedConfrontationIds: [],
   confrontAttempts: 0,
   reconstructionPicks: {},
@@ -30,33 +32,57 @@ const emptyProgress = (): CaseProgress => ({
 });
 
 describe("deduction unlock", () => {
-  it("unlocks tutorial deductions on inspect without cork", () => {
+  it("unlocks takeaways on inspect without cork", () => {
     const evidence = pigeonCase.evidence[0];
     const progress = emptyProgress();
     progress.inspectedEvidenceIds = [evidence.id];
     expect(isDeductionUnlocked(pigeonCase, progress, evidence)).toBe(true);
   });
 
-  it("locks standard deductions until a sound cork link exists", () => {
-    const evidence = lateFeeCase.evidence.find((item) => item.id === "tip-jar-video")!;
+  it("locks accuse on Pigeon until the tutorial chain is linked", () => {
     const progress = emptyProgress();
-    progress.inspectedEvidenceIds = [evidence.id];
-    expect(isDeductionUnlocked(lateFeeCase, progress, evidence)).toBe(false);
-    progress.corkLinks = [{ evidenceId: "tip-jar-video", suspectId: "paz" }];
-    expect(isDeductionUnlocked(lateFeeCase, progress, evidence)).toBe(true);
+    progress.inspectedEvidenceIds = ["crumb-trail", "statue-nest"];
+    expect(canAccuse(pigeonCase, progress)).toBe(false);
+    progress.clueLinks = [
+      { id: "1", a: "crumb-trail", b: "statue-nest", createdAt: 1 },
+    ];
+    expect(canAccuse(pigeonCase, progress)).toBe(true);
   });
 
-  it("unlocks the Late Fee false-lead chain after cork + contradiction", () => {
-    const chain = lateFeeCase.deductionChains!.find((item) => item.id === "false-lead-collapses")!;
+  it("unlocks Late Fee false-lead chain after clue pair + contradiction", () => {
+    const chain = lateFeeCase.deductionChains!.find(
+      (item) => item.id === "false-lead-collapses",
+    )!;
     const progress = emptyProgress();
     progress.inspectedEvidenceIds = ["paz-statement", "rita-timecard"];
-    progress.corkLinks = [
-      { evidenceId: "paz-statement", suspectId: "paz" },
-      { evidenceId: "rita-timecard", suspectId: "rita" },
+    progress.clueLinks = [
+      { id: "1", a: "paz-statement", b: "rita-timecard", createdAt: 1 },
     ];
     expect(isDeductionChainUnlocked(lateFeeCase, progress, chain)).toBe(false);
     progress.foundContradictionIds = ["paz-vs-rita-clock"];
     expect(isDeductionChainUnlocked(lateFeeCase, progress, chain)).toBe(true);
+  });
+
+  it("requires two Last Toast chains before accuse", () => {
+    const progress = emptyProgress();
+    progress.inspectedEvidenceIds = [
+      "cctv-912",
+      "cctv-916",
+      "kitchen-ticket",
+      "seating-chart",
+    ];
+    progress.clueLinks = [
+      { id: "1", a: "cctv-912", b: "cctv-916", createdAt: 1 },
+    ];
+    progress.foundContradictionIds = ["toast-vs-ticket"];
+    expect(canAccuse(lastToastCase, progress)).toBe(false);
+    progress.clueLinks.push({
+      id: "2",
+      a: "kitchen-ticket",
+      b: "cctv-912",
+      createdAt: 2,
+    });
+    expect(canAccuse(lastToastCase, progress)).toBe(true);
   });
 });
 
