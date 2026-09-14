@@ -258,4 +258,6 @@ export type CaseProgress = {
   };
   /** Evidence conceal flaps the player has lifted. */
   revealedConcealIds: string[];
+  /** Player notes on corkboard pins — survives wrong accuse. */
+  playerNotes: Record<string, string>;
 };
