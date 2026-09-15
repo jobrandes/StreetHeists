@@ -360,7 +360,8 @@ export const pigeonCase: CaseFile = {
       pairsRequired: 1,
       insight:
         "Crumbs run fountainward and the nest holds the loaf beside Marcel’s red band — the trail ends on the statue.",
-      missHint: "Try a trail clue with a place clue (crumbs → nest).",
+      missHint:
+        "Try Crumb Trail Still with Fountain Telephoto Still (trail → nest).",
     },
   ],
   chainsRequiredToAccuse: 1,
