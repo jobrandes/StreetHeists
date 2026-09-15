@@ -1,1 +1,1 @@
-LOAD_FROM:/workspace/src/components/corkboard.tsx
+<<FILE:/workspace/src/components/corkboard.tsx>>
