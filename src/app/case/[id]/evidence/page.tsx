@@ -210,16 +210,14 @@ export default function LockerPage() {
             <Lock className="size-3.5" /> Accuse locked
           </p>
           <p className="mt-2 text-sm leading-snug text-ink">
-            String sound pairs on the Corkboard until{" "}
-            {need === 1 ? "your sticky deduction" : `${need} sticky deductions`} unlock ({have}/
-            {need}).
+            Locked — complete {need} deduction {need === 1 ? "chain" : "chains"} ({have}/{need}).
           </p>
           <Button
             size="xl"
             disabled
             className="mt-4 h-14 w-full rounded-xl font-display text-lg font-bold tracking-[0.12em] uppercase opacity-60"
           >
-            Accuse locked
+            Locked — complete {need} deduction {need === 1 ? "chain" : "chains"} ({have}/{need})
           </Button>
         </div>
       ) : (
