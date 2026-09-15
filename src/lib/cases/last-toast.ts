@@ -310,6 +310,7 @@ export const lastToastCase: CaseFile = {
       pairsRequired: 1,
       insight:
         "21:12 necklace on; 21:16 same angle gone with a mismatched sleeve — the swap happens inside the toast.",
+      missHint: "Try the toast-window stills (21:12 ↔ 21:16).",
     },
     {
       id: "service-timing",
@@ -320,6 +321,8 @@ export const lastToastCase: CaseFile = {
       unlockOnContradictionId: "toast-vs-ticket",
       insight:
         "Toast call and service-lift run lock together — the distraction and the exit are one chain.",
+      missHint:
+        "Compare the toast still vs kitchen ticket in the Locker first, then link that pair.",
     },
     {
       id: "empty-seat-exit",
@@ -329,6 +332,7 @@ export const lastToastCase: CaseFile = {
       pairsRequired: 1,
       insight:
         "Plus-one seat empty during the toast; lift reflection carries the necklace out — Elena is being framed.",
+      missHint: "Try the seating chart with a toast-window still.",
     },
   ],
   chainsRequiredToAccuse: 2,
